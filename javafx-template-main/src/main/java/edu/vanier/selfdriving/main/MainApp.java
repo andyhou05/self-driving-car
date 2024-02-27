@@ -1,6 +1,6 @@
-package edu.vanier.template;
+package edu.vanier.selfdriving.main;
 
-import edu.vanier.template.controllers.FXMLMainAppController;
+import edu.vanier.selfdriving.controllers.FXMLMainAppController;
 import java.io.IOException;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
