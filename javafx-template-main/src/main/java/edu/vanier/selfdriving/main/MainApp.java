@@ -1,8 +1,6 @@
 package edu.vanier.selfdriving.main;
 
 import edu.vanier.selfdriving.controllers.FXMLMainAppController;
-import edu.vanier.selfdriving.neuralnetwork.MatrixMath;
-import edu.vanier.selfdriving.neuralnetwork.NeuralNetwork;
 import java.io.IOException;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -47,13 +45,6 @@ public class MainApp extends Application {
     }
 
     public static void main(String[] args) {
-        NeuralNetwork nn = new NeuralNetwork(5, 6, 4);
-        double [][] test = {{2,3,4},{5,3,5}};
-        double [] test2 = {1,4,0};
-        double [] test3 = MatrixMath.matrix_vector_multiply(test, test2);
-        for(int i = 0 ;i < test3.length;i++){
-            System.out.println(test3[i]);
-        }
         launch(args);
     }
 }
