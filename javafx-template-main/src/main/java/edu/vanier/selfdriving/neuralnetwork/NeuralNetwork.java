@@ -33,6 +33,9 @@ public class NeuralNetwork {
 
         weights_ih = new double[hidden][input];
         weights_ho = new double[output][hidden];
+        
+        // Automatically randomize the values every time we create a NN
+        randomize();
     }
 
     // Randomize all the input values, weights, and biases
@@ -63,8 +66,22 @@ public class NeuralNetwork {
         }
     }
     
+    // Calculate the weighted sum for a given layer, ie input layer to hidden layer
     public double[] weightedSum(double [][] weights, double[] layer, double[] bias){
-        return null;
+        // Calculate the multiplication between the weights and the given layer, then add the bias
+        double [] next_layer = MatrixMath.vectorAddition(MatrixMath.matrixVectorMultiply(weights, layer), bias);
+        // Normalize all the values between 0 and 1
+        for(int i = 0; i < next_layer.length; i++){
+            next_layer[i] = MatrixMath.sigmoidActivation(next_layer[i]);
+        }
+        return next_layer;
+    }
+    
+    public void feedforward(){
+        // Calculate the weighted sum between the input layer to the hidden layer
+        hidden = weightedSum(weights_ih, input, bias_h);
+        // Repeat step between hidden and output layer
+        output = weightedSum(weights_ho, hidden, bias_o);
     }
 
 }

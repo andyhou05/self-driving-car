@@ -1,6 +1,8 @@
 package edu.vanier.selfdriving.main;
 
+import edu.vanier.selfdriving.models.Car;
 import edu.vanier.selfdriving.controllers.FXMLMainAppController;
+import edu.vanier.selfdriving.neuralnetwork.NeuralNetwork;
 import java.io.IOException;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;

@@ -9,8 +9,8 @@ package edu.vanier.selfdriving.neuralnetwork;
  * @author 2276884
  */
 public class MatrixMath {
-    // Needs error handling
-    public static double [] matrix_vector_multiply(double [][] matrix, double [] vector){
+    // Needs error handling, need to make sure all sizes are compatible
+    public static double [] matrixVectorMultiply(double [][] matrix, double [] vector){
         double [] answer_vector = new double[matrix.length];
         for(int i = 0; i < matrix.length; i++){
             for(int j = 0; j < matrix[i].length; j++){
