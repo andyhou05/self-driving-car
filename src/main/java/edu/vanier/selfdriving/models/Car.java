@@ -32,7 +32,8 @@ public class Car {
     double y;
     double speedX = 0.0;
     double speedY = 0.0;
-    double maxSpeedY = 3;
+    double speedMagn = 0.0;
+    double maxSpeed = 3;
     double rotationAngle;
 
     public Car() {
@@ -55,26 +56,57 @@ public class Car {
     }
 
     public void acceleration(int direction) {
-        if (maxSpeedY > speedY) {
-            speedY += accelerationValue * direction;
+        if (speedMagn < maxSpeed) {
+            speedMagn += accelerationValue;
+        } else {
+            speedMagn = maxSpeed;
         }
+        double angle = direction * 90 - carRectangle.getRotate();
+        speedY = speedMagn * Math.sin(angle * (Math.PI / 180));
+        System.out.println(speedMagn);
+        speedX = -speedMagn * Math.cos(angle * (Math.PI / 180));
+
     }
 
     public void decceleration() {
+        if (0 < speedMagn) {
+            speedMagn -= accelerationValue;
+            // Make sure to stop car when deccelrating
+            if (speedMagn < 0) {
+                speedMagn = 0;
+            }
+        }
         // If the car is moving forward
         if (0 < speedY) {
             speedY -= accelerationValue;
             // Make sure to stop car when deccelrating
-            if(speedY < 0){
+            if (speedY < 0) {
                 speedY = 0;
             }
-        // If the car is moving backward
-        } else{
+            // If the car is moving backward
+        } else {
             speedY += accelerationValue;
-            if(speedY > 0){
+            if (speedY > 0) {
                 speedY = 0;
             }
         }
+        if (0 < speedX) {
+            speedX -= accelerationValue;
+            // Make sure to stop car when deccelrating
+            if (speedX < 0) {
+                speedX = 0;
+            }
+            // If the car is moving backward
+        } else {
+            speedX += accelerationValue;
+            if (speedX > 0) {
+                speedX = 0;
+            }
+        }
+    }
+
+    public void rotate(int direction) {
+        this.carRectangle.setRotate(this.getCarRectangle().getRotate() - 1 * direction);
     }
 
     public Image getCarImage() {
@@ -189,12 +221,12 @@ public class Car {
         this.speedY = speedY;
     }
 
-    public double getMaxSpeedY() {
-        return maxSpeedY;
+    public double getMaxSpeed() {
+        return maxSpeed;
     }
 
-    public void setMaxSpeedY(double maxSpeedY) {
-        this.maxSpeedY = maxSpeedY;
+    public void setMaxSpeed(double maxSpeed) {
+        this.maxSpeed = maxSpeed;
     }
 
     public double getRotationAngle() {
