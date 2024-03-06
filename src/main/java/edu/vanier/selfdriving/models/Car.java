@@ -12,55 +12,69 @@ import javafx.scene.shape.Rectangle;
  * @author 2273410
  */
 public class Car {
+
     //Car image
     Image carImage;
     public Rectangle carRectangle;
-    
+
     //Static properties
     double sizeX; //= carImage.getWidth();
     double sizeY; //= carImage.getHeight();
-    double[] sensorsX = {0, (sizeX/4), (sizeX/2),((3*sizeX)/4),(sizeX)};
-    double [] sensorY = {0,0,0,0,0};
-    double[] sensorAngles = {150,120,90,60,30};
+    double[] sensorsX = {0, (sizeX / 4), (sizeX / 2), ((3 * sizeX) / 4), (sizeX)};
+    double[] sensorY = {0, 0, 0, 0, 0};
+    double[] sensorAngles = {150, 120, 90, 60, 30};
     double mass;
     double normalForce = mass * (9.8);
-    double accelerationValue = 2.0;
-    
+    double accelerationValue = 0.035;
+
     //Transition properties
     double x;
     double y;
     double speedX = 0.0;
     double speedY = 0.0;
-    double maxSpeedY;
+    double maxSpeedY = 3;
     double rotationAngle;
-    
-    public Car(){
+
+    public Car() {
     }
-    
-    public Car(double x, double y, double sizeX, double sizeY){
+
+    public Car(double x, double y, double sizeX, double sizeY) {
         this.x = x;
         this.y = y;
         this.sizeX = sizeX;
         this.sizeY = sizeY;
-        carRectangle = new Rectangle(x, y,sizeX, sizeY);
-        
+        carRectangle = new Rectangle(x, y, sizeX, sizeY);
+
     }
-    
-    public Car(double x, double y, Image carImage, double mass){
+
+    public Car(double x, double y, Image carImage, double mass) {
         this.x = x;
         this.y = y;
         this.carImage = carImage;
         this.mass = mass;
     }
-    
-    public void acceleration(){
-        if(maxSpeedY>speedY){
-        speedY += accelerationValue;}
+
+    public void acceleration(int direction) {
+        if (maxSpeedY > speedY) {
+            speedY += accelerationValue * direction;
+        }
     }
-    
-    public void decceleration(){
-        if(maxSpeedY>Math.abs(speedY)){
-        speedY -= accelerationValue;}
+
+    public void decceleration() {
+        // If the car is moving forward
+        if (0 < speedY) {
+            speedY -= accelerationValue;
+            // Make sure to stop car when deccelrating
+            if(speedY < 0){
+                speedY = 0;
+            }
+        // If the car is moving backward
+        } else{
+            speedY += accelerationValue;
+            if(speedY > 0){
+                speedY = 0;
+            }
+        }
     }
 
     public Image getCarImage() {
@@ -190,5 +204,5 @@ public class Car {
     public void setRotationAngle(double rotationAngle) {
         this.rotationAngle = rotationAngle;
     }
-    
+
 }

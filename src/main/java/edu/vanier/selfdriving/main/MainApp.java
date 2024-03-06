@@ -39,7 +39,7 @@ public class MainApp extends Application {
             Scene scene = new Scene(root, 1200, 800);
             
             // Create a car and link it to its controller.
-            Car car1 = new Car(500, 500, 100, 200);
+            Car car1 = new Car(100, 700, 40, 100);
             root.getChildren().add(car1.carRectangle);
             CarController controller = new CarController(car1);
             
