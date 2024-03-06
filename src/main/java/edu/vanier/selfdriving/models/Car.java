@@ -63,7 +63,6 @@ public class Car {
         }
         double angle = direction * 90 - carRectangle.getRotate();
         speedY = speedMagn * Math.sin(angle * (Math.PI / 180));
-        System.out.println(speedMagn);
         speedX = -speedMagn * Math.cos(angle * (Math.PI / 180));
 
     }

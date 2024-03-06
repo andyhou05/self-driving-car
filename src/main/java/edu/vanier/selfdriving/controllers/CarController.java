@@ -27,6 +27,7 @@ public class CarController {
     boolean backward = false;
     boolean right = false;
     boolean left = false;
+    boolean flip_rotate = false;
     AnimationTimer animation = new AnimationTimer() {
         @Override
         public void handle(long now) {
@@ -36,11 +37,20 @@ public class CarController {
                 car.acceleration(-1);
             } else {
                 car.decceleration();
-            } if (right && (Math.abs(car.getSpeedY()) > 0 || Math.abs(car.getSpeedX()) > 0)) {
-                car.rotate(-1);
+            }
+            if (right && (Math.abs(car.getSpeedY()) > 0 || Math.abs(car.getSpeedX()) > 0)) {
+                if (flip_rotate) {
+                    car.rotate(1);
+                } else {
+                    car.rotate(-1);
+                }
             } else if (left && (Math.abs(car.getSpeedY()) > 0 || Math.abs(car.getSpeedX()) > 0)) {
-                car.rotate(1);
-            } 
+                if (flip_rotate) {
+                    car.rotate(-1);
+                } else {
+                    car.rotate(1);
+                }
+            }
             car.carRectangle.setLayoutY(car.carRectangle.getLayoutY() - car.getSpeedY());
             car.carRectangle.setLayoutX(car.carRectangle.getLayoutX() - car.getSpeedX());
         }
@@ -57,9 +67,11 @@ public class CarController {
         scene.setOnKeyPressed((event) -> {
             switch (event.getCode()) {
                 case W:
+                    flip_rotate = false;
                     forward = true;
                     break;
                 case S:
+                    flip_rotate = true;
                     backward = true;
                     break;
                 case A:
