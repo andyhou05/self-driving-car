@@ -32,7 +32,7 @@ public class Car {
     double y;
     double speedX = 0.0;
     double speedY = 0.0;
-    double speedMagn = 0.0;
+    double speed = 0.0;
     double maxSpeed = 3;
     double rotationAngle;
 
@@ -45,6 +45,7 @@ public class Car {
         this.sizeX = sizeX;
         this.sizeY = sizeY;
         carRectangle = new Rectangle(x, y, sizeX, sizeY);
+        speed = 0;
 
     }
 
@@ -56,28 +57,29 @@ public class Car {
     }
 
     public void acceleration(int direction) {
-        if (speedMagn < maxSpeed) {
-            speedMagn += accelerationValue;
+        if (Math.abs(speed) < maxSpeed) {
+            speed += accelerationValue * direction;
         } else {
-            speedMagn = maxSpeed;
+            speed = maxSpeed * direction;
         }
-        double angle = direction * 90 - carRectangle.getRotate();
-        speedY = speedMagn * Math.sin(angle * (Math.PI / 180));
-        speedX = -speedMagn * Math.cos(angle * (Math.PI / 180));
+        double angle = 90 - carRectangle.getRotate();
+        speedY = speed * Math.sin(angle * (Math.PI / 180));
+        speedX = -speed * Math.cos(angle * (Math.PI / 180));
 
     }
 
     public void decceleration(int direction) {
-        if (0 < speedMagn) {
-            speedMagn -= accelerationValue;
-            // Make sure to stop car when deccelrating
-            if (speedMagn < 0) {
-                speedMagn = 0;
-            }
+        System.out.println(accelerationValue * direction);
+        // Make sure to stop car when deccelrating
+        if (speed * direction < 0) {
+            speed = 0;
+        } else{
+            speed -= accelerationValue * direction;
         }
-        double angle = direction * 90 - carRectangle.getRotate();
-        speedY = speedMagn * Math.sin(angle * (Math.PI / 180));
-        speedX = -speedMagn * Math.cos(angle * (Math.PI / 180));
+
+        double angle = 90 - carRectangle.getRotate();
+        speedY = speed * Math.sin(angle * (Math.PI / 180));
+        speedX = -speed * Math.cos(angle * (Math.PI / 180));
     }
 
     public void rotate(int direction) {
@@ -102,6 +104,14 @@ public class Car {
 
     public double getSizeX() {
         return sizeX;
+    }
+
+    public double getSpeed() {
+        return speed;
+    }
+
+    public void setSpeed(double speed) {
+        this.speed = speed;
     }
 
     public void setSizeX(double sizeX) {

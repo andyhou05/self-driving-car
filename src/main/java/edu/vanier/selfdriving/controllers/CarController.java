@@ -34,7 +34,7 @@ public class CarController {
         public void handle(long now) {
             if (forward) {
                 car.acceleration(1);
-            } else if (backward && car.getSpeedY() < 1.5) {
+            } else if (backward ) {
                 car.acceleration(-1);
             } else {
                 car.decceleration(direction);
