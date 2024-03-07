@@ -67,7 +67,7 @@ public class Car {
 
     }
 
-    public void decceleration() {
+    public void decceleration(int direction) {
         if (0 < speedMagn) {
             speedMagn -= accelerationValue;
             // Make sure to stop car when deccelrating
@@ -75,33 +75,9 @@ public class Car {
                 speedMagn = 0;
             }
         }
-        // If the car is moving forward
-        if (0 < speedY) {
-            speedY -= accelerationValue;
-            // Make sure to stop car when deccelrating
-            if (speedY < 0) {
-                speedY = 0;
-            }
-            // If the car is moving backward
-        } else {
-            speedY += accelerationValue;
-            if (speedY > 0) {
-                speedY = 0;
-            }
-        }
-        if (0 < speedX) {
-            speedX -= accelerationValue;
-            // Make sure to stop car when deccelrating
-            if (speedX < 0) {
-                speedX = 0;
-            }
-            // If the car is moving backward
-        } else {
-            speedX += accelerationValue;
-            if (speedX > 0) {
-                speedX = 0;
-            }
-        }
+        double angle = direction * 90 - carRectangle.getRotate();
+        speedY = speedMagn * Math.sin(angle * (Math.PI / 180));
+        speedX = -speedMagn * Math.cos(angle * (Math.PI / 180));
     }
 
     public void rotate(int direction) {

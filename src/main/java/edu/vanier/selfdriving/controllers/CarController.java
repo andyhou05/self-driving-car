@@ -25,6 +25,7 @@ public class CarController {
     Scene scene;
     boolean forward = false;
     boolean backward = false;
+    int direction = 0;
     boolean right = false;
     boolean left = false;
     boolean flip_rotate = false;
@@ -33,10 +34,10 @@ public class CarController {
         public void handle(long now) {
             if (forward) {
                 car.acceleration(1);
-            } else if (backward) {
+            } else if (backward && car.getSpeedY() < 1.5) {
                 car.acceleration(-1);
             } else {
-                car.decceleration();
+                car.decceleration(direction);
             }
             if (right && (Math.abs(car.getSpeedY()) > 0 || Math.abs(car.getSpeedX()) > 0)) {
                 if (flip_rotate) {
@@ -69,10 +70,12 @@ public class CarController {
                 case W:
                     flip_rotate = false;
                     forward = true;
+                    direction = 1;
                     break;
                 case S:
                     flip_rotate = true;
                     backward = true;
+                    direction = -1;
                     break;
                 case A:
                     left = true;
