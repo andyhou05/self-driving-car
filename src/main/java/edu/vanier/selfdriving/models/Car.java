@@ -69,9 +69,8 @@ public class Car {
     }
 
     public void decceleration(int direction) {
-        System.out.println(accelerationValue * direction);
-        // Make sure to stop car when deccelrating
-        if (speed * direction < 0) {
+        // Make sure to stop car when deccelerating
+        if (speed * direction < 0) { // If direction is 1, speed will deccelerate by going down (3 m/s -> 0 m/s), once speed is negative, we know to stop deccelerating, and vice-versa
             speed = 0;
         } else{
             speed -= accelerationValue * direction;
