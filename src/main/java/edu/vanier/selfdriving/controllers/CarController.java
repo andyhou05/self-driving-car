@@ -63,7 +63,7 @@ public class CarController {
     public void rotate(int direction) {
         car.carRectangle.setRotate(car.getCarRectangle().getRotate() - 1 * direction);
     }
-
+    
     public void checkKeypress() {
         scene.setOnKeyPressed((event) -> {
             switch (event.getCode()) {
