@@ -18,18 +18,16 @@ public class Car {
     public Rectangle carRectangle;
 
     //Static properties
-    double sizeX; //= carImage.getWidth();
-    double sizeY; //= carImage.getHeight();
-    double[] sensorsX = {0, (sizeX / 4), (sizeX / 2), ((3 * sizeX) / 4), (sizeX)};
+    double carWidth; 
+    double carLength; 
+    double[] sensorsX = {0, (carWidth / 4), (carWidth / 2), ((3 * carWidth) / 4), (carWidth)};
     double[] sensorY = {0, 0, 0, 0, 0};
     double[] sensorAngles = {150, 120, 90, 60, 30};
-    double mass;
-    double normalForce = mass * (9.8);
     double accelerationValue = 0.035;
 
     //Transition properties
-    double x;
-    double y;
+    double xPosition;
+    double yPosition;
     double speedX = 0.0;
     double speedY = 0.0;
     double speed = 0.0;
@@ -40,20 +38,19 @@ public class Car {
     }
 
     public Car(double x, double y, double sizeX, double sizeY) {
-        this.x = x;
-        this.y = y;
-        this.sizeX = sizeX;
-        this.sizeY = sizeY;
+        this.xPosition = x;
+        this.yPosition = y;
+        this.carWidth = sizeX;
+        this.carLength = sizeY;
         carRectangle = new Rectangle(x, y, sizeX, sizeY);
         speed = 0;
 
     }
 
-    public Car(double x, double y, Image carImage, double mass) {
-        this.x = x;
-        this.y = y;
+    public Car(double x, double y, Image carImage) {
+        this.xPosition = x;
+        this.yPosition = y;
         this.carImage = carImage;
-        this.mass = mass;
     }
 
     public void acceleration(int direction) {
@@ -101,8 +98,8 @@ public class Car {
         this.carRectangle = carRectangle;
     }
 
-    public double getSizeX() {
-        return sizeX;
+    public double getCarWidth() {
+        return carWidth;
     }
 
     public double getSpeed() {
@@ -113,16 +110,16 @@ public class Car {
         this.speed = speed;
     }
 
-    public void setSizeX(double sizeX) {
-        this.sizeX = sizeX;
+    public void setCarWidth(double carWidth) {
+        this.carWidth = carWidth;
     }
 
-    public double getSizeY() {
-        return sizeY;
+    public double getCarLength() {
+        return carLength;
     }
 
-    public void setSizeY(double sizeY) {
-        this.sizeY = sizeY;
+    public void setCarLength(double carLength) {
+        this.carLength = carLength;
     }
 
     public double[] getSensorsX() {
@@ -149,22 +146,6 @@ public class Car {
         this.sensorAngles = sensorAngles;
     }
 
-    public double getMass() {
-        return mass;
-    }
-
-    public void setMass(double mass) {
-        this.mass = mass;
-    }
-
-    public double getNormalForce() {
-        return normalForce;
-    }
-
-    public void setNormalForce(double normalForce) {
-        this.normalForce = normalForce;
-    }
-
     public double getAccelerationValue() {
         return accelerationValue;
     }
@@ -173,20 +154,20 @@ public class Car {
         this.accelerationValue = accelerationValue;
     }
 
-    public double getX() {
-        return x;
+    public double getxPosition() {
+        return xPosition;
     }
 
-    public void setX(double x) {
-        this.x = x;
+    public void setxPosition(double xPosition) {
+        this.xPosition = xPosition;
     }
 
-    public double getY() {
-        return y;
+    public double getyPosition() {
+        return yPosition;
     }
 
-    public void setY(double y) {
-        this.y = y;
+    public void setyPosition(double yPosition) {
+        this.yPosition = yPosition;
     }
 
     public double getSpeedX() {

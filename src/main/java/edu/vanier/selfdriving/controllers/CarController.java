@@ -7,46 +7,40 @@ package edu.vanier.selfdriving.controllers;
 import edu.vanier.selfdriving.models.Car;
 import javafx.animation.AnimationTimer;
 import javafx.scene.Scene;
-import javafx.scene.input.KeyCode;
 import static javafx.scene.input.KeyCode.A;
 import static javafx.scene.input.KeyCode.D;
 import static javafx.scene.input.KeyCode.S;
 import static javafx.scene.input.KeyCode.W;
-import javafx.scene.input.KeyCodeCombination;
-import javafx.scene.input.KeyCombination;
 
 /**
  *
  * @author USER
  */
 public class CarController {
-
+    
     Car car;
     Scene scene;
-    boolean forward = false;
-    boolean backward = false;
-    int direction = 0;
-    boolean right = false;
-    boolean left = false;
-    boolean flip_rotate = false;
+    int accelerationDirection = 0;
+    boolean accelerating = false;
+    boolean turningRight = false;
+    boolean turningLeft = false;
+    boolean flipRotate = false;
     AnimationTimer animation = new AnimationTimer() {
         @Override
         public void handle(long now) {
-            if (forward) {
-                car.acceleration(1);
-            } else if (backward ) {
-                car.acceleration(-1);
+            if (accelerating) {
+                car.acceleration(accelerationDirection);
             } else {
-                car.decceleration(direction);
+                car.decceleration(accelerationDirection);
             }
-            if (right && (Math.abs(car.getSpeedY()) > 0 || Math.abs(car.getSpeedX()) > 0)) {
-                if (flip_rotate) {
+            if (turningRight && (Math.abs(car.getSpeedY()) > 0 || Math.abs(car.getSpeedX()) > 0)) {
+                if (flipRotate) {
                     car.rotate(1);
                 } else {
                     car.rotate(-1);
                 }
-            } else if (left && (Math.abs(car.getSpeedY()) > 0 || Math.abs(car.getSpeedX()) > 0)) {
-                if (flip_rotate) {
+            } else if (turningLeft && (Math.abs(car.getSpeedY()) > 0 || Math.abs(car.getSpeedX()) > 0)) {
+                if (flipRotate) {
                     car.rotate(-1);
                 } else {
                     car.rotate(1);
@@ -56,48 +50,46 @@ public class CarController {
             car.carRectangle.setLayoutX(car.carRectangle.getLayoutX() - car.getSpeedX());
         }
     };
-
+    
     public CarController(Car car) {
         this.car = car;
         scene = car.carRectangle.getScene();
         checkKeypress();
         animation.start();
     }
-
+    
     public void checkKeypress() {
         scene.setOnKeyPressed((event) -> {
             switch (event.getCode()) {
                 case W:
-                    flip_rotate = false;
-                    forward = true;
-                    direction = 1;
+                    flipRotate = false;
+                    accelerating = true;
+                    accelerationDirection = 1;
                     break;
                 case S:
-                    flip_rotate = true;
-                    backward = true;
-                    direction = -1;
+                    flipRotate = true;
+                    accelerating = true;
+                    accelerationDirection = -1;
                     break;
                 case A:
-                    left = true;
+                    turningLeft = true;
                     break;
                 case D:
-                    right = true;
+                    turningRight = true;
                     break;
             }
         });
         scene.setOnKeyReleased((event) -> {
             switch (event.getCode()) {
                 case W:
-                    forward = false;
-                    break;
                 case S:
-                    backward = false;
+                    accelerating = false;
                     break;
                 case A:
-                    left = false;
+                    turningLeft = false;
                     break;
                 case D:
-                    right = false;
+                    turningRight = false;
                     break;
             }
         });
