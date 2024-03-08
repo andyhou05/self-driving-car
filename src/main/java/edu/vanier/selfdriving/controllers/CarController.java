@@ -17,10 +17,10 @@ import static javafx.scene.input.KeyCode.W;
  * @author USER
  */
 public class CarController {
-    
+
     Car car;
     Scene scene;
-    int accelerationDirection = 0;
+    int direction = 0;
     boolean accelerating = false;
     boolean turningRight = false;
     boolean turningLeft = false;
@@ -29,47 +29,53 @@ public class CarController {
         @Override
         public void handle(long now) {
             if (accelerating) {
-                car.acceleration(accelerationDirection);
+                car.acceleration(direction);
             } else {
-                car.decceleration(accelerationDirection);
+                if (car.isCarMoving()) {
+                    car.decceleration(direction);
+                }
             }
             if (turningRight && (Math.abs(car.getSpeedY()) > 0 || Math.abs(car.getSpeedX()) > 0)) {
                 if (flipRotate) {
-                    car.rotate(1);
+                    rotate(1);
                 } else {
-                    car.rotate(-1);
+                    rotate(-1);
                 }
             } else if (turningLeft && (Math.abs(car.getSpeedY()) > 0 || Math.abs(car.getSpeedX()) > 0)) {
                 if (flipRotate) {
-                    car.rotate(-1);
+                    rotate(-1);
                 } else {
-                    car.rotate(1);
+                    rotate(1);
                 }
             }
             car.carRectangle.setLayoutY(car.carRectangle.getLayoutY() - car.getSpeedY());
             car.carRectangle.setLayoutX(car.carRectangle.getLayoutX() - car.getSpeedX());
         }
     };
-    
+
     public CarController(Car car) {
         this.car = car;
         scene = car.carRectangle.getScene();
         checkKeypress();
         animation.start();
     }
-    
+
+    public void rotate(int direction) {
+        car.carRectangle.setRotate(car.getCarRectangle().getRotate() - 1 * direction);
+    }
+
     public void checkKeypress() {
         scene.setOnKeyPressed((event) -> {
             switch (event.getCode()) {
                 case W:
                     flipRotate = false;
                     accelerating = true;
-                    accelerationDirection = 1;
+                    direction = 1;
                     break;
                 case S:
                     flipRotate = true;
                     accelerating = true;
-                    accelerationDirection = -1;
+                    direction = -1;
                     break;
                 case A:
                     turningLeft = true;

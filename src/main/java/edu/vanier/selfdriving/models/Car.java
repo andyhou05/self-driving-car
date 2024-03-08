@@ -32,7 +32,8 @@ public class Car {
     double speedY = 0.0;
     double speed = 0.0;
     double maxSpeed = 3;
-    double rotationAngle;
+    boolean carMoving = false;
+    int counter = 0;
 
     public Car() {
     }
@@ -54,6 +55,7 @@ public class Car {
     }
 
     public void acceleration(int direction) {
+        carMoving = true;
         if (Math.abs(speed) < maxSpeed) {
             speed += accelerationValue * direction;
         } else {
@@ -67,10 +69,11 @@ public class Car {
 
     public void decceleration(int direction) {
         // Make sure to stop car when deccelerating
-        if (speed * direction < 0) { // If direction is 1, speed will deccelerate by going down (3 m/s -> 0 m/s), once speed is negative, we know to stop deccelerating, and vice-versa
-            speed = 0;
-        } else{
+        if (carMoving && speed * direction > 0) { // If direction is 1, speed will deccelerate by going down (3 m/s -> 0 m/s), once speed is negative, we know to stop deccelerating, and vice-versa
             speed -= accelerationValue * direction;
+        } else{
+            speed = 0;
+            carMoving = false;
         }
 
         double angle = 90 - carRectangle.getRotate();
@@ -194,12 +197,12 @@ public class Car {
         this.maxSpeed = maxSpeed;
     }
 
-    public double getRotationAngle() {
-        return rotationAngle;
+    public boolean isCarMoving() {
+        return carMoving;
     }
 
-    public void setRotationAngle(double rotationAngle) {
-        this.rotationAngle = rotationAngle;
+    public void setCarMoving(boolean carMoving) {
+        this.carMoving = carMoving;
     }
 
 }
