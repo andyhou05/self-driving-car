@@ -39,13 +39,13 @@ public class CarController {
             } else {
                 car.decceleration(direction);
             }
-            if (right && (Math.abs(car.getSpeedY()) > 0 || Math.abs(car.getSpeedX()) > 0)) {
+            if (right && (Math.abs(car.getSpeedY()) > 0.04 || Math.abs(car.getSpeedX()) > 0.04)) {
                 if (flip_rotate) {
                     car.rotate(1);
                 } else {
                     car.rotate(-1);
                 }
-            } else if (left && (Math.abs(car.getSpeedY()) > 0 || Math.abs(car.getSpeedX()) > 0)) {
+            } else if (left && (Math.abs(car.getSpeedY()) > 0.04 || Math.abs(car.getSpeedX()) > 0.04)) {
                 if (flip_rotate) {
                     car.rotate(-1);
                 } else {

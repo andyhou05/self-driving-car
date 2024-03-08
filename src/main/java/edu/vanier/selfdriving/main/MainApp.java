@@ -3,12 +3,14 @@ package edu.vanier.selfdriving.main;
 import edu.vanier.selfdriving.controllers.CarController;
 import edu.vanier.selfdriving.models.Car;
 import edu.vanier.selfdriving.controllers.FXMLMainAppController;
+import edu.vanier.selfdriving.models.Road;
 import edu.vanier.selfdriving.neuralnetwork.NeuralNetwork;
 import java.io.IOException;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
+import javafx.scene.shape.Line;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +40,12 @@ public class MainApp extends Application {
             //-- 2) Create and set the scene to the stage.
             Scene scene = new Scene(root, 1200, 800);
             
+            //Create a road for the car to navigate
+            Road road1 = new Road(scene.getWidth()/2,scene.getWidth(),3);
+            for (int i = 0; i<road1.getLaneCount();i++){
+                root.getChildren().add(new Line(road1.getLanesValueX().get(i),road1.getBottom(),
+                        road1.getLanesValueX().get(i),road1.getTop()));
+            }
             // Create a car and link it to its controller.
             Car car1 = new Car(100, 700, 40, 100);
             root.getChildren().add(car1.carRectangle);
