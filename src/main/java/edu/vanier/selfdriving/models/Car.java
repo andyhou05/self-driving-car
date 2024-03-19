@@ -17,7 +17,6 @@ public class Car {
     //Car image
     Image carImage;
     public Rectangle carRectangle;
-    public Line [] sensors = new Line [5];
     
     //Transition properties
     double xPosition;
@@ -31,8 +30,8 @@ public class Car {
     //Static properties
     double carWidth; 
     double carLength; 
-    double[] sensorAngles = {150, 120, 90, 60, 50};
     double accelerationValue = 0.035;
+    public Sensor sensors;
 
     public Car() {
     }
@@ -44,21 +43,6 @@ public class Car {
         this.carLength = sizeY;
         carRectangle = new Rectangle(x, y, sizeX, sizeY);
         speed = 0;
-        double[] x_sensors_start = {xPosition, (xPosition + carWidth / 4), (xPosition+carWidth / 2), (xPosition+3 * carWidth / 4), (xPosition+carWidth)};
-        double sensorLength = 200;
-        
-        for (int i = 0; i < x_sensors_start.length; i++){
-            double angle = sensorAngles[i] * (Math.PI/180);
-            double xStart = x_sensors_start[i];
-            double yStart = yPosition;
-            double xEnd = xStart*Math.sin(angle);
-            if(i > 2){
-                xEnd = xStart/Math.sin(angle);
-            }
-            double yEnd = yStart- sensorLength;
-            sensors[i] = new Line(xStart, yStart, xEnd, yEnd);
-        }
-
     }
 
     public Car(double x, double y, Image carImage) {
@@ -66,7 +50,7 @@ public class Car {
         this.yPosition = y;
         this.carImage = carImage;
     }
-
+    
     public void acceleration(int direction) {
         carMoving = true;
         if (Math.abs(speed) < maxSpeed) {
@@ -138,15 +122,6 @@ public class Car {
         this.carLength = carLength;
     }
 
-
-    public double[] getSensorAngles() {
-        return sensorAngles;
-    }
-
-    public void setSensorAngles(double[] sensorAngles) {
-        this.sensorAngles = sensorAngles;
-    }
-
     public double getAccelerationValue() {
         return accelerationValue;
     }
@@ -202,5 +177,17 @@ public class Car {
     public void setCarMoving(boolean carMoving) {
         this.carMoving = carMoving;
     }
+
+    public Sensor getSensors(){
+        return this.sensors;
+    }
+    public Line[] getSensorsList() {
+        return sensors.sensors;
+    }
+
+    public void setSensors(Sensor sensors) {
+        this.sensors = sensors;
+    }
+    
 
 }

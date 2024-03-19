@@ -51,7 +51,8 @@ public class CarController {
             }
             car.carRectangle.setLayoutY(car.carRectangle.getLayoutY() - car.getSpeedY());
             car.carRectangle.setLayoutX(car.carRectangle.getLayoutX() - car.getSpeedX());
-            for(Line sensor:car.sensors){
+            //car.getSensors().updateRays(car.carRectangle.getLayoutX(),car.carRectangle.getLayoutY());
+            for (Line sensor : car.getSensorsList()) {
                 sensor.setLayoutX(sensor.getLayoutX() - car.getSpeedX());
                 sensor.setLayoutY(sensor.getLayoutY() - car.getSpeedY());
             }
@@ -68,7 +69,7 @@ public class CarController {
     public void rotate(int direction) {
         car.carRectangle.setRotate(car.getCarRectangle().getRotate() - 1 * direction);
     }
-    
+
     public void checkKeypress() {
         scene.setOnKeyPressed((event) -> {
             switch (event.getCode()) {

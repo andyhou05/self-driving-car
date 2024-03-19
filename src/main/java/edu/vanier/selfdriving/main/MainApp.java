@@ -4,6 +4,7 @@ import edu.vanier.selfdriving.controllers.CarController;
 import edu.vanier.selfdriving.models.Car;
 import edu.vanier.selfdriving.controllers.FXMLMainAppController;
 import edu.vanier.selfdriving.models.Road;
+import edu.vanier.selfdriving.models.Sensor;
 import edu.vanier.selfdriving.neuralnetwork.NeuralNetwork;
 import java.io.IOException;
 import javafx.application.Application;
@@ -49,8 +50,9 @@ public class MainApp extends Application {
             
             // Create a car and link it to its controller.
             Car car1 = new Car(100, 700, 40, 100);
+            car1.setSensors(new Sensor(car1));
             root.getChildren().add(car1.carRectangle);
-            root.getChildren().addAll(car1.sensors);
+            root.getChildren().addAll(car1.getSensorsList());
             CarController controller = new CarController(car1);
             
             // Set scene to stage
