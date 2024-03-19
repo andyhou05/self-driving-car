@@ -4,6 +4,8 @@
  */
 package edu.vanier.selfdriving.neuralnetwork;
 
+import edu.vanier.selfdriving.utils.MathUtils;
+
 /**
  *
  * @author 2276884
@@ -69,10 +71,10 @@ public class NeuralNetwork {
     // Calculate the weighted sum for a given layer, ie input layer to hidden layer
     public double[] weightedSum(double [][] weights, double[] layer, double[] bias){
         // Calculate the multiplication between the weights and the given layer, then add the bias
-        double [] next_layer = MatrixMath.vectorAddition(MatrixMath.matrixVectorMultiply(weights, layer), bias);
+        double [] next_layer = MathUtils.vectorAddition(MathUtils.matrixVectorMultiply(weights, layer), bias);
         // Normalize all the values between 0 and 1
         for(int i = 0; i < next_layer.length; i++){
-            next_layer[i] = MatrixMath.sigmoidActivation(next_layer[i]);
+            next_layer[i] = MathUtils.sigmoidActivation(next_layer[i]);
         }
         return next_layer;
     }

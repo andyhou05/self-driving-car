@@ -16,7 +16,7 @@ public class Car {
 
     //Car image
     Image carImage;
-    public Rectangle carRectangle;
+    Rectangle carRectangle;
     
     //Transition properties
     double xPosition;
@@ -31,7 +31,7 @@ public class Car {
     double carWidth; 
     double carLength; 
     double accelerationValue = 0.035;
-    public Sensor sensors;
+    Sensor sensors;
 
     public Car() {
     }
@@ -81,7 +81,7 @@ public class Car {
     public void rotate(int direction) {
         this.carRectangle.setRotate(this.getCarRectangle().getRotate() - 1 * direction);
     }
-
+    
     public Image getCarImage() {
         return carImage;
     }

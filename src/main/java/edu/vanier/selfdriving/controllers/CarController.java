@@ -11,7 +11,6 @@ import static javafx.scene.input.KeyCode.A;
 import static javafx.scene.input.KeyCode.D;
 import static javafx.scene.input.KeyCode.S;
 import static javafx.scene.input.KeyCode.W;
-import javafx.scene.shape.Line;
 
 /**
  *
@@ -49,22 +48,21 @@ public class CarController {
                     rotate(1);
                 }
             }
-            car.carRectangle.setLayoutY(car.carRectangle.getLayoutY() - car.getSpeedY());
-            car.carRectangle.setLayoutX(car.carRectangle.getLayoutX() - car.getSpeedX());
-            //car.getSensors().updateRays(car.carRectangle.getLayoutX(),car.carRectangle.getLayoutY());
-            car.getSensors().updateRays(car.carRectangle.getRotate());
+            car.getCarRectangle().setLayoutY(car.getCarRectangle().getLayoutY() - car.getSpeedY());
+            car.getCarRectangle().setLayoutX(car.getCarRectangle().getLayoutX() - car.getSpeedX());
+            car.getSensors().updateSensors(car.getCarRectangle().getRotate());
         }
     };
 
     public CarController(Car car) {
         this.car = car;
-        scene = car.carRectangle.getScene();
+        scene = car.getCarRectangle().getScene();
         checkKeypress();
         animation.start();
     }
 
     public void rotate(int direction) {
-        car.carRectangle.setRotate(car.getCarRectangle().getRotate() - 1 * direction);
+        car.getCarRectangle().setRotate(car.getCarRectangle().getRotate() - 1 * direction);
     }
 
     public void checkKeypress() {

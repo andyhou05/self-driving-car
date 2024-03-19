@@ -51,7 +51,7 @@ public class MainApp extends Application {
             // Create a car and link it to its controller.
             Car car1 = new Car(100, 700, 40, 100);
             car1.setSensors(new Sensor(car1));
-            root.getChildren().add(car1.carRectangle);
+            root.getChildren().add(car1.getCarRectangle());
             root.getChildren().addAll(car1.getSensorsList());
             CarController controller = new CarController(car1);
             

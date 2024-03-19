@@ -4,49 +4,68 @@
  */
 package edu.vanier.selfdriving.models;
 
+import edu.vanier.selfdriving.utils.MathUtils;
 import javafx.scene.shape.Line;
 
 /**
- *
+ * Sensor class for Car to use.
  * @author USER
  */
 public class Sensor {
 
     Car car;
-    int rayCount = 5;
-    double rayLength = 200;
-    double raySpread = Math.PI / 4; // Angle between the most-left and most-right sensor in rad
-    Line[] sensors = new Line[rayCount];
+    int sensorCount = 5;
+    double sensorLength = 200;
+    double sensorSpread = Math.PI / 4; // Angle between the most-left and most-right sensor in rad
+    Line[] sensors = new Line[sensorCount];
 
-    public double lerp(double A, double B, double t) {
-        return A + (B - A) * t;
-    }
-
+    /**
+     * Constructor for Sensor.
+     * @param car Car that will be linked to the Sensors.
+     */
     public Sensor(Car car) {
         this.car = car;
-        initRays(car.getxPosition(), car.getyPosition());
+        initSensors();
     }
 
-    public void initRays(double xPosition, double yPosition) {
-        for (int i = 0; i < rayCount; i++) {
-            double rayAngle = lerp(raySpread / 2, -raySpread / 2, (double) i / (rayCount - 1));
+    /**
+     * Initialize the position of the Sensors based on the Car.
+     * @param xPosition
+     * @param yPosition
+     */
+    public void initSensors() {
+        double xPosition = car.getxPosition();
+        double yPosition = car.getyPosition();
+        for (int i = 0; i < sensorCount; i++) {
+            double rayAngle = MathUtils.lerp(sensorSpread / 2, -sensorSpread / 2, (double) i / (sensorCount - 1));
+            
+            // Start the Sensor in the middle of the Car.
             double startX = xPosition + 0.5 * car.carWidth;
             double startY = yPosition + 0.5 * car.carLength;
-            double endX = startX - Math.sin(rayAngle) * rayLength;
-            double endY = startY - Math.cos(rayAngle) * rayLength;
+            
+            // Trig to direct Sensor in the correct direction
+            double endX = startX - Math.sin(rayAngle) * sensorLength;
+            double endY = startY - Math.cos(rayAngle) * sensorLength;
             sensors[i] = new Line(startX, startY, endX, endY);
         }
     }
     
-    public void updateRays(double angle){
-        for(int i = 0; i < rayCount; i++){
+    /**
+     * Update the position of the Sensors when the Car moves.
+     * @param angle
+     */
+    public void updateSensors(double angle){
+        for(int i = 0; i < sensorCount; i++){
+            // Move the Sensor with the Car.
             sensors[i].setLayoutX(car.carRectangle.getLayoutX());
             sensors[i].setLayoutY(car.carRectangle.getLayoutY());
-            double rayAngle = lerp(raySpread / 2, -raySpread / 2, (double) i / (rayCount - 1)) - (angle * Math.PI/180);
+            
+            // Update the angle of the Sensor with the angle of the Car.
+            double rayAngle = MathUtils.lerp(sensorSpread / 2, -sensorSpread / 2, (double) i / (sensorCount - 1)) - (angle * Math.PI/180);
             double startX = sensors[i].getStartX();
             double startY = sensors[i].getStartY();
-            double endX = startX - Math.sin(rayAngle) * rayLength;
-            double endY = startY - Math.cos(rayAngle) * rayLength;
+            double endX = startX - Math.sin(rayAngle) * sensorLength;
+            double endY = startY - Math.cos(rayAngle) * sensorLength;
             sensors[i].setEndX(endX);
             sensors[i].setEndY(endY);
         }
