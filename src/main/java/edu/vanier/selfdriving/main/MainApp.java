@@ -28,13 +28,16 @@ import org.slf4j.LoggerFactory;
  * @see: /Build Scripts/build.gradle
  * @author Sleiman Rabah.
  */
-public class MainApp extends Application {
 
+
+public class MainApp extends Application {
+    
     private final static Logger logger = LoggerFactory.getLogger(MainApp.class);
     
     @Override
     public void start(Stage primaryStage) {
         try {
+            
             ArrayList<Line> listOfLanes = new ArrayList<>();
             logger.info("Bootstrapping the application...");
             //-- 1) Load the scene graph from the specified FXML file and 
@@ -59,7 +62,7 @@ public class MainApp extends Application {
             
             
             // Create a car and link it to its controller.
-            Car car1 = new Car(100, 700, 40, 100);
+            Car car1 = new Car(100, 550, 40, 100);
             root.getChildren().add(car1.carRectangle);
             CarController controller = new CarController(car1);
             
@@ -84,6 +87,7 @@ public class MainApp extends Application {
             primaryStage.setAlwaysOnTop(true);
             primaryStage.show();
             primaryStage.setAlwaysOnTop(false);
+
         } catch (IOException ex) {
             logger.error(ex.getMessage(), ex);
         }

@@ -23,15 +23,15 @@ public class Car {
     double[] sensorsX = {0, (carWidth / 4), (carWidth / 2), ((3 * carWidth) / 4), (carWidth)};
     double[] sensorY = {0, 0, 0, 0, 0};
     double[] sensorAngles = {150, 120, 90, 60, 30};
-    double accelerationValue = 0.1;
-
+    double accelerationValue = 0.09;
+    double deccelerationValue = accelerationValue +0.03;
     //Transition properties
     double xPosition;
     double yPosition;
     double speedX = 0.0;
     double speedY = 0.0;
     double speed = 0.0;
-    double maxSpeed = 15;
+    double maxSpeed = 3;
     boolean carMoving = false;
     int counter = 0;
 
@@ -64,13 +64,13 @@ public class Car {
         double angle = 90 - carRectangle.getRotate();
         speedY = speed * Math.sin(angle * (Math.PI / 180));
         speedX = -speed * Math.cos(angle * (Math.PI / 180));
-
+        
     }
 
     public void decceleration(int direction) {
         // Make sure to stop car when deccelerating
         if (carMoving && speed * direction > 0) { // If direction is 1, speed will deccelerate by going down (3 m/s -> 0 m/s), once speed is negative, we know to stop deccelerating, and vice-versa
-            speed -= accelerationValue * direction;
+            speed -= deccelerationValue * direction;
         } else{
             speed = 0;
             carMoving = false;

@@ -14,13 +14,27 @@ import static javafx.scene.input.KeyCode.S;
 import static javafx.scene.input.KeyCode.W;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Line;
+import javafx.scene.shape.Rectangle;
 
 /**
  *
  * @author USER
  */
 public class CarController {
+    private static boolean checkSceneCollision(Rectangle rectangle, Scene scene) {
+        double rectX = rectangle.getX()+rectangle.getLayoutX();
+        double rectY = rectangle.getY()+rectangle.getLayoutY()+rectangle.getTranslateY();
+        double rectWidth = rectangle.getWidth();
+        double rectHeight = rectangle.getHeight();
+        double sceneWidth = scene.getWidth();
+        double sceneHeight = scene.getHeight();
 
+        if (rectX <= 0 || rectX + rectWidth >= sceneWidth ||
+            rectY <= 0 || rectY + rectHeight >= sceneHeight) {
+            return true;
+        }
+        else return false;
+    }
     Car car;
     Scene scene;
     int direction = 0;
@@ -29,31 +43,36 @@ public class CarController {
     boolean turningLeft = false;
     boolean flipRotate = false;
     AnimationTimer animation = new AnimationTimer() {
-        @Override
+        @Override 
         public void handle(long now) {
-            if (accelerating) {
-                car.acceleration(direction);
-            } else {
-                if (car.isCarMoving()) {
-                    car.decceleration(direction);
+            if (checkSceneCollision(car.carRectangle,scene)==true){
+                System.out.println("Collision Detected!");
                 }
-            }
-            if (turningRight && (Math.abs(car.getSpeedY()) > 0 || Math.abs(car.getSpeedX()) > 0)) {
-                if (flipRotate) {
-                    rotate(1);
+            
+                if (accelerating) {
+                    car.acceleration(direction);
                 } else {
-                    rotate(-1);
+                    if (car.isCarMoving()) {
+                        car.decceleration(direction);
+                    }
                 }
-            } else if (turningLeft && (Math.abs(car.getSpeedY()) > 0 || Math.abs(car.getSpeedX()) > 0)) {
-                if (flipRotate) {
-                    rotate(-1);
-                } else {
-                    rotate(1);
+                if (turningRight && (Math.abs(car.getSpeedY()) > 0 || Math.abs(car.getSpeedX()) > 0)) {
+                    if (flipRotate) {
+                        rotate(1);
+                    } else {
+                        rotate(-1);
+                    }
+                } else if (turningLeft && (Math.abs(car.getSpeedY()) > 0 || Math.abs(car.getSpeedX()) > 0)) {
+                    if (flipRotate) {
+                        rotate(-1);
+                    } else {
+                        rotate(1);
+                    }
                 }
-            }
-            car.carRectangle.setLayoutY(car.carRectangle.getLayoutY() - car.getSpeedY());
-            car.carRectangle.setLayoutX(car.carRectangle.getLayoutX() - car.getSpeedX());
-        }
+                car.carRectangle.setLayoutY(car.carRectangle.getLayoutY() - car.getSpeedY());
+                car.carRectangle.setLayoutX(car.carRectangle.getLayoutX() - car.getSpeedX());
+                }
+            
     };
 
     public CarController(Car car) {
