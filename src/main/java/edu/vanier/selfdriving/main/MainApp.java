@@ -47,7 +47,7 @@ public class MainApp extends Application {
             Pane root = loader.load();
             
             //-- 2) Create and set the scene to the stage.
-            Scene scene = new Scene(root, 1200, 800);
+            Scene scene = new Scene(root, 600, 800);
             
             //Create a road for the car to navigate
             Road road1 = new Road(scene.getWidth()/2,scene.getWidth(),3);
@@ -87,7 +87,7 @@ public class MainApp extends Application {
             primaryStage.setAlwaysOnTop(true);
             primaryStage.show();
             primaryStage.setAlwaysOnTop(false);
-
+            primaryStage.setResizable(false);
         } catch (IOException ex) {
             logger.error(ex.getMessage(), ex);
         }
