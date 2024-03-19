@@ -50,6 +50,7 @@ public class MainApp extends Application {
             // Create a car and link it to its controller.
             Car car1 = new Car(100, 700, 40, 100);
             root.getChildren().add(car1.carRectangle);
+            root.getChildren().addAll(car1.sensors);
             CarController controller = new CarController(car1);
             
             // Set scene to stage

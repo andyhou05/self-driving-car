@@ -11,6 +11,7 @@ import static javafx.scene.input.KeyCode.A;
 import static javafx.scene.input.KeyCode.D;
 import static javafx.scene.input.KeyCode.S;
 import static javafx.scene.input.KeyCode.W;
+import javafx.scene.shape.Line;
 
 /**
  *
@@ -50,6 +51,10 @@ public class CarController {
             }
             car.carRectangle.setLayoutY(car.carRectangle.getLayoutY() - car.getSpeedY());
             car.carRectangle.setLayoutX(car.carRectangle.getLayoutX() - car.getSpeedX());
+            for(Line sensor:car.sensors){
+                sensor.setLayoutX(sensor.getLayoutX() - car.getSpeedX());
+                sensor.setLayoutY(sensor.getLayoutY() - car.getSpeedY());
+            }
         }
     };
 

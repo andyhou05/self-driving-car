@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 public class FXMLMainAppController {
 
     private final static Logger logger = LoggerFactory.getLogger(FXMLMainAppController.class);
-
+    
     @FXML
     public void initialize() {
         

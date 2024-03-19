@@ -5,6 +5,7 @@
 package edu.vanier.selfdriving.models;
 
 import javafx.scene.image.Image;
+import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 
 /**
@@ -16,15 +17,8 @@ public class Car {
     //Car image
     Image carImage;
     public Rectangle carRectangle;
-
-    //Static properties
-    double carWidth; 
-    double carLength; 
-    double[] sensorsX = {0, (carWidth / 4), (carWidth / 2), ((3 * carWidth) / 4), (carWidth)};
-    double[] sensorY = {0, 0, 0, 0, 0};
-    double[] sensorAngles = {150, 120, 90, 60, 30};
-    double accelerationValue = 0.035;
-
+    public Line [] sensors = new Line [5];
+    
     //Transition properties
     double xPosition;
     double yPosition;
@@ -33,7 +27,12 @@ public class Car {
     double speed = 0.0;
     double maxSpeed = 3;
     boolean carMoving = false;
-    int counter = 0;
+
+    //Static properties
+    double carWidth; 
+    double carLength; 
+    double[] sensorAngles = {150, 120, 90, 60, 50};
+    double accelerationValue = 0.035;
 
     public Car() {
     }
@@ -45,6 +44,20 @@ public class Car {
         this.carLength = sizeY;
         carRectangle = new Rectangle(x, y, sizeX, sizeY);
         speed = 0;
+        double[] x_sensors_start = {xPosition, (xPosition + carWidth / 4), (xPosition+carWidth / 2), (xPosition+3 * carWidth / 4), (xPosition+carWidth)};
+        double sensorLength = 200;
+        
+        for (int i = 0; i < x_sensors_start.length; i++){
+            double angle = sensorAngles[i] * (Math.PI/180);
+            double xStart = x_sensors_start[i];
+            double yStart = yPosition;
+            double xEnd = xStart*Math.sin(angle);
+            if(i > 2){
+                xEnd = xStart/Math.sin(angle);
+            }
+            double yEnd = yStart- sensorLength;
+            sensors[i] = new Line(xStart, yStart, xEnd, yEnd);
+        }
 
     }
 
@@ -125,21 +138,6 @@ public class Car {
         this.carLength = carLength;
     }
 
-    public double[] getSensorsX() {
-        return sensorsX;
-    }
-
-    public void setSensorsX(double[] sensorsX) {
-        this.sensorsX = sensorsX;
-    }
-
-    public double[] getSensorY() {
-        return sensorY;
-    }
-
-    public void setSensorY(double[] sensorY) {
-        this.sensorY = sensorY;
-    }
 
     public double[] getSensorAngles() {
         return sensorAngles;

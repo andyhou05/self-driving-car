@@ -25,7 +25,7 @@
             <Image url="@../../../../../360_F_282104243_AOYP22ztDiOcQ4cAlpnxzDwFgIlGF2fG.jpg" />
          </image>
       </ImageView>
-      <ImageView fitHeight="149.0" fitWidth="144.0" layoutX="440.0" layoutY="310.0">
+      <ImageView fitHeight="148.0" fitWidth="144.0" layoutX="440.0" layoutY="311.0">
          <image>
             <Image url="@../../../../../../Downloads/pngtree-car-back-white-vector-png-image_5048106%20(1).png" />
          </image>
