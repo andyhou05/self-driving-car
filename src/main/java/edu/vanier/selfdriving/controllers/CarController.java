@@ -52,10 +52,7 @@ public class CarController {
             car.carRectangle.setLayoutY(car.carRectangle.getLayoutY() - car.getSpeedY());
             car.carRectangle.setLayoutX(car.carRectangle.getLayoutX() - car.getSpeedX());
             //car.getSensors().updateRays(car.carRectangle.getLayoutX(),car.carRectangle.getLayoutY());
-            for (Line sensor : car.getSensorsList()) {
-                sensor.setLayoutX(sensor.getLayoutX() - car.getSpeedX());
-                sensor.setLayoutY(sensor.getLayoutY() - car.getSpeedY());
-            }
+            car.getSensors().updateRays(car.carRectangle.getRotate());
         }
     };
 

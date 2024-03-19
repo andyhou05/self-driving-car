@@ -24,18 +24,31 @@ public class Sensor {
 
     public Sensor(Car car) {
         this.car = car;
-        
-        updateRays(car.getxPosition(), car.getyPosition());
+        initRays(car.getxPosition(), car.getyPosition());
     }
 
-    public void updateRays(double xPosition, double yPosition) {
+    public void initRays(double xPosition, double yPosition) {
         for (int i = 0; i < rayCount; i++) {
-            double rayAngle = lerp(raySpread / 2, -raySpread / 2, (double) i / (rayCount - 1)) + car.getCarRectangle().getRotate();
+            double rayAngle = lerp(raySpread / 2, -raySpread / 2, (double) i / (rayCount - 1));
             double startX = xPosition + 0.5 * car.carWidth;
             double startY = yPosition + 0.5 * car.carLength;
             double endX = startX - Math.sin(rayAngle) * rayLength;
             double endY = startY - Math.cos(rayAngle) * rayLength;
             sensors[i] = new Line(startX, startY, endX, endY);
+        }
+    }
+    
+    public void updateRays(double angle){
+        for(int i = 0; i < rayCount; i++){
+            sensors[i].setLayoutX(car.carRectangle.getLayoutX());
+            sensors[i].setLayoutY(car.carRectangle.getLayoutY());
+            double rayAngle = lerp(raySpread / 2, -raySpread / 2, (double) i / (rayCount - 1)) - (angle * Math.PI/180);
+            double startX = sensors[i].getStartX();
+            double startY = sensors[i].getStartY();
+            double endX = startX - Math.sin(rayAngle) * rayLength;
+            double endY = startY - Math.cos(rayAngle) * rayLength;
+            sensors[i].setEndX(endX);
+            sensors[i].setEndY(endY);
         }
     }
 
