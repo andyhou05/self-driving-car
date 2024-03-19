@@ -5,12 +5,15 @@
 package edu.vanier.selfdriving.controllers;
 
 import edu.vanier.selfdriving.models.Car;
+import edu.vanier.selfdriving.models.Road;
 import javafx.animation.AnimationTimer;
 import javafx.scene.Scene;
 import static javafx.scene.input.KeyCode.A;
 import static javafx.scene.input.KeyCode.D;
 import static javafx.scene.input.KeyCode.S;
 import static javafx.scene.input.KeyCode.W;
+import javafx.scene.layout.Pane;
+import javafx.scene.shape.Line;
 
 /**
  *

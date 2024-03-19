@@ -23,7 +23,7 @@ public class Car {
     double[] sensorsX = {0, (carWidth / 4), (carWidth / 2), ((3 * carWidth) / 4), (carWidth)};
     double[] sensorY = {0, 0, 0, 0, 0};
     double[] sensorAngles = {150, 120, 90, 60, 30};
-    double accelerationValue = 0.035;
+    double accelerationValue = 0.1;
 
     //Transition properties
     double xPosition;
@@ -31,7 +31,7 @@ public class Car {
     double speedX = 0.0;
     double speedY = 0.0;
     double speed = 0.0;
-    double maxSpeed = 3;
+    double maxSpeed = 15;
     boolean carMoving = false;
     int counter = 0;
 
@@ -82,7 +82,7 @@ public class Car {
     }
 
     public void rotate(int direction) {
-        this.carRectangle.setRotate(this.getCarRectangle().getRotate() - 1 * direction);
+        this.carRectangle.setRotate(this.getCarRectangle().getRotate() - 5 * direction);
     }
 
     public Image getCarImage() {
