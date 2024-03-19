@@ -5,12 +5,16 @@
 package edu.vanier.selfdriving.controllers;
 
 import edu.vanier.selfdriving.models.Car;
+import edu.vanier.selfdriving.models.Road;
 import javafx.animation.AnimationTimer;
 import javafx.scene.Scene;
 import static javafx.scene.input.KeyCode.A;
 import static javafx.scene.input.KeyCode.D;
 import static javafx.scene.input.KeyCode.S;
 import static javafx.scene.input.KeyCode.W;
+import javafx.scene.layout.Pane;
+import javafx.scene.shape.Line;
+import javafx.scene.shape.Rectangle;
 
 /**
  *
@@ -18,6 +22,21 @@ import static javafx.scene.input.KeyCode.W;
  */
 public class CarController {
 
+    private static boolean checkSceneCollision(Rectangle rectangle, Scene scene) {
+        double rectX = rectangle.getX() + rectangle.getLayoutX();
+        double rectY = rectangle.getY() + rectangle.getLayoutY() + rectangle.getTranslateY();
+        double rectWidth = rectangle.getWidth();
+        double rectHeight = rectangle.getHeight();
+        double sceneWidth = scene.getWidth();
+        double sceneHeight = scene.getHeight();
+
+        if (rectX <= 0 || rectX + rectWidth >= sceneWidth
+                || rectY <= 0 || rectY + rectHeight >= sceneHeight) {
+            return true;
+        } else {
+            return false;
+        }
+    }
     Car car;
     Scene scene;
     int direction = 0;
@@ -28,6 +47,10 @@ public class CarController {
     AnimationTimer animation = new AnimationTimer() {
         @Override
         public void handle(long now) {
+            if (checkSceneCollision(car.getCarRectangle(), scene)) {
+                System.out.println("Collision Detected!");
+            }
+
             if (accelerating) {
                 car.acceleration(direction);
             } else {

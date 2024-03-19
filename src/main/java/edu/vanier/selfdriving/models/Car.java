@@ -30,7 +30,8 @@ public class Car {
     //Static properties
     double carWidth; 
     double carLength; 
-    double accelerationValue = 0.035;
+    double accelerationValue = 0.09;
+    double deccelerationValue = accelerationValue +0.03;
     Sensor sensors;
 
     public Car() {
@@ -61,13 +62,13 @@ public class Car {
         double angle = 90 - carRectangle.getRotate();
         speedY = speed * Math.sin(angle * (Math.PI / 180));
         speedX = -speed * Math.cos(angle * (Math.PI / 180));
-
+        
     }
 
     public void decceleration(int direction) {
         // Make sure to stop car when deccelerating
         if (carMoving && speed * direction > 0) { // If direction is 1, speed will deccelerate by going down (3 m/s -> 0 m/s), once speed is negative, we know to stop deccelerating, and vice-versa
-            speed -= accelerationValue * direction;
+            speed -= deccelerationValue * direction;
         } else{
             speed = 0;
             carMoving = false;
@@ -79,7 +80,7 @@ public class Car {
     }
 
     public void rotate(int direction) {
-        this.carRectangle.setRotate(this.getCarRectangle().getRotate() - 1 * direction);
+        this.carRectangle.setRotate(this.getCarRectangle().getRotate() - 5 * direction);
     }
     
     public Image getCarImage() {
