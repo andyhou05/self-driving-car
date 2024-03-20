@@ -4,28 +4,60 @@
  */
 package edu.vanier.selfdriving.models;
 
+import edu.vanier.selfdriving.utils.MathUtils;
 import java.util.ArrayList;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Line;
 
 /**
  *
  * @author 2273410
  */
 public class Road {
+
     double width;
-    double x;
+    double roadCenter;
     int laneCount;
-    double left=x-(width/2);
-    double right=x+(width/2);
+    double left;
+    double right;
     double top;
     double bottom;
-    ArrayList<Double> lanesValueX = new ArrayList<Double>();
+    ArrayList<Line> lines = new ArrayList<>();
+
+    public Road() {
+    }
+
+    public Road(double roadCenter, double width, int laneCount) {
+        this.roadCenter = roadCenter;
+        this.width = width;
+        this.laneCount = laneCount;
+        this.top = 10000000;
+        this.bottom = -10000000;
+        left = roadCenter - (width / 2);
+        right = roadCenter + (width / 2);
+        lines.add(new Line(right, bottom, right, top));
+        lines.add(new Line(left, bottom, left, top));
+
+        for (int i = 0; i < laneCount; i++) {
+            double currentX = MathUtils.lerp(left, right, (double)i/laneCount); 
+            lines.add(new Line(currentX, bottom, currentX, top));
+        }
+        for (int i = 0; i < lines.size(); i++) {
+            // We want the lines on both edges to be solid
+            if (i > 1) {
+                lines.get(i).getStrokeDashArray().addAll(40d, 40d);
+            }
+            lines.get(i).setStroke(Color.WHITE);
+            lines.get(i).setStrokeWidth(5);
+        }
+    }
 
     public double getWidth() {
         return width;
     }
 
-    public double getX() {
-        return x;
+    public double getRoadCenter() {
+        return roadCenter;
     }
 
     public double getLeft() {
@@ -43,26 +75,17 @@ public class Road {
     public double getBottom() {
         return bottom;
     }
-    
-    public ArrayList<Double> getLanesValueX(){
-        return this.lanesValueX;
-    }
-    public int getLaneCount(){
+
+    public int getLaneCount() {
         return this.laneCount;
     }
-    
-    public Road(){}
-    
-    public Road(double x, double width, int laneCount){
-        this.x = x;
-        this.width = width;
-        this.laneCount = laneCount;
-        this.top = 10000000;
-        this.bottom = -10000000;
-        
-        for(int i = 0; i<laneCount; i++){
-            lanesValueX.add(((i+1)*width)/laneCount);
-        
-        }
+
+    public ArrayList<Line> getLines() {
+        return lines;
     }
+
+    public void setLines(ArrayList<Line> lines) {
+        this.lines = lines;
+    }
+
 }
