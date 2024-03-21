@@ -16,7 +16,7 @@ public class Sensor {
     Car car;
     int sensorCount = 5;
     double sensorLength = 200;
-    double sensorSpread = Math.PI / 4; // Angle between the most-left and most-right sensor in rad
+    double sensorSpread = Math.PI / 2; // Angle between the most-left and most-right sensor in rad
     Line[] sensors = new Line[sensorCount];
 
     /**
