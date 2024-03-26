@@ -29,13 +29,8 @@ public class CarController {
         double rectHeight = rectangle.getHeight();
         double sceneWidth = scene.getWidth();
         double sceneHeight = scene.getHeight();
-
-        if (rectX <= 0 || rectX + rectWidth >= sceneWidth
-                || rectY <= 0 || rectY + rectHeight >= sceneHeight) {
-            return true;
-        } else {
-            return false;
-        }
+        return (rectX <= (0.03 * sceneWidth) || rectX + rectWidth >= (sceneWidth * 0.95)
+                || rectY <= 0 || rectY + rectHeight >= sceneHeight);
     }
     Car car;
     Scene scene;

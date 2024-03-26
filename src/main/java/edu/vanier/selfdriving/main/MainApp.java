@@ -9,6 +9,8 @@ import edu.vanier.selfdriving.neuralnetwork.NeuralNetwork;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import javafx.animation.Animation;
+import javafx.animation.AnimationTimer;
 import javafx.animation.Interpolator;
 import javafx.animation.TranslateTransition;
 import javafx.application.Application;
@@ -59,7 +61,7 @@ public class MainApp extends Application {
             root.getChildren().add(car1.getCarRectangle());
             root.getChildren().addAll(car1.getSensorsList());
             CarController controller = new CarController(car1);
-
+            
             for (int i = 0; i < road1.getLines().size(); i++) {
                 TranslateTransition tt = new TranslateTransition(Duration.seconds(20000), road1.getLines().get(i));
                 tt.setByY(2000000); // Move the lines downwards by 200 pixels
@@ -90,6 +92,7 @@ public class MainApp extends Application {
             primaryStage.show();
             primaryStage.setAlwaysOnTop(false);
             primaryStage.setResizable(false);
+
         } catch (IOException ex) {
             logger.error(ex.getMessage(), ex);
         }
