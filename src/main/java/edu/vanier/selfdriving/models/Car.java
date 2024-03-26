@@ -17,7 +17,7 @@ public class Car {
     //Car image
     Image carImage;
     Rectangle carRectangle;
-    
+
     //Transition properties
     double xPosition;
     double yPosition;
@@ -28,13 +28,25 @@ public class Car {
     boolean carMoving = false;
 
     //Static properties
-    double carWidth; 
-    double carLength; 
+    double carWidth;
+    double carLength;
     double accelerationValue = 0.09;
-    double deccelerationValue = accelerationValue +0.03;
+    double deccelerationValue = accelerationValue + 0.03;
     Sensor sensors;
 
     public Car() {
+        this.carWidth = 40;
+        this.carLength = 100;
+        carRectangle = new Rectangle(carWidth, carLength);
+    }
+
+    public Car(double x, double y) {
+        this.xPosition = x;
+        this.yPosition = y;
+        this.carWidth = 40;
+        this.carLength = 100;
+        carRectangle = new Rectangle(x, y, this.carWidth, this.carLength);
+        speed = 0;
     }
 
     public Car(double x, double y, double sizeX, double sizeY) {
@@ -51,7 +63,7 @@ public class Car {
         this.yPosition = y;
         this.carImage = carImage;
     }
-    
+
     public void acceleration(int direction) {
         carMoving = true;
         if (Math.abs(speed) < maxSpeed) {
@@ -62,14 +74,14 @@ public class Car {
         double angle = 90 - carRectangle.getRotate();
         speedY = speed * Math.sin(angle * (Math.PI / 180));
         speedX = -speed * Math.cos(angle * (Math.PI / 180));
-        
+
     }
 
     public void decceleration(int direction) {
         // Make sure to stop car when deccelerating
         if (carMoving && speed * direction > 0) { // If direction is 1, speed will deccelerate by going down (3 m/s -> 0 m/s), once speed is negative, we know to stop deccelerating, and vice-versa
             speed -= deccelerationValue * direction;
-        } else{
+        } else {
             speed = 0;
             carMoving = false;
         }
@@ -82,7 +94,7 @@ public class Car {
     public void rotate(int direction) {
         this.carRectangle.setRotate(this.getCarRectangle().getRotate() - 5 * direction);
     }
-    
+
     public Image getCarImage() {
         return carImage;
     }
@@ -112,6 +124,7 @@ public class Car {
     }
 
     public void setCarWidth(double carWidth) {
+        carRectangle.setWidth(carWidth);
         this.carWidth = carWidth;
     }
 
@@ -120,6 +133,7 @@ public class Car {
     }
 
     public void setCarLength(double carLength) {
+        carRectangle.setHeight(carLength);
         this.carLength = carLength;
     }
 
@@ -136,6 +150,7 @@ public class Car {
     }
 
     public void setxPosition(double xPosition) {
+        carRectangle.setX(xPosition);
         this.xPosition = xPosition;
     }
 
@@ -144,6 +159,7 @@ public class Car {
     }
 
     public void setyPosition(double yPosition) {
+        carRectangle.setY(yPosition);
         this.yPosition = yPosition;
     }
 
@@ -179,9 +195,10 @@ public class Car {
         this.carMoving = carMoving;
     }
 
-    public Sensor getSensors(){
+    public Sensor getSensors() {
         return this.sensors;
     }
+
     public Line[] getSensorsList() {
         return sensors.sensors;
     }
@@ -189,6 +206,5 @@ public class Car {
     public void setSensors(Sensor sensors) {
         this.sensors = sensors;
     }
-    
 
 }

@@ -18,10 +18,10 @@ public class Road {
     double width;
     double roadCenter;
     int laneCount;
-    double left;
-    double right;
-    double top;
-    double bottom;
+    double leftBorder;
+    double rightBorder;
+    double topBorder;
+    double bottomBorder;
     ArrayList<Line> lines = new ArrayList<>();
 
     public Road() {
@@ -31,16 +31,16 @@ public class Road {
         this.roadCenter = roadCenter;
         this.width = width;
         this.laneCount = laneCount;
-        this.top = 10000000;
-        this.bottom = -10000000;
-        left = roadCenter - (width / 2);
-        right = roadCenter + (width / 2);
-        lines.add(new Line(right, bottom, right, top));
-        lines.add(new Line(left, bottom, left, top));
+        this.topBorder = 10000000;
+        this.bottomBorder = -10000000;
+        leftBorder = roadCenter - (width / 2);
+        rightBorder = roadCenter + (width / 2);
+        lines.add(new Line(rightBorder, bottomBorder, rightBorder, topBorder));
+        lines.add(new Line(leftBorder, bottomBorder, leftBorder, topBorder));
 
         for (int i = 0; i < laneCount; i++) {
-            double currentX = MathUtils.lerp(left, right, (double)i/laneCount); 
-            lines.add(new Line(currentX, bottom, currentX, top));
+            double currentX = MathUtils.lerp(leftBorder, rightBorder, (double)i/laneCount); 
+            lines.add(new Line(currentX, bottomBorder, currentX, topBorder));
         }
         for (int i = 0; i < lines.size(); i++) {
             // We want the lines on both edges to be solid
@@ -60,20 +60,20 @@ public class Road {
         return roadCenter;
     }
 
-    public double getLeft() {
-        return left;
+    public double getLeftBorder() {
+        return leftBorder;
     }
 
-    public double getRight() {
-        return right;
+    public double getRightBorder() {
+        return rightBorder;
     }
 
-    public double getTop() {
-        return top;
+    public double getTopBorder() {
+        return topBorder;
     }
 
-    public double getBottom() {
-        return bottom;
+    public double getBottomBorder() {
+        return bottomBorder;
     }
 
     public int getLaneCount() {

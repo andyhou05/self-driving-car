@@ -1,6 +1,7 @@
 package edu.vanier.selfdriving.main;
 
 import edu.vanier.selfdriving.controllers.CarController;
+import edu.vanier.selfdriving.controllers.CarSpawner;
 import edu.vanier.selfdriving.models.Car;
 import edu.vanier.selfdriving.controllers.FXMLMainAppController;
 import edu.vanier.selfdriving.models.Road;
@@ -52,15 +53,19 @@ public class MainApp extends Application {
             Scene scene = new Scene(root, 600, 800);
 
             // Create a road for the car to navigate
-            Road road1 = new Road(scene.getWidth() / 2, scene.getWidth() * 0.95, 3);
+            double roadWidth = scene.getWidth() * 0.95;
+            Road road1 = new Road(scene.getWidth() / 2, roadWidth, 3);
             root.getChildren().addAll(road1.getLines());
-
+            
             // Create a car and link it to its controller.
             Car car1 = new Car(100, 550, 40, 100);
             car1.setSensors(new Sensor(car1));
             root.getChildren().add(car1.getCarRectangle());
             root.getChildren().addAll(car1.getSensorsList());
             CarController controller = new CarController(car1);
+            
+            // Spawn cars
+            CarSpawner spawner = new CarSpawner(1,400, road1, roadWidth, root);
             
             for (int i = 0; i < road1.getLines().size(); i++) {
                 TranslateTransition tt = new TranslateTransition(Duration.seconds(20000), road1.getLines().get(i));
