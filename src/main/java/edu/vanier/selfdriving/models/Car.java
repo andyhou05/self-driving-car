@@ -28,23 +28,19 @@ public class Car {
     boolean carMoving = false;
 
     //Static properties
-    double carWidth;
-    double carLength;
+    double carWidth = 60;
+    double carLength = 100;
     double accelerationValue = 0.09;
     double deccelerationValue = accelerationValue + 0.03;
     Sensor sensors;
 
     public Car() {
-        this.carWidth = 40;
-        this.carLength = 100;
         carRectangle = new Rectangle(carWidth, carLength);
     }
 
     public Car(double x, double y) {
         this.xPosition = x;
         this.yPosition = y;
-        this.carWidth = 40;
-        this.carLength = 100;
         carRectangle = new Rectangle(x, y, this.carWidth, this.carLength);
         speed = 0;
     }

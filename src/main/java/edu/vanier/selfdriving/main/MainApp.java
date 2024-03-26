@@ -58,15 +58,16 @@ public class MainApp extends Application {
             root.getChildren().addAll(road1.getLines());
             
             // Create a car and link it to its controller.
-            Car car1 = new Car(100, 550, 40, 100);
+            Car car1 = new Car(100, 550, 50, 100);
             car1.setSensors(new Sensor(car1));
             root.getChildren().add(car1.getCarRectangle());
             root.getChildren().addAll(car1.getSensorsList());
             CarController controller = new CarController(car1);
             
             // Spawn cars
-            CarSpawner spawner = new CarSpawner(1,400, road1, roadWidth, root);
+            CarSpawner spawner = new CarSpawner(1,-400, road1, roadWidth, root);
             
+            // Move lines downwards
             for (int i = 0; i < road1.getLines().size(); i++) {
                 TranslateTransition tt = new TranslateTransition(Duration.seconds(20000), road1.getLines().get(i));
                 tt.setByY(2000000); // Move the lines downwards by 200 pixels
@@ -75,20 +76,35 @@ public class MainApp extends Application {
                 tt.setAutoReverse(false);
                 tt.play();
             }
+            
+            // Move sensors downrads
             for (int i = 0; i < car1.getSensorsList().length; i++) {
                 TranslateTransition tt = new TranslateTransition(Duration.seconds(20000), car1.getSensorsList()[i]);
-                tt.setByY(2000000); // Move the lines downwards by 200 pixels
+                tt.setByY(2000000); 
                 tt.setInterpolator(Interpolator.LINEAR);
                 tt.setCycleCount(TranslateTransition.INDEFINITE); // Repeat indefinitely
                 tt.setAutoReverse(false);
                 tt.play();
             }
+            
+            // Move other cars downwards
+            for (int i = 0; i < spawner.getCars().size(); i++) {
+                TranslateTransition tt = new TranslateTransition(Duration.seconds(20000), spawner.getCars().get(i));
+                tt.setByY(2000000); 
+                tt.setInterpolator(Interpolator.LINEAR);
+                tt.setCycleCount(TranslateTransition.INDEFINITE); // Repeat indefinitely
+                tt.setAutoReverse(false);
+                tt.play();
+            }
+            
+            // Move user car downwards
             TranslateTransition tt = new TranslateTransition(Duration.seconds(20000), car1.getCarRectangle()); //Make car translate downwards at same speed
             tt.setByY(2000000);
             tt.setInterpolator(Interpolator.LINEAR);
             tt.setCycleCount(TranslateTransition.INDEFINITE);
             tt.setAutoReverse(false);
             tt.play();
+            
             // Set scene to stage
             primaryStage.setScene(scene);
             primaryStage.sizeToScene();

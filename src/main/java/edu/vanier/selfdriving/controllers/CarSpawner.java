@@ -22,7 +22,7 @@ public class CarSpawner {
     ArrayList<Rectangle> cars = new ArrayList<>();
     Road road;
     double yIncrement;
-    double yPosition = 200;
+    double yPosition = -200;
     double x_position_lane_one;
     double x_position_lane_two;
     double x_position_lane_three;
