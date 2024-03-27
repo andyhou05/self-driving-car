@@ -21,16 +21,8 @@ import javafx.scene.shape.Rectangle;
  * @author USER
  */
 public class CarController {
-
-    private static boolean checkSceneCollision(Rectangle rectangle, Scene scene) {
-        double rectX = rectangle.getX() + rectangle.getLayoutX();
-        double rectY = rectangle.getY() + rectangle.getLayoutY() + rectangle.getTranslateY();
-        double rectWidth = rectangle.getWidth();
-        double rectHeight = rectangle.getHeight();
-        double sceneWidth = scene.getWidth();
-        double sceneHeight = scene.getHeight();
-        return (rectX <= (0.03 * sceneWidth) || rectX + rectWidth >= (sceneWidth * 0.95)
-                || rectY <= 0 || rectY + rectHeight >= sceneHeight);
+    private static boolean checkSceneCollision(Rectangle rectangle, Line leftBorder, Line rightBorder) {
+        return rectangle.getBoundsInParent().intersects(leftBorder.getBoundsInParent()) || rectangle.getBoundsInParent().intersects(rightBorder.getBoundsInParent());
     }
     Car car;
     Scene scene;
@@ -42,7 +34,7 @@ public class CarController {
     AnimationTimer animation = new AnimationTimer() {
         @Override
         public void handle(long now) {
-            if (checkSceneCollision(car.getCarRectangle(), scene)) {
+            if (checkSceneCollision(car.getCarRectangle(), car.getLeftBorder(), car.getRightBorder())) {
                 System.out.println("Collision Detected!");
             }
 
@@ -119,4 +111,69 @@ public class CarController {
             }
         });
     }
+
+    public Car getCar() {
+        return car;
+    }
+
+    public void setCar(Car car) {
+        this.car = car;
+    }
+
+    public Scene getScene() {
+        return scene;
+    }
+
+    public void setScene(Scene scene) {
+        this.scene = scene;
+    }
+
+    public int getDirection() {
+        return direction;
+    }
+
+    public void setDirection(int direction) {
+        this.direction = direction;
+    }
+
+    public boolean isAccelerating() {
+        return accelerating;
+    }
+
+    public void setAccelerating(boolean accelerating) {
+        this.accelerating = accelerating;
+    }
+
+    public boolean isTurningRight() {
+        return turningRight;
+    }
+
+    public void setTurningRight(boolean turningRight) {
+        this.turningRight = turningRight;
+    }
+
+    public boolean isTurningLeft() {
+        return turningLeft;
+    }
+
+    public void setTurningLeft(boolean turningLeft) {
+        this.turningLeft = turningLeft;
+    }
+
+    public boolean isFlipRotate() {
+        return flipRotate;
+    }
+
+    public void setFlipRotate(boolean flipRotate) {
+        this.flipRotate = flipRotate;
+    }
+
+    public AnimationTimer getAnimation() {
+        return animation;
+    }
+
+    public void setAnimation(AnimationTimer animation) {
+        this.animation = animation;
+    }
+    
 }

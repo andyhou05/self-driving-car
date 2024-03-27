@@ -60,6 +60,9 @@ public class MainApp extends Application {
             // Create a car and link it to its controller.
             Car car1 = new Car(100, 550, 50, 100);
             car1.setSensors(new Sensor(car1));
+            car1.setRightBorder(road1.getLines().get(0)); // right border has index 0
+            car1.setLeftBorder(road1.getLines().get(1)); // left border has index 1
+            
             root.getChildren().add(car1.getCarRectangle());
             root.getChildren().addAll(car1.getSensorsList());
             CarController controller = new CarController(car1);

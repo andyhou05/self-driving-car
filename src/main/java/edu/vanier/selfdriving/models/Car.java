@@ -33,6 +33,8 @@ public class Car {
     double accelerationValue = 0.09;
     double deccelerationValue = accelerationValue + 0.03;
     Sensor sensors;
+    Line leftBorder;
+    Line rightBorder;
 
     public Car() {
         carRectangle = new Rectangle(carWidth, carLength);
@@ -202,5 +204,30 @@ public class Car {
     public void setSensors(Sensor sensors) {
         this.sensors = sensors;
     }
+
+    public double getDeccelerationValue() {
+        return deccelerationValue;
+    }
+
+    public void setDeccelerationValue(double deccelerationValue) {
+        this.deccelerationValue = deccelerationValue;
+    }
+
+    public Line getLeftBorder() {
+        return leftBorder;
+    }
+
+    public void setLeftBorder(Line leftBorder) {
+        this.leftBorder = leftBorder;
+    }
+
+    public Line getRightBorder() {
+        return rightBorder;
+    }
+
+    public void setRightBorder(Line rightBorder) {
+        this.rightBorder = rightBorder;
+    }
+    
 
 }
