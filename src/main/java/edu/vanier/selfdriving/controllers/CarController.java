@@ -33,9 +33,14 @@ public class CarController {
     boolean turningLeft = false;
     boolean flipRotate = false;
     AnimationTimer animation = new AnimationTimer() {
+        private long FPS = 120L;
+        private long INTERVAL = 1000000000L / FPS;
+        private long last = 0;
 
+        // Reference: https://www.youtube.com/watch?v=CYUjjnoXdrM
         @Override
         public void handle(long now) {
+            if (now - last > INTERVAL) {
                 if (checkSceneCollision(car.getCarRectangle(), car.getRoad().getLeftBorder(), car.getRoad().getRightBorder())) {
                     System.out.println("Collision Detected!");
                 }
@@ -63,6 +68,8 @@ public class CarController {
                 car.getCarRectangle().setLayoutY(car.getCarRectangle().getLayoutY() - car.getSpeedY());
                 car.getCarRectangle().setLayoutX(car.getCarRectangle().getLayoutX() - car.getSpeedX());
                 car.getSensors().updateSensors(car.getCarRectangle().getRotate());
+                last = now;
+            }
         }
     };
 

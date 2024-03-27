@@ -61,24 +61,31 @@ public class MainApp extends Application {
             // Spawn cars
             CarSpawner spawner = new CarSpawner(1, -400, road1, root);
 
+            // Reference: https://www.youtube.com/watch?v=CYUjjnoXdrM
             AnimationTimer camera = new AnimationTimer() {
+                private long FPS = 120L;
+                private long INTERVAL = 1000000000L / FPS;
+                private long last = 0;
+
                 @Override
                 public void handle(long now) {
-                    // Move road lines down
-                    for (Line roadLine : road1.getLines()) {
-                        roadLine.setTranslateY(roadLine.getTranslateY() + car1.getSpeedY());
+                    if (now - last > INTERVAL) {
+                        // Move road lines down
+                        for (Line roadLine : road1.getLines()) {
+                            roadLine.setTranslateY(roadLine.getTranslateY() + car1.getSpeedY());
+                        }
+                        // Move sensors down
+                        for (Line sensor : car1.getSensorsList()) {
+                            sensor.setTranslateY(sensor.getTranslateY() + car1.getSpeedY());
+                        }
+                        // Move enemy cars down
+                        for (Rectangle enemyCar : spawner.getCars()) {
+                            enemyCar.setTranslateY(enemyCar.getTranslateY() + car1.getSpeedY());
+                        }
+                        // Move user car down
+                        car1.getCarRectangle().setTranslateY(car1.getCarRectangle().getTranslateY() + car1.getSpeedY());
+                        last = now;
                     }
-                    // Move sensors down
-                    for (Line sensor : car1.getSensorsList()) {
-                        sensor.setTranslateY(sensor.getTranslateY() + car1.getSpeedY());
-                    }
-                    // Move enemy cars down
-                    for (Rectangle enemyCar : spawner.getCars()) {
-                        enemyCar.setTranslateY(enemyCar.getTranslateY() + car1.getSpeedY());
-                    }
-                    // Move user car down
-                    car1.getCarRectangle().setTranslateY(car1.getCarRectangle().getTranslateY() + car1.getSpeedY());
-
                 }
             };
             camera.start();

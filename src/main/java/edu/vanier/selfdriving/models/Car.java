@@ -24,14 +24,14 @@ public class Car {
     double speedX = 0.0;
     double speedY = 0.0;
     double speed = 0.0;
-    double maxSpeed = 3;
+    double maxSpeed = 8;
     boolean carMoving = false;
 
     //Static properties
     double carWidth = 60;
     double carLength = 120;
-    double accelerationValue = 0.09;
-    double deccelerationValue = accelerationValue + 0.03;
+    double accelerationValue = 0.3;
+    double deccelerationValue = accelerationValue;
     Sensor sensors;
     Road road;
 
