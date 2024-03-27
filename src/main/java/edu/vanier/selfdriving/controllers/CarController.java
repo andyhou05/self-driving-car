@@ -6,6 +6,7 @@ package edu.vanier.selfdriving.controllers;
 
 import edu.vanier.selfdriving.models.Car;
 import edu.vanier.selfdriving.models.Road;
+import edu.vanier.selfdriving.models.Sensor;
 import java.util.ArrayList;
 import javafx.animation.AnimationTimer;
 import javafx.scene.Scene;
@@ -71,6 +72,9 @@ public class CarController {
                 car.getCarImageView().setLayoutY(car.getCarImageView().getLayoutY() - car.getSpeedY());
                 car.getCarImageView().setLayoutX(car.getCarImageView().getLayoutX() - car.getSpeedX());
                 car.getSensors().updateSensors(car.getCarImageView().getRotate());
+                System.out.println(Sensor.sensorStartX);
+                System.out.println(Sensor.sensorStartY);
+                System.out.println("");
                 
                 // Move enemy cars
                 for(Car enemyCar:enemyCars){

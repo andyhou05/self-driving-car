@@ -5,7 +5,7 @@
 package edu.vanier.selfdriving.models;
 
 import edu.vanier.selfdriving.utils.MathUtils;
-import javafx.scene.paint.Color;
+import java.util.ArrayList;
 import javafx.scene.shape.Line;
 
 /**
@@ -19,6 +19,9 @@ public class Sensor {
     double sensorLength = 200;
     double sensorSpread = Math.PI / 2; // Angle between the most-left and most-right sensor in rad
     Line[] sensors = new Line[sensorCount];
+    public static ArrayList<Double> listOfAngles = new ArrayList<Double>();
+    public static double sensorStartX;
+    public static double sensorStartY;
 
     /**
      * Constructor for Sensor.
@@ -39,6 +42,7 @@ public class Sensor {
         double yPosition = car.getyPosition();
         for (int i = 0; i < sensorCount; i++) {
             double rayAngle = MathUtils.lerp(sensorSpread / 2, -sensorSpread / 2, (double) i / (sensorCount - 1));
+            listOfAngles.add(rayAngle);
             
             // Start the Sensor in the middle of the Car.
             double startX = xPosition + 0.5 * car.carWidth;
@@ -70,6 +74,8 @@ public class Sensor {
             double endY = startY - Math.cos(rayAngle) * sensorLength;
             sensors[i].setEndX(endX);
             sensors[i].setEndY(endY);
+            sensorStartX = startX+car.carImageView.getLayoutX();
+            sensorStartY = startY+car.carImageView.getLayoutY()+car.carImageView.getTranslateY();
         }
     }
 
