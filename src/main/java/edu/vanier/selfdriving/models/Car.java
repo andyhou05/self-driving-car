@@ -29,12 +29,11 @@ public class Car {
 
     //Static properties
     double carWidth = 60;
-    double carLength = 100;
+    double carLength = 120;
     double accelerationValue = 0.09;
     double deccelerationValue = accelerationValue + 0.03;
     Sensor sensors;
-    Line leftBorder;
-    Line rightBorder;
+    Road road;
 
     public Car() {
         carRectangle = new Rectangle(carWidth, carLength);
@@ -213,21 +212,12 @@ public class Car {
         this.deccelerationValue = deccelerationValue;
     }
 
-    public Line getLeftBorder() {
-        return leftBorder;
+    public Road getRoad() {
+        return road;
     }
 
-    public void setLeftBorder(Line leftBorder) {
-        this.leftBorder = leftBorder;
+    public void setRoad(Road road) {
+        this.road = road;
     }
-
-    public Line getRightBorder() {
-        return rightBorder;
-    }
-
-    public void setRightBorder(Line rightBorder) {
-        this.rightBorder = rightBorder;
-    }
-    
 
 }

@@ -5,6 +5,7 @@
 package edu.vanier.selfdriving.models;
 
 import edu.vanier.selfdriving.utils.MathUtils;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 
 /**
@@ -47,6 +48,7 @@ public class Sensor {
             double endX = startX - Math.sin(rayAngle) * sensorLength;
             double endY = startY - Math.cos(rayAngle) * sensorLength;
             sensors[i] = new Line(startX, startY, endX, endY);
+            sensors[i].setStrokeWidth(2);
         }
     }
     

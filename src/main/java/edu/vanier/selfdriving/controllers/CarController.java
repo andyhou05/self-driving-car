@@ -36,7 +36,7 @@ public class CarController {
 
         @Override
         public void handle(long now) {
-                if (checkSceneCollision(car.getCarRectangle(), car.getLeftBorder(), car.getRightBorder())) {
+                if (checkSceneCollision(car.getCarRectangle(), car.getRoad().getLeftBorder(), car.getRoad().getRightBorder())) {
                     System.out.println("Collision Detected!");
                 }
 
