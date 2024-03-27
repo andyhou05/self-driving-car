@@ -21,6 +21,7 @@ import javafx.scene.shape.Rectangle;
  * @author USER
  */
 public class CarController {
+
     private static boolean checkSceneCollision(Rectangle rectangle, Line leftBorder, Line rightBorder) {
         return rectangle.getBoundsInParent().intersects(leftBorder.getBoundsInParent()) || rectangle.getBoundsInParent().intersects(rightBorder.getBoundsInParent());
     }
@@ -32,35 +33,36 @@ public class CarController {
     boolean turningLeft = false;
     boolean flipRotate = false;
     AnimationTimer animation = new AnimationTimer() {
+
         @Override
         public void handle(long now) {
-            if (checkSceneCollision(car.getCarRectangle(), car.getLeftBorder(), car.getRightBorder())) {
-                System.out.println("Collision Detected!");
-            }
+                if (checkSceneCollision(car.getCarRectangle(), car.getLeftBorder(), car.getRightBorder())) {
+                    System.out.println("Collision Detected!");
+                }
 
-            if (accelerating) {
-                car.acceleration(direction);
-            } else {
-                if (car.isCarMoving()) {
-                    car.decceleration(direction);
-                }
-            }
-            if (turningRight && (Math.abs(car.getSpeedY()) > 0 || Math.abs(car.getSpeedX()) > 0)) {
-                if (flipRotate) {
-                    rotate(1);
+                if (accelerating) {
+                    car.acceleration(direction);
                 } else {
-                    rotate(-1);
+                    if (car.isCarMoving()) {
+                        car.decceleration(direction);
+                    }
                 }
-            } else if (turningLeft && (Math.abs(car.getSpeedY()) > 0 || Math.abs(car.getSpeedX()) > 0)) {
-                if (flipRotate) {
-                    rotate(-1);
-                } else {
-                    rotate(1);
+                if (turningRight && (Math.abs(car.getSpeedY()) > 0 || Math.abs(car.getSpeedX()) > 0)) {
+                    if (flipRotate) {
+                        rotate(1);
+                    } else {
+                        rotate(-1);
+                    }
+                } else if (turningLeft && (Math.abs(car.getSpeedY()) > 0 || Math.abs(car.getSpeedX()) > 0)) {
+                    if (flipRotate) {
+                        rotate(-1);
+                    } else {
+                        rotate(1);
+                    }
                 }
-            }
-            car.getCarRectangle().setLayoutY(car.getCarRectangle().getLayoutY() - car.getSpeedY());
-            car.getCarRectangle().setLayoutX(car.getCarRectangle().getLayoutX() - car.getSpeedX());
-            car.getSensors().updateSensors(car.getCarRectangle().getRotate());
+                car.getCarRectangle().setLayoutY(car.getCarRectangle().getLayoutY() - car.getSpeedY());
+                car.getCarRectangle().setLayoutX(car.getCarRectangle().getLayoutX() - car.getSpeedX());
+                car.getSensors().updateSensors(car.getCarRectangle().getRotate());
         }
     };
 
@@ -175,5 +177,5 @@ public class CarController {
     public void setAnimation(AnimationTimer animation) {
         this.animation = animation;
     }
-    
+
 }
