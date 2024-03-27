@@ -11,6 +11,8 @@ import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
@@ -32,6 +34,8 @@ public class MainApp extends Application {
 
     @Override
     public void start(Stage primaryStage) {
+        Image playerImage = new Image("/images/car_blue_5.png");
+        Image enemyImage = new Image("/images/car_yellow_3.png");
         try {
 
             logger.info("Bootstrapping the application...");
@@ -50,16 +54,18 @@ public class MainApp extends Application {
             root.getChildren().addAll(road1.getLines());
 
             // Create a car and link it to its controller.
-            Car car1 = new Car(road1.getX_position_lane_two(), 450, 60, 120);
+            Car car1 = new Car(road1.getX_position_lane_two(), 450, playerImage);
             car1.setSensors(new Sensor(car1));
             car1.setRoad(road1);
 
-            root.getChildren().add(car1.getCarRectangle());
+            root.getChildren().add(car1.getCarImageView());
             root.getChildren().addAll(car1.getSensorsList());
-            CarController controller = new CarController(car1);
 
             // Spawn cars
-            CarSpawner spawner = new CarSpawner(1, -400, road1, root);
+            CarSpawner spawner = new CarSpawner(1, -400, road1, root, enemyImage);
+            
+            // Controller for all cars
+            CarController controller = new CarController(car1, spawner.getCars());
 
             // Reference: https://www.youtube.com/watch?v=CYUjjnoXdrM
             AnimationTimer camera = new AnimationTimer() {
@@ -79,11 +85,11 @@ public class MainApp extends Application {
                             sensor.setTranslateY(sensor.getTranslateY() + car1.getSpeedY());
                         }
                         // Move enemy cars down
-                        for (Rectangle enemyCar : spawner.getCars()) {
+                        for (ImageView enemyCar : spawner.getCarsImageView()) {
                             enemyCar.setTranslateY(enemyCar.getTranslateY() + car1.getSpeedY());
                         }
                         // Move user car down
-                        car1.getCarRectangle().setTranslateY(car1.getCarRectangle().getTranslateY() + car1.getSpeedY());
+                        car1.getCarImageView().setTranslateY(car1.getCarImageView().getTranslateY() + car1.getSpeedY());
                         last = now;
                     }
                 }

@@ -5,6 +5,7 @@
 package edu.vanier.selfdriving.models;
 
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 
@@ -16,8 +17,8 @@ public class Car {
 
     //Car image
     Image carImage;
-    Rectangle carRectangle;
-
+    ImageView carImageView;
+    
     //Transition properties
     double xPosition;
     double yPosition;
@@ -36,29 +37,18 @@ public class Car {
     Road road;
 
     public Car() {
-        carRectangle = new Rectangle(carWidth, carLength);
+        
     }
-
-    public Car(double x, double y) {
-        this.xPosition = x;
-        this.yPosition = y;
-        carRectangle = new Rectangle(x, y, this.carWidth, this.carLength);
-        speed = 0;
-    }
-
-    public Car(double x, double y, double sizeX, double sizeY) {
-        this.xPosition = x;
-        this.yPosition = y;
-        this.carWidth = sizeX;
-        this.carLength = sizeY;
-        carRectangle = new Rectangle(x, y, sizeX, sizeY);
-        speed = 0;
-    }
-
+    
     public Car(double x, double y, Image carImage) {
         this.xPosition = x;
         this.yPosition = y;
         this.carImage = carImage;
+        carImageView = new ImageView(carImage);
+        carImageView.setFitHeight(carLength);
+        carImageView.setFitWidth(carWidth);
+        carImageView.setX(x);
+        carImageView.setY(y);
     }
 
     public void acceleration(int direction) {
@@ -68,7 +58,7 @@ public class Car {
         } else {
             speed = maxSpeed * direction;
         }
-        double angle = 90 - carRectangle.getRotate();
+        double angle = 90 - carImageView.getRotate();
         speedY = speed * Math.sin(angle * (Math.PI / 180));
         speedX = -speed * Math.cos(angle * (Math.PI / 180));
 
@@ -83,13 +73,13 @@ public class Car {
             carMoving = false;
         }
 
-        double angle = 90 - carRectangle.getRotate();
+        double angle = 90 - carImageView.getRotate();
         speedY = speed * Math.sin(angle * (Math.PI / 180));
         speedX = -speed * Math.cos(angle * (Math.PI / 180));
     }
 
     public void rotate(int direction) {
-        this.carRectangle.setRotate(this.getCarRectangle().getRotate() - 5 * direction);
+        carImageView.setRotate(carImageView.getRotate() - 5 * direction);
     }
 
     public Image getCarImage() {
@@ -98,14 +88,6 @@ public class Car {
 
     public void setCarImage(Image carImage) {
         this.carImage = carImage;
-    }
-
-    public Rectangle getCarRectangle() {
-        return carRectangle;
-    }
-
-    public void setCarRectangle(Rectangle carRectangle) {
-        this.carRectangle = carRectangle;
     }
 
     public double getCarWidth() {
@@ -121,7 +103,7 @@ public class Car {
     }
 
     public void setCarWidth(double carWidth) {
-        carRectangle.setWidth(carWidth);
+        carImageView.setFitWidth(carWidth);
         this.carWidth = carWidth;
     }
 
@@ -130,7 +112,7 @@ public class Car {
     }
 
     public void setCarLength(double carLength) {
-        carRectangle.setHeight(carLength);
+        carImageView.setFitHeight(carLength);
         this.carLength = carLength;
     }
 
@@ -147,7 +129,7 @@ public class Car {
     }
 
     public void setxPosition(double xPosition) {
-        carRectangle.setX(xPosition);
+        carImageView.setX(xPosition);
         this.xPosition = xPosition;
     }
 
@@ -156,7 +138,7 @@ public class Car {
     }
 
     public void setyPosition(double yPosition) {
-        carRectangle.setY(yPosition);
+        carImageView.setY(yPosition);
         this.yPosition = yPosition;
     }
 
@@ -218,6 +200,14 @@ public class Car {
 
     public void setRoad(Road road) {
         this.road = road;
+    }
+
+    public ImageView getCarImageView() {
+        return carImageView;
+    }
+
+    public void setCarImageView(ImageView carImageView) {
+        this.carImageView = carImageView;
     }
 
 }

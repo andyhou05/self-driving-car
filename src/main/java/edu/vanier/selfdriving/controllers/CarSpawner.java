@@ -7,6 +7,8 @@ package edu.vanier.selfdriving.controllers;
 import edu.vanier.selfdriving.models.Car;
 import edu.vanier.selfdriving.models.Road;
 import java.util.ArrayList;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
 
@@ -16,21 +18,24 @@ import javafx.scene.shape.Rectangle;
  */
 public class CarSpawner {
     int carsToSpawn;
-    ArrayList<Rectangle> cars = new ArrayList<>();
+    ArrayList<ImageView> carsImageView = new ArrayList<>();
+    ArrayList<Car> cars = new ArrayList<>();
     Road road;
     double yIncrement;
     double yPosition = -200;
     double roadWidth;
     Pane root;
+    Image carImage;
 
     public CarSpawner() {
     }
 
-    public CarSpawner(int carsToSpawn, double yIncrement, Road road, Pane root) {
+    public CarSpawner(int carsToSpawn, double yIncrement, Road road, Pane root, Image carImage) {
         this.carsToSpawn = carsToSpawn;
         this.yIncrement = yIncrement;
         this.road = road;
         this.root = root;
+        this.carImage = carImage;
         spawn();
     }
     private void spawn(){
@@ -38,19 +43,21 @@ public class CarSpawner {
         for(int i = 0; i < 100; i++, yPosition += yIncrement) {
             double random = Math.random();
             Car car = new Car();
-            car.setMaxSpeed(1.5);
+            car.setCarImageView(new ImageView(carImage));
+            car.setSpeedY(2);
             car.setyPosition(yPosition);
             if(random <= 1f/3f){
                 car.setxPosition(road.getX_position_lane_one());
-                cars.add(car.getCarRectangle());
+                carsImageView.add(car.getCarImageView());
             } else if(random <= 2f/3f){
                 car.setxPosition(road.getX_position_lane_two());
-                cars.add(car.getCarRectangle());
+                carsImageView.add(car.getCarImageView());
             } else{
                 car.setxPosition(road.getX_position_lane_three());
-                cars.add(car.getCarRectangle());
+                carsImageView.add(car.getCarImageView());
             }
-            root.getChildren().add(car.getCarRectangle());
+            cars.add(car);
+            root.getChildren().add(car.getCarImageView());
         }
     }
 
@@ -62,12 +69,12 @@ public class CarSpawner {
         this.carsToSpawn = carsToSpawn;
     }
 
-    public ArrayList<Rectangle> getCars() {
-        return cars;
+    public ArrayList<ImageView> getCarsImageView() {
+        return carsImageView;
     }
 
-    public void setCars(ArrayList<Rectangle> cars) {
-        this.cars = cars;
+    public void setCarsImageView(ArrayList<ImageView> carsImageView) {
+        this.carsImageView = carsImageView;
     }
 
     public Road getRoad() {
@@ -92,6 +99,38 @@ public class CarSpawner {
 
     public void setRoadWidth(double roadWidth) {
         this.roadWidth = roadWidth;
+    }
+
+    public ArrayList<Car> getCars() {
+        return cars;
+    }
+
+    public void setCars(ArrayList<Car> cars) {
+        this.cars = cars;
+    }
+
+    public double getyPosition() {
+        return yPosition;
+    }
+
+    public void setyPosition(double yPosition) {
+        this.yPosition = yPosition;
+    }
+
+    public Pane getRoot() {
+        return root;
+    }
+
+    public void setRoot(Pane root) {
+        this.root = root;
+    }
+
+    public Image getCarImage() {
+        return carImage;
+    }
+
+    public void setCarImage(Image carImage) {
+        this.carImage = carImage;
     }
     
 }

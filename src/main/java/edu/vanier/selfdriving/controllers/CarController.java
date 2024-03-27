@@ -6,8 +6,10 @@ package edu.vanier.selfdriving.controllers;
 
 import edu.vanier.selfdriving.models.Car;
 import edu.vanier.selfdriving.models.Road;
+import java.util.ArrayList;
 import javafx.animation.AnimationTimer;
 import javafx.scene.Scene;
+import javafx.scene.image.ImageView;
 import static javafx.scene.input.KeyCode.A;
 import static javafx.scene.input.KeyCode.D;
 import static javafx.scene.input.KeyCode.S;
@@ -22,10 +24,11 @@ import javafx.scene.shape.Rectangle;
  */
 public class CarController {
 
-    private static boolean checkSceneCollision(Rectangle rectangle, Line leftBorder, Line rightBorder) {
-        return rectangle.getBoundsInParent().intersects(leftBorder.getBoundsInParent()) || rectangle.getBoundsInParent().intersects(rightBorder.getBoundsInParent());
+    private static boolean checkSceneCollision(ImageView carImageView, Line leftBorder, Line rightBorder) {
+        return carImageView.getBoundsInParent().intersects(leftBorder.getBoundsInParent()) || carImageView.getBoundsInParent().intersects(rightBorder.getBoundsInParent());
     }
     Car car;
+    ArrayList<Car> enemyCars = new ArrayList<>();
     Scene scene;
     int direction = 0;
     boolean accelerating = false;
@@ -41,7 +44,7 @@ public class CarController {
         @Override
         public void handle(long now) {
             if (now - last > INTERVAL) {
-                if (checkSceneCollision(car.getCarRectangle(), car.getRoad().getLeftBorder(), car.getRoad().getRightBorder())) {
+                if (checkSceneCollision(car.getCarImageView(), car.getRoad().getLeftBorder(), car.getRoad().getRightBorder())) {
                     System.out.println("Collision Detected!");
                 }
 
@@ -65,23 +68,29 @@ public class CarController {
                         rotate(1);
                     }
                 }
-                car.getCarRectangle().setLayoutY(car.getCarRectangle().getLayoutY() - car.getSpeedY());
-                car.getCarRectangle().setLayoutX(car.getCarRectangle().getLayoutX() - car.getSpeedX());
-                car.getSensors().updateSensors(car.getCarRectangle().getRotate());
+                car.getCarImageView().setLayoutY(car.getCarImageView().getLayoutY() - car.getSpeedY());
+                car.getCarImageView().setLayoutX(car.getCarImageView().getLayoutX() - car.getSpeedX());
+                car.getSensors().updateSensors(car.getCarImageView().getRotate());
+                
+                // Move enemy cars
+                for(Car enemyCar:enemyCars){
+                    enemyCar.getCarImageView().setLayoutY(enemyCar.getCarImageView().getLayoutY() - enemyCar.getSpeedY());
+                }
                 last = now;
             }
         }
     };
 
-    public CarController(Car car) {
+    public CarController(Car car, ArrayList<Car> enemyCars) {
         this.car = car;
-        scene = car.getCarRectangle().getScene();
+        this.enemyCars = enemyCars;
+        scene = car.getCarImageView().getScene();
         checkKeypress();
         animation.start();
     }
 
     public void rotate(int direction) {
-        car.getCarRectangle().setRotate(car.getCarRectangle().getRotate() - 1 * direction);
+        car.getCarImageView().setRotate(car.getCarImageView().getRotate() - 1 * direction);
     }
 
     public void checkKeypress() {
