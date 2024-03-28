@@ -25,9 +25,6 @@ import javafx.scene.shape.Rectangle;
  */
 public class CarController {
 
-    private static boolean checkSceneCollision(ImageView carImageView, Line leftBorder, Line rightBorder) {
-        return carImageView.getBoundsInParent().intersects(leftBorder.getBoundsInParent()) || carImageView.getBoundsInParent().intersects(rightBorder.getBoundsInParent());
-    }
     Car car;
     ArrayList<Car> enemyCars = new ArrayList<>();
     Scene scene;
@@ -45,39 +42,17 @@ public class CarController {
         @Override
         public void handle(long now) {
             if (now - last > INTERVAL) {
-                if (checkSceneCollision(car.getCarImageView(), car.getRoad().getLeftBorder(), car.getRoad().getRightBorder())) {
-                    System.out.println("Collision Detected!");
-                }
-
-                if (accelerating) {
-                    car.acceleration(direction);
-                } else {
-                    if (car.isCarMoving()) {
-                        car.decceleration(direction);
-                    }
-                }
-                if (turningRight && (Math.abs(car.getSpeedY()) > 0 || Math.abs(car.getSpeedX()) > 0)) {
-                    if (flipRotate) {
-                        rotate(1);
-                    } else {
-                        rotate(-1);
-                    }
-                } else if (turningLeft && (Math.abs(car.getSpeedY()) > 0 || Math.abs(car.getSpeedX()) > 0)) {
-                    if (flipRotate) {
-                        rotate(-1);
-                    } else {
-                        rotate(1);
-                    }
-                }
+                checkCollisions();
+                updateCarSpeed();
                 car.getCarImageView().setLayoutY(car.getCarImageView().getLayoutY() - car.getSpeedY());
                 car.getCarImageView().setLayoutX(car.getCarImageView().getLayoutX() - car.getSpeedX());
                 car.getSensors().updateSensors(car.getCarImageView().getRotate());
                 System.out.println(Sensor.sensorStartX);
                 System.out.println(Sensor.sensorStartY);
                 System.out.println("");
-                
+
                 // Move enemy cars
-                for(Car enemyCar:enemyCars){
+                for (Car enemyCar : enemyCars) {
                     enemyCar.getCarImageView().setLayoutY(enemyCar.getCarImageView().getLayoutY() - enemyCar.getSpeedY());
                 }
                 last = now;
@@ -91,6 +66,52 @@ public class CarController {
         scene = car.getCarImageView().getScene();
         checkKeypress();
         animation.start();
+    }
+
+    private boolean checkRoadCollision() {
+        Road carRoad = car.getRoad();
+        ImageView carImageView = car.getCarImageView();
+        return carImageView.getBoundsInParent().intersects(carRoad.getLeftBorder().getBoundsInParent())
+                || carImageView.getBoundsInParent().intersects(carRoad.getRightBorder().getBoundsInParent());
+    }
+
+    private boolean checkCarCollisions() {
+        ImageView carImageView = car.getCarImageView();
+        for (Car enemyCar : enemyCars) {
+            if (enemyCar.getCarImageView().getBoundsInParent().intersects(carImageView.getBoundsInParent())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void checkCollisions() {
+        if (checkRoadCollision() || checkCarCollisions()) {
+            car.setMaxSpeed(0);
+        }
+    }
+
+    private void updateCarSpeed() {
+        if (accelerating) {
+            car.acceleration(direction);
+        } else {
+            if (car.isCarMoving()) {
+                car.decceleration(direction);
+            }
+        }
+        if (turningRight && (Math.abs(car.getSpeedY()) > 0 || Math.abs(car.getSpeedX()) > 0)) {
+            if (flipRotate) {
+                rotate(1);
+            } else {
+                rotate(-1);
+            }
+        } else if (turningLeft && (Math.abs(car.getSpeedY()) > 0 || Math.abs(car.getSpeedX()) > 0)) {
+            if (flipRotate) {
+                rotate(-1);
+            } else {
+                rotate(1);
+            }
+        }
     }
 
     public void rotate(int direction) {
