@@ -16,6 +16,7 @@ import static javafx.scene.input.KeyCode.D;
 import static javafx.scene.input.KeyCode.S;
 import static javafx.scene.input.KeyCode.W;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 
@@ -44,16 +45,16 @@ public class CarController {
             if (now - last > INTERVAL) {
                 checkCollisions();
                 updateCarSpeed();
-                car.getCarImageView().setLayoutY(car.getCarImageView().getLayoutY() - car.getSpeedY());
-                car.getCarImageView().setLayoutX(car.getCarImageView().getLayoutX() - car.getSpeedX());
-                car.getSensors().updateSensors(car.getCarImageView().getRotate());
-                System.out.println(Sensor.sensorStartX);
-                System.out.println(Sensor.sensorStartY);
-                System.out.println("");
+                car.getCarStack().setLayoutY(car.getCarStack().getLayoutY() - car.getSpeedY());
+                car.getCarStack().setLayoutX(car.getCarStack().getLayoutX() - car.getSpeedX());
+                car.getSensors().updateSensors(car.getCarStack().getRotate());
+                //System.out.println(Sensor.sensorStartX);
+                //System.out.println(Sensor.sensorStartY);
+                //System.out.println("");
 
                 // Move enemy cars
                 for (Car enemyCar : enemyCars) {
-                    enemyCar.getCarImageView().setLayoutY(enemyCar.getCarImageView().getLayoutY() - enemyCar.getSpeedY());
+                    enemyCar.getCarStack().setLayoutY(enemyCar.getCarStack().getLayoutY() - enemyCar.getSpeedY());
                 }
                 last = now;
             }
@@ -70,15 +71,15 @@ public class CarController {
 
     private boolean checkRoadCollision() {
         Road carRoad = car.getRoad();
-        ImageView carImageView = car.getCarImageView();
-        return carImageView.getBoundsInParent().intersects(carRoad.getLeftBorder().getBoundsInParent())
-                || carImageView.getBoundsInParent().intersects(carRoad.getRightBorder().getBoundsInParent());
+        StackPane carStack = car.getCarStack();
+        return carStack.getBoundsInParent().intersects(carRoad.getLeftBorder().getBoundsInParent())
+                || carStack.getBoundsInParent().intersects(carRoad.getRightBorder().getBoundsInParent());
     }
 
     private boolean checkCarCollisions() {
-        ImageView carImageView = car.getCarImageView();
+        StackPane carStack = car.getCarStack();
         for (Car enemyCar : enemyCars) {
-            if (enemyCar.getCarImageView().getBoundsInParent().intersects(carImageView.getBoundsInParent())) {
+            if (enemyCar.getCarStack().getBoundsInParent().intersects(carStack.getBoundsInParent())) {
                 return true;
             }
         }
@@ -115,7 +116,7 @@ public class CarController {
     }
 
     public void rotate(int direction) {
-        car.getCarImageView().setRotate(car.getCarImageView().getRotate() - 1 * direction);
+        car.getCarStack().setRotate(car.getCarStack().getRotate() - 1 * direction);
     }
 
     public void checkKeypress() {

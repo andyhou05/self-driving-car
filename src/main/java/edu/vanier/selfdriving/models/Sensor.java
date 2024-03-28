@@ -38,8 +38,8 @@ public class Sensor {
      * @param yPosition
      */
     public void initSensors() {
-        double xPosition = car.getxPosition();
-        double yPosition = car.getyPosition();
+        double xPosition = 0;
+        double yPosition = 0;
         for (int i = 0; i < sensorCount; i++) {
             double rayAngle = MathUtils.lerp(sensorSpread / 2, -sensorSpread / 2, (double) i / (sensorCount - 1));
             listOfAngles.add(rayAngle);
@@ -63,8 +63,8 @@ public class Sensor {
     public void updateSensors(double angle){
         for(int i = 0; i < sensorCount; i++){
             // Move the Sensor with the Car.
-            sensors[i].setLayoutX(car.getCarImageView().getLayoutX());
-            sensors[i].setLayoutY(car.getCarImageView().getLayoutY());
+            sensors[i].setLayoutX(car.getCarStack().getLayoutX());
+            sensors[i].setLayoutY(car.getCarStack().getLayoutY());
             
             // Update the angle of the Sensor with the angle of the Car.
             double rayAngle = MathUtils.lerp(sensorSpread / 2, -sensorSpread / 2, (double) i / (sensorCount - 1)) - (angle * Math.PI/180);
@@ -74,8 +74,8 @@ public class Sensor {
             double endY = startY - Math.cos(rayAngle) * sensorLength;
             sensors[i].setEndX(endX);
             sensors[i].setEndY(endY);
-            sensorStartX = startX+car.carImageView.getLayoutX();
-            sensorStartY = startY+car.carImageView.getLayoutY()+car.carImageView.getTranslateY();
+            sensorStartX = startX+car.getCarStack().getLayoutX();
+            sensorStartY = startY+car.getCarStack().getLayoutY()+car.getCarStack().getTranslateY();
         }
     }
 

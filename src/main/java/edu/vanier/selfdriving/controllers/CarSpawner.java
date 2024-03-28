@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
 
 /**
@@ -18,7 +19,7 @@ import javafx.scene.shape.Rectangle;
  */
 public class CarSpawner {
     int carsToSpawn;
-    ArrayList<ImageView> carsImageView = new ArrayList<>();
+    ArrayList<StackPane> carsStack = new ArrayList<>();
     ArrayList<Car> cars = new ArrayList<>();
     Road road;
     double yIncrement;
@@ -43,21 +44,21 @@ public class CarSpawner {
         for(int i = 0; i < 100; i++, yPosition += yIncrement) {
             double random = Math.random();
             Car car = new Car();
-            car.setCarImageView(new ImageView(carImage));
+            car.getCarImageView().setImage(carImage);
             car.setSpeedY(2);
             car.setyPosition(yPosition);
             if(random <= 1f/3f){
                 car.setxPosition(road.getX_position_lane_one());
-                carsImageView.add(car.getCarImageView());
+                carsStack.add(car.getCarStack());
             } else if(random <= 2f/3f){
                 car.setxPosition(road.getX_position_lane_two());
-                carsImageView.add(car.getCarImageView());
+                carsStack.add(car.getCarStack());
             } else{
                 car.setxPosition(road.getX_position_lane_three());
-                carsImageView.add(car.getCarImageView());
+                carsStack.add(car.getCarStack());
             }
             cars.add(car);
-            root.getChildren().add(car.getCarImageView());
+            root.getChildren().add(car.getCarStack());
         }
     }
 
@@ -69,12 +70,8 @@ public class CarSpawner {
         this.carsToSpawn = carsToSpawn;
     }
 
-    public ArrayList<ImageView> getCarsImageView() {
-        return carsImageView;
-    }
-
-    public void setCarsImageView(ArrayList<ImageView> carsImageView) {
-        this.carsImageView = carsImageView;
+    public ArrayList<StackPane> getCarsStack() {
+        return carsStack;
     }
 
     public Road getRoad() {
