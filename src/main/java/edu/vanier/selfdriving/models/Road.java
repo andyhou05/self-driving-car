@@ -25,6 +25,7 @@ public class Road {
     double x_position_lane_one;
     double x_position_lane_two;
     double x_position_lane_three;
+    public static ArrayList<Line> borderLines = new ArrayList<>();
     Line leftBorder;
     Line rightBorder;
     ArrayList<Line> lines = new ArrayList<>();
@@ -42,6 +43,8 @@ public class Road {
         x_position_lane_three = MathUtils.lerp(-leftBorderPosition, width, 5.0f / 6.0f);
         rightBorder = new Line(rightBorderPosition, bottomBorderPosition, rightBorderPosition, topBorderPosition);
         leftBorder = new Line(leftBorderPosition, bottomBorderPosition, leftBorderPosition, topBorderPosition);
+        borderLines.add(leftBorder);
+        borderLines.add(rightBorder);
         lines.add(rightBorder);
         lines.add(leftBorder);
 

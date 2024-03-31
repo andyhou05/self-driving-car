@@ -72,10 +72,62 @@ public class CarController {
                 car.getCarImageView().setLayoutY(car.getCarImageView().getLayoutY() - car.getSpeedY());
                 car.getCarImageView().setLayoutX(car.getCarImageView().getLayoutX() - car.getSpeedX());
                 car.getSensors().updateSensors(car.getCarImageView().getRotate());
+                for (int i=0; i<Sensor.listOfAngles.size(); i++){
+                    double dx_sensor = 0;
+                    double dy_sensor = 0;
+                    if(Sensor.listOfAngles.get(i)>=0){
+                        double sensorEndX = Sensor.sensorStartX + Math.sin(Sensor.listOfAngles.get(i))*200;
+                        double sensorEndY = Sensor.sensorStartY - Math.cos(Sensor.listOfAngles.get(i))*200;
+                        dx_sensor = sensorEndX - Sensor.sensorStartX;
+                        dy_sensor = sensorEndY - Sensor.sensorStartY;
+                    }
+                    else if(Sensor.listOfAngles.get(i)<0)
+                    {
+                    double sensorEndX = Sensor.sensorStartX + Math.sin(Sensor.listOfAngles.get(i))*200;
+                    double sensorEndY = Sensor.sensorStartY - Math.cos(Sensor.listOfAngles.get(i))*200;
+                    dx_sensor = sensorEndX - Sensor.sensorStartX;
+                    dy_sensor = sensorEndY - Sensor.sensorStartY;
+                    }
+                    
+                    
+                    for (int j =0; j<Road.borderLines.size(); j++){
+                        double x1 = Road.borderLines.get(j).getStartX();
+                        double y1 = Road.borderLines.get(j).getStartY();
+                        double x2 = Road.borderLines.get(j).getEndX();
+                        double y2 = Road.borderLines.get(j).getEndY();
+                        double dx_road = x2-x1;
+                        double dy_road = y2-y1;
+                        double determinant = dx_sensor * dy_road - dy_sensor * dx_road;
+
+                        // Check if the lines are parallel
+
+                        double denominator = dx_sensor * dy_road - dy_sensor * dx_road;
+                        
+                            double t = ((x1 - Sensor.sensorStartX) * dy_road - (y1 - Sensor.sensorStartY) * dx_road) / denominator;
+                            double u = -((y1 - Sensor.sensorStartX) * dy_sensor - (y1 - Sensor.sensorStartY) * dx_sensor) / denominator;
+
+                            // Check if the intersection point lies on both lines
+                            if (t >= 0 && t <= 1 && u >= 0 && u <= 1) {
+                                // Intersection detected
+                                double intersectionX = Sensor.sensorStartX + t * dx_sensor;
+                                double intersectionY = Sensor.sensorStartY + t * dy_sensor;
+                                System.out.println("Sensor intersects line at: (" + intersectionX + ", " + intersectionY + ")");
+                            }
+                        
+                        
+                    
+                    }
+                    
+                }
+                
+                
+                
+                
+                
                 System.out.println(Sensor.sensorStartX);
                 System.out.println(Sensor.sensorStartY);
                 System.out.println("");
-                
+
                 // Move enemy cars
                 for(Car enemyCar:enemyCars){
                     enemyCar.getCarImageView().setLayoutY(enemyCar.getCarImageView().getLayoutY() - enemyCar.getSpeedY());

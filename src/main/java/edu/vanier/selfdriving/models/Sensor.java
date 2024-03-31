@@ -61,6 +61,7 @@ public class Sensor {
      * @param angle
      */
     public void updateSensors(double angle){
+        listOfAngles.clear();
         for(int i = 0; i < sensorCount; i++){
             // Move the Sensor with the Car.
             sensors[i].setLayoutX(car.getCarImageView().getLayoutX());
@@ -68,6 +69,7 @@ public class Sensor {
             
             // Update the angle of the Sensor with the angle of the Car.
             double rayAngle = MathUtils.lerp(sensorSpread / 2, -sensorSpread / 2, (double) i / (sensorCount - 1)) - (angle * Math.PI/180);
+            listOfAngles.add(rayAngle);
             double startX = sensors[i].getStartX();
             double startY = sensors[i].getStartY();
             double endX = startX - Math.sin(rayAngle) * sensorLength;
