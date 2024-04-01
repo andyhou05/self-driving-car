@@ -45,6 +45,7 @@ public class Car {
         carImageView.setFitHeight(carLength);
         carImageView.setFitWidth(carWidth);
         hitBox = new Rectangle(carWidth - widthOffset, carLength - lengthOffset);
+        hitBox.setVisible(false);
         carStack.setPrefHeight(carLength);
         carStack.setPrefWidth(carWidth);
         carStack.getChildren().addAll(carImageView, hitBox);

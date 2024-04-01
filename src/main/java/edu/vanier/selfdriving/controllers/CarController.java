@@ -72,14 +72,18 @@ public class CarController {
     private boolean checkRoadCollision() {
         Road carRoad = car.getRoad();
         StackPane carStack = car.getCarStack();
-        return carStack.getBoundsInParent().intersects(carRoad.getLeftBorder().getBoundsInParent())
-                || carStack.getBoundsInParent().intersects(carRoad.getRightBorder().getBoundsInParent());
+        Rectangle hitbox = car.getHitBox();
+        return carStack.localToParent(hitbox.getBoundsInParent()).intersects(carRoad.getLeftBorder().getBoundsInParent())
+                || carStack.localToParent(hitbox.getBoundsInParent()).intersects(carRoad.getRightBorder().getBoundsInParent());
     }
 
     private boolean checkCarCollisions() {
+        Rectangle hitbox = car.getHitBox();
         StackPane carStack = car.getCarStack();
         for (Car enemyCar : enemyCars) {
-            if (enemyCar.getCarStack().getBoundsInParent().intersects(carStack.getBoundsInParent())) {
+            Rectangle enemyHitbox = enemyCar.getHitBox();
+            StackPane enemyStack = enemyCar.getCarStack();
+            if (enemyStack.localToParent(enemyHitbox.getBoundsInParent()).intersects(carStack.localToParent(hitbox.getBoundsInParent()))) {
                 return true;
             }
         }
