@@ -4,6 +4,7 @@
  */
 package edu.vanier.selfdriving.models;
 
+import edu.vanier.selfdriving.neuralnetwork.NeuralNetwork;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
@@ -34,17 +35,18 @@ public class Car {
     //Static properties
     double carWidth = 60;
     double carLength = 120;
-    double widthOffset = 16;
-    double lengthOffset = 20;
+    double widthHitboxOffset = 16;
+    double lengthHitboxOffset = 20;
     double accelerationValue = 0.3;
     double deccelerationValue = accelerationValue;
     Sensor sensors;
     Road road;
+    NeuralNetwork neuralNetwork = new NeuralNetwork(5, 6, 4);
 
     public Car() {
         carImageView.setFitHeight(carLength);
         carImageView.setFitWidth(carWidth);
-        hitBox = new Rectangle(carWidth - widthOffset, carLength - lengthOffset);
+        hitBox = new Rectangle(carWidth - widthHitboxOffset, carLength - lengthHitboxOffset);
         hitBox.setVisible(false);
         carStack.setPrefHeight(carLength);
         carStack.setPrefWidth(carWidth);
@@ -115,7 +117,7 @@ public class Car {
     public void setCarWidth(double carWidth) {
         carImageView.setFitWidth(carWidth);
         carStack.setPrefWidth(carWidth);
-        hitBox.setWidth(carWidth - widthOffset);
+        hitBox.setWidth(carWidth - widthHitboxOffset);
         this.carWidth = carWidth;
     }
 
@@ -126,7 +128,7 @@ public class Car {
     public void setCarLength(double carLength) {
         carImageView.setFitHeight(carLength);
         carStack.setPrefHeight(carLength);
-        hitBox.setHeight(carLength - lengthOffset);
+        hitBox.setHeight(carLength - lengthHitboxOffset);
         this.carLength = carLength;
     }
 
@@ -238,6 +240,14 @@ public class Car {
 
     public void setHitBox(Rectangle hitBox) {
         this.hitBox = hitBox;
+    }
+
+    public NeuralNetwork getNeuralNetwork() {
+        return neuralNetwork;
+    }
+
+    public void setNeuralNetwork(NeuralNetwork neuralNetwork) {
+        this.neuralNetwork = neuralNetwork;
     }
 
 }
