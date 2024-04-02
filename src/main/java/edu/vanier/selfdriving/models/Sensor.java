@@ -78,5 +78,38 @@ public class Sensor {
             sensorStartY = startY+car.getCarStack().getLayoutY()+car.getCarStack().getTranslateY();
         }
     }
+    
+    public double getSensorLength(){
+        return sensorLength;
+    }
+
+    public Car getCar() {
+        return car;
+    }
+
+    public int getSensorCount() {
+        return sensorCount;
+    }
+
+    public double getSensorSpread() {
+        return sensorSpread;
+    }
+
+    public Line[] getSensors() {
+        return sensors;
+    }
+
+    public static ArrayList<Double> getListOfAngles() {
+        return listOfAngles;
+    }
+
+    public static double getSensorStartX() {
+        return sensorStartX;
+    }
+
+    public static double getSensorStartY() {
+        return sensorStartY;
+    }
+    
 
 }
