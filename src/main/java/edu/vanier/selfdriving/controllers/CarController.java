@@ -6,6 +6,7 @@ package edu.vanier.selfdriving.controllers;
 
 import edu.vanier.selfdriving.models.Car;
 import edu.vanier.selfdriving.models.Road;
+import edu.vanier.selfdriving.neuralnetwork.NeuralNetwork;
 import java.util.ArrayList;
 import javafx.animation.AnimationTimer;
 import javafx.scene.Scene;
@@ -56,6 +57,29 @@ public class CarController {
                     updateSensorReading(i);
                 }
 
+                // Neural Network
+                NeuralNetwork neuralNetwork = car.getNeuralNetwork();
+                neuralNetwork.setInput(car.getSensors().getReadings());
+                neuralNetwork.feedforward();
+                for (int i = 0; i < neuralNetwork.getOutput().length; i++) {
+                    double value = neuralNetwork.getOutput()[i];
+                    if (value == 1) {
+                        switch (i) {
+                            case 0:
+                                goForward();
+                                break;
+                            case 1:
+                                goBackward();
+                                break;
+                            case 2:
+                                goLeft();
+                                break;
+                            case 3:
+                                goRight();
+                                break;
+                        }
+                    }
+                }
                 last = now;
             }
         }
@@ -84,10 +108,6 @@ public class CarController {
         // Set the raeding of the sensor to be the highest reading between enemyCar and border
         double newReading = Math.max(getSensorBorderReading(sensor), enemyCarReading);
         car.getSensors().getReadings()[sensorIndex] = newReading;
-        double currentReading = car.getSensors().getReadings()[sensorIndex];
-        if (currentReading != 0) {
-            System.out.println("Reading for Sensor " + (sensorIndex + 1) + ": " + currentReading);
-        }
     }
 
     private double getSensorBorderReading(Line sensor) {
@@ -110,6 +130,9 @@ public class CarController {
         if (leftIntersection_x != -1) {
             // Distance between car and border
             double distance = Math.sqrt(Math.pow(position_x - leftIntersection_x, 2) + Math.pow(position_y - leftIntersection_y, 2));
+            if (distance > sensorLength) {
+                distance = sensorLength;
+            }
 
             // Get the length of the intersection
             double delta = Math.abs(distance - sensorLength);
@@ -119,6 +142,9 @@ public class CarController {
             return reading;
         } else if (rightIntersection_x != 0) {
             double distance = Math.sqrt(Math.pow(position_x - rightIntersection_x, 2) + Math.pow(position_y - rightIntersection_y, 2));
+            if (distance > sensorLength) {
+                distance = sensorLength;
+            }
             double delta = Math.abs(distance - sensorLength);
             double reading = delta / sensorLength;
             return reading;
@@ -135,6 +161,9 @@ public class CarController {
         double intersection_y = intersection.getBoundsInParent().getMaxY();
         if (intersection_x != -0.5) {
             double distance = Math.sqrt(Math.pow(position_x - intersection_x, 2) + Math.pow(position_y - intersection_y, 2));
+            if (distance > sensorLength) {
+                distance = sensorLength;
+            }
             double delta = Math.abs(distance - sensorLength);
             double reading = delta / sensorLength;
             return reading;
@@ -201,20 +230,16 @@ public class CarController {
         scene.setOnKeyPressed((event) -> {
             switch (event.getCode()) {
                 case W:
-                    flipRotate = false;
-                    accelerating = true;
-                    direction = 1;
+                    goForward();
                     break;
                 case S:
-                    flipRotate = true;
-                    accelerating = true;
-                    direction = -1;
+                    goBackward();
                     break;
                 case A:
-                    turningLeft = true;
+                    goLeft();
                     break;
                 case D:
-                    turningRight = true;
+                    goRight();
                     break;
             }
         });
@@ -222,16 +247,48 @@ public class CarController {
             switch (event.getCode()) {
                 case W:
                 case S:
-                    accelerating = false;
+                    slowDown();
                     break;
                 case A:
-                    turningLeft = false;
+                    noLeftTurn();
                     break;
                 case D:
-                    turningRight = false;
+                    noRightTurn();
                     break;
             }
         });
+    }
+
+    private void goForward() {
+        flipRotate = false;
+        accelerating = true;
+        direction = 1;
+    }
+
+    private void goBackward() {
+        flipRotate = true;
+        accelerating = true;
+        direction = -1;
+    }
+
+    private void goRight() {
+        turningRight = true;
+    }
+
+    private void goLeft() {
+        turningLeft = true;
+    }
+
+    private void slowDown() {
+        accelerating = false;
+    }
+
+    private void noRightTurn() {
+        turningRight = false;
+    }
+
+    private void noLeftTurn() {
+        turningLeft = false;
     }
 
     public Car getCar() {
