@@ -52,8 +52,17 @@ public class CarController {
                     enemyCar.getCarStack().setLayoutY(enemyCar.getCarStack().getLayoutY() - enemyCar.getSpeedY());
                 }
 
-                for (Line sensor : car.getSensorsList()) {
-                    System.out.println(getSensorBorderReading(sensor));
+                for (int i = 0; i < car.getSensorsList().length;i++) {
+                    // Loop through enemy cars, if there is a reading with one or more of them, keep the highest
+                    double enemyCarReading = 0;
+                    Line sensor = car.getSensorsList()[i];
+                    for(Car enemyCar:enemyCars){
+                        enemyCarReading = Math.max(enemyCarReading, getSensorCarReading(sensor, enemyCar));
+                    }
+                    // Set the raeding of the sensor to be the highest reading between enemyCar and border
+                    double newReading = Math.max(getSensorBorderReading(sensor), enemyCarReading);
+                    car.getSensors().getReadings()[i] = newReading;
+                    System.out.println("Reading for Sensor " + (i+1)+": "+car.getSensors().getReadings()[i]);
                 }
 
                 last = now;
@@ -75,34 +84,50 @@ public class CarController {
         double sensorLength = car.getSensors().getSensorLength();
         double position_x = car.getCarStack().getLayoutX() + 0.5 * car.getCarWidth();
         double position_y = car.getyPosition() + 0.5 * car.getCarLength();
-        
+
         // Create a shape between intersection of sensor and left and right borders.
         Shape leftIntersection = Shape.intersect(sensor, leftBorder);
         Shape rightIntersection = Shape.intersect(sensor, rightBorder);
-        
+
         // Get the x/y positions of the intersection shape
         double leftIntersection_x = leftIntersection.getBoundsInParent().getMaxX(); // If there is no intersection, this returns a shape with maxX == -1
         double leftIntersection_y = leftIntersection.getBoundsInParent().getMaxY();
         double rightIntersection_x = rightIntersection.getBoundsInParent().getMinX(); // If there is no intersection, this returns a shape with minX == 0
         double rightIntersection_y = rightIntersection.getBoundsInParent().getMaxY();
-        
-        
+
         if (leftIntersection_x != -1) {
             // Distance between car and border
             double distance = Math.sqrt(Math.pow(position_x - leftIntersection_x, 2) + Math.pow(position_y - leftIntersection_y, 2));
-            
+
             // Get the length of the intersection
             double delta = Math.abs(distance - sensorLength);
-            
+
             // Return a reading between 0 - 1 (far - close)
             double reading = delta / sensorLength;
             return reading;
-        } else if (rightIntersection_x != 0){
+        } else if (rightIntersection_x != 0) {
             double distance = Math.sqrt(Math.pow(position_x - rightIntersection_x, 2) + Math.pow(position_y - rightIntersection_y, 2));
             double delta = Math.abs(distance - sensorLength);
             double reading = delta / sensorLength;
             return reading;
         } // If no intersection, reading is 0
+        return 0;
+    }
+
+    private double getSensorCarReading(Line sensor, Car car) {
+        Shape intersection = Shape.intersect(sensor, car.getHitBox()); // If there is no intersection, this returns a shape with centerX == -0.5
+        double sensorLength = this.car.getSensors().getSensorLength();
+        double position_x = this.car.getCarStack().getLayoutX() + 0.5 * car.getCarWidth();
+        double position_y = this.car.getyPosition() + 0.5 * car.getCarLength();
+        double intersection_x = intersection.getBoundsInParent().getCenterX();
+        double intersection_y = intersection.getBoundsInParent().getMaxY();
+        if (intersection_x != -0.5) {
+            double distance = Math.sqrt(Math.pow(position_x - intersection_x, 2) + Math.pow(position_y - intersection_y, 2));
+            double delta = Math.abs(distance - sensorLength);
+            double reading = delta / sensorLength;
+            return reading;
+        }
+
         return 0;
     }
 

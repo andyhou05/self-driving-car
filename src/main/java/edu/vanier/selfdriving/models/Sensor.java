@@ -17,6 +17,7 @@ public class Sensor {
     Car car;
     int sensorCount = 5;
     double sensorLength = 200;
+    double[] readings = new double[sensorCount];
     double sensorSpread = Math.PI / 2; // Angle between the most-left and most-right sensor in rad
     Line[] sensors = new Line[sensorCount];
     public static ArrayList<Double> listOfAngles = new ArrayList<Double>();
@@ -112,6 +113,15 @@ public class Sensor {
     public static double getSensorStartY() {
         return sensorStartY;
     }
+
+    public double[] getReadings() {
+        return readings;
+    }
+
+    public void setReadings(double[] reading) {
+        this.readings = reading;
+    }
+    
     
 
 }
