@@ -6,6 +6,7 @@ package edu.vanier.selfdriving.models;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 
@@ -15,10 +16,12 @@ import javafx.scene.shape.Rectangle;
  */
 public class Car {
 
-    //Car image
+    // JavaFX Car properties
+    StackPane carStack = new StackPane();
+    Rectangle hitBox;
     Image carImage;
-    ImageView carImageView;
-    
+    ImageView carImageView = new ImageView();
+
     //Transition properties
     double xPosition;
     double yPosition;
@@ -31,24 +34,31 @@ public class Car {
     //Static properties
     double carWidth = 60;
     double carLength = 120;
+    double widthOffset = 16;
+    double lengthOffset = 20;
     double accelerationValue = 0.3;
     double deccelerationValue = accelerationValue;
     Sensor sensors;
     Road road;
 
     public Car() {
-        
+        carImageView.setFitHeight(carLength);
+        carImageView.setFitWidth(carWidth);
+        hitBox = new Rectangle(carWidth - widthOffset, carLength - lengthOffset);
+        hitBox.setVisible(false);
+        carStack.setPrefHeight(carLength);
+        carStack.setPrefWidth(carWidth);
+        carStack.getChildren().addAll(carImageView, hitBox);
     }
-    
+
     public Car(double x, double y, Image carImage) {
+        this();
         this.xPosition = x;
         this.yPosition = y;
         this.carImage = carImage;
-        carImageView = new ImageView(carImage);
-        carImageView.setFitHeight(carLength);
-        carImageView.setFitWidth(carWidth);
-        carImageView.setX(x);
-        carImageView.setY(y);
+        carImageView.setImage(carImage);
+        carStack.setLayoutX(x);
+        carStack.setLayoutY(y);
     }
 
     public void acceleration(int direction) {
@@ -58,7 +68,7 @@ public class Car {
         } else {
             speed = maxSpeed * direction;
         }
-        double angle = 90 - carImageView.getRotate();
+        double angle = 90 - carStack.getRotate();
         speedY = speed * Math.sin(angle * (Math.PI / 180));
         speedX = -speed * Math.cos(angle * (Math.PI / 180));
 
@@ -73,13 +83,13 @@ public class Car {
             carMoving = false;
         }
 
-        double angle = 90 - carImageView.getRotate();
+        double angle = 90 - carStack.getRotate();
         speedY = speed * Math.sin(angle * (Math.PI / 180));
         speedX = -speed * Math.cos(angle * (Math.PI / 180));
     }
 
     public void rotate(int direction) {
-        carImageView.setRotate(carImageView.getRotate() - 5 * direction);
+        carStack.setRotate(carStack.getRotate() - 5 * direction);
     }
 
     public Image getCarImage() {
@@ -104,6 +114,8 @@ public class Car {
 
     public void setCarWidth(double carWidth) {
         carImageView.setFitWidth(carWidth);
+        carStack.setPrefWidth(carWidth);
+        hitBox.setWidth(carWidth - widthOffset);
         this.carWidth = carWidth;
     }
 
@@ -113,6 +125,8 @@ public class Car {
 
     public void setCarLength(double carLength) {
         carImageView.setFitHeight(carLength);
+        carStack.setPrefHeight(carLength);
+        hitBox.setHeight(carLength - lengthOffset);
         this.carLength = carLength;
     }
 
@@ -129,7 +143,7 @@ public class Car {
     }
 
     public void setxPosition(double xPosition) {
-        carImageView.setX(xPosition);
+        carStack.setLayoutX(xPosition);
         this.xPosition = xPosition;
     }
 
@@ -138,7 +152,7 @@ public class Car {
     }
 
     public void setyPosition(double yPosition) {
-        carImageView.setY(yPosition);
+        carStack.setLayoutY(yPosition);
         this.yPosition = yPosition;
     }
 
@@ -208,6 +222,22 @@ public class Car {
 
     public void setCarImageView(ImageView carImageView) {
         this.carImageView = carImageView;
+    }
+
+    public StackPane getCarStack() {
+        return carStack;
+    }
+
+    public void setCarStack(StackPane carStack) {
+        this.carStack = carStack;
+    }
+
+    public Rectangle getHitBox() {
+        return hitBox;
+    }
+
+    public void setHitBox(Rectangle hitBox) {
+        this.hitBox = hitBox;
     }
 
 }

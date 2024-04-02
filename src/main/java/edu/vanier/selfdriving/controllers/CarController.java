@@ -6,18 +6,17 @@ package edu.vanier.selfdriving.controllers;
 
 import edu.vanier.selfdriving.models.Car;
 import edu.vanier.selfdriving.models.Road;
-import edu.vanier.selfdriving.models.Sensor;
 import java.util.ArrayList;
 import javafx.animation.AnimationTimer;
 import javafx.scene.Scene;
-import javafx.scene.image.ImageView;
 import static javafx.scene.input.KeyCode.A;
 import static javafx.scene.input.KeyCode.D;
 import static javafx.scene.input.KeyCode.S;
 import static javafx.scene.input.KeyCode.W;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Shape;
 
 /**
  *
@@ -25,9 +24,6 @@ import javafx.scene.shape.Rectangle;
  */
 public class CarController {
 
-    private static boolean checkSceneCollision(ImageView carImageView, Line leftBorder, Line rightBorder) {
-        return carImageView.getBoundsInParent().intersects(leftBorder.getBoundsInParent()) || carImageView.getBoundsInParent().intersects(rightBorder.getBoundsInParent());
-    }
     Car car;
     ArrayList<Car> enemyCars = new ArrayList<>();
     Scene scene;
@@ -45,93 +41,21 @@ public class CarController {
         @Override
         public void handle(long now) {
             if (now - last > INTERVAL) {
-                if (checkSceneCollision(car.getCarImageView(), car.getRoad().getLeftBorder(), car.getRoad().getRightBorder())) {
-                    System.out.println("Collision Detected!");
-                }
-
-                if (accelerating) {
-                    car.acceleration(direction);
-                } else {
-                    if (car.isCarMoving()) {
-                        car.decceleration(direction);
-                    }
-                }
-                if (turningRight && (Math.abs(car.getSpeedY()) > 0 || Math.abs(car.getSpeedX()) > 0)) {
-                    if (flipRotate) {
-                        rotate(1);
-                    } else {
-                        rotate(-1);
-                    }
-                } else if (turningLeft && (Math.abs(car.getSpeedY()) > 0 || Math.abs(car.getSpeedX()) > 0)) {
-                    if (flipRotate) {
-                        rotate(-1);
-                    } else {
-                        rotate(1);
-                    }
-                }
-                car.getCarImageView().setLayoutY(car.getCarImageView().getLayoutY() - car.getSpeedY());
-                car.getCarImageView().setLayoutX(car.getCarImageView().getLayoutX() - car.getSpeedX());
-                car.getSensors().updateSensors(car.getCarImageView().getRotate());
-                for (int i=0; i<Sensor.listOfAngles.size(); i++){
-                    double dx_sensor = 0;
-                    double dy_sensor = 0;
-                    if(Sensor.listOfAngles.get(i)>=0){
-                        double sensorEndX = Sensor.sensorStartX + Math.sin(Sensor.listOfAngles.get(i))*200;
-                        double sensorEndY = Sensor.sensorStartY - Math.cos(Sensor.listOfAngles.get(i))*200;
-                        dx_sensor = sensorEndX - Sensor.sensorStartX;
-                        dy_sensor = sensorEndY - Sensor.sensorStartY;
-                    }
-                    else if(Sensor.listOfAngles.get(i)<0)
-                    {
-                    double sensorEndX = Sensor.sensorStartX + Math.sin(Sensor.listOfAngles.get(i))*200;
-                    double sensorEndY = Sensor.sensorStartY - Math.cos(Sensor.listOfAngles.get(i))*200;
-                    dx_sensor = sensorEndX - Sensor.sensorStartX;
-                    dy_sensor = sensorEndY - Sensor.sensorStartY;
-                    }
-                    
-                    
-                    for (int j =0; j<Road.borderLines.size(); j++){
-                        double x1 = Road.borderLines.get(j).getStartX();
-                        double y1 = Road.borderLines.get(j).getStartY();
-                        double x2 = Road.borderLines.get(j).getEndX();
-                        double y2 = Road.borderLines.get(j).getEndY();
-                        double dx_road = x2-x1;
-                        double dy_road = y2-y1;
-                        double determinant = dx_sensor * dy_road - dy_sensor * dx_road;
-
-                        // Check if the lines are parallel
-
-                        double denominator = dx_sensor * dy_road - dy_sensor * dx_road;
-                        
-                            double t = ((x1 - Sensor.sensorStartX) * dy_road - (y1 - Sensor.sensorStartY) * dx_road) / denominator;
-                            double u = -((y1 - Sensor.sensorStartX) * dy_sensor - (y1 - Sensor.sensorStartY) * dx_sensor) / denominator;
-
-                            // Check if the intersection point lies on both lines
-                            if (t >= 0 && t <= 1 && u >= 0 && u <= 1) {
-                                // Intersection detected
-                                double intersectionX = Sensor.sensorStartX + t * dx_sensor;
-                                double intersectionY = Sensor.sensorStartY + t * dy_sensor;
-                                System.out.println("Sensor intersects line at: (" + intersectionX + ", " + intersectionY + ")");
-                            }
-                        
-                        
-                    
-                    }
-                    
-                }
-                
-                
-                
-                
-                
-                System.out.println(Sensor.sensorStartX);
-                System.out.println(Sensor.sensorStartY);
-                System.out.println("");
+                checkCollisions();
+                updateCarSpeed();
+                car.getCarStack().setLayoutY(car.getCarStack().getLayoutY() - car.getSpeedY());
+                car.getCarStack().setLayoutX(car.getCarStack().getLayoutX() - car.getSpeedX());
+                car.getSensors().updateSensors(car.getCarStack().getRotate());
 
                 // Move enemy cars
-                for(Car enemyCar:enemyCars){
-                    enemyCar.getCarImageView().setLayoutY(enemyCar.getCarImageView().getLayoutY() - enemyCar.getSpeedY());
+                for (Car enemyCar : enemyCars) {
+                    enemyCar.getCarStack().setLayoutY(enemyCar.getCarStack().getLayoutY() - enemyCar.getSpeedY());
                 }
+
+                for (Line sensor : car.getSensorsList()) {
+                    System.out.println(getSensorBorderReading(sensor));
+                }
+
                 last = now;
             }
         }
@@ -145,8 +69,95 @@ public class CarController {
         animation.start();
     }
 
+    private double getSensorBorderReading(Line sensor) {
+        Line leftBorder = car.getRoad().getLeftBorder();
+        Line rightBorder = car.getRoad().getRightBorder();
+        double sensorLength = car.getSensors().getSensorLength();
+        double position_x = car.getCarStack().getLayoutX() + 0.5 * car.getCarWidth();
+        double position_y = car.getyPosition() + 0.5 * car.getCarLength();
+        
+        // Create a shape between intersection of sensor and left and right borders.
+        Shape leftIntersection = Shape.intersect(sensor, leftBorder);
+        Shape rightIntersection = Shape.intersect(sensor, rightBorder);
+        
+        // Get the x/y positions of the intersection shape
+        double leftIntersection_x = leftIntersection.getBoundsInParent().getMaxX(); // If there is no intersection, this returns a shape with maxX == -1
+        double leftIntersection_y = leftIntersection.getBoundsInParent().getMaxY();
+        double rightIntersection_x = rightIntersection.getBoundsInParent().getMinX(); // If there is no intersection, this returns a shape with minX == 0
+        double rightIntersection_y = rightIntersection.getBoundsInParent().getMaxY();
+        
+        
+        if (leftIntersection_x != -1) {
+            // Distance between car and border
+            double distance = Math.sqrt(Math.pow(position_x - leftIntersection_x, 2) + Math.pow(position_y - leftIntersection_y, 2));
+            
+            // Get the length of the intersection
+            double delta = Math.abs(distance - sensorLength);
+            
+            // Return a reading between 0 - 1 (far - close)
+            double reading = delta / sensorLength;
+            return reading;
+        } else if (rightIntersection_x != 0){
+            double distance = Math.sqrt(Math.pow(position_x - rightIntersection_x, 2) + Math.pow(position_y - rightIntersection_y, 2));
+            double delta = Math.abs(distance - sensorLength);
+            double reading = delta / sensorLength;
+            return reading;
+        } // If no intersection, reading is 0
+        return 0;
+    }
+
+    private boolean checkRoadCollision() {
+        Road carRoad = car.getRoad();
+        StackPane carStack = car.getCarStack();
+        Rectangle hitbox = car.getHitBox();
+        return carStack.localToParent(hitbox.getBoundsInParent()).intersects(carRoad.getLeftBorder().getBoundsInParent())
+                || carStack.localToParent(hitbox.getBoundsInParent()).intersects(carRoad.getRightBorder().getBoundsInParent());
+    }
+
+    private boolean checkCarCollisions() {
+        Rectangle hitbox = car.getHitBox();
+        StackPane carStack = car.getCarStack();
+        for (Car enemyCar : enemyCars) {
+            Rectangle enemyHitbox = enemyCar.getHitBox();
+            StackPane enemyStack = enemyCar.getCarStack();
+            if (enemyStack.localToParent(enemyHitbox.getBoundsInParent()).intersects(carStack.localToParent(hitbox.getBoundsInParent()))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void checkCollisions() {
+        if (checkRoadCollision() || checkCarCollisions()) {
+            car.setMaxSpeed(0);
+        }
+    }
+
+    private void updateCarSpeed() {
+        if (accelerating) {
+            car.acceleration(direction);
+        } else {
+            if (car.isCarMoving()) {
+                car.decceleration(direction);
+            }
+        }
+        if (turningRight && (Math.abs(car.getSpeedY()) > 0 || Math.abs(car.getSpeedX()) > 0)) {
+            if (flipRotate) {
+                rotate(1);
+            } else {
+                rotate(-1);
+            }
+        } else if (turningLeft && (Math.abs(car.getSpeedY()) > 0 || Math.abs(car.getSpeedX()) > 0)) {
+            if (flipRotate) {
+                rotate(-1);
+            } else {
+                rotate(1);
+            }
+        }
+    }
+
     public void rotate(int direction) {
-        car.getCarImageView().setRotate(car.getCarImageView().getRotate() - 1 * direction);
+        car.getCarStack().setRotate(car.getCarStack().getRotate() - 1 * direction);
     }
 
     public void checkKeypress() {

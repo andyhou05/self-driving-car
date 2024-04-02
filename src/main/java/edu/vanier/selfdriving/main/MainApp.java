@@ -14,6 +14,7 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
@@ -58,7 +59,7 @@ public class MainApp extends Application {
             car1.setSensors(new Sensor(car1));
             car1.setRoad(road1);
 
-            root.getChildren().add(car1.getCarImageView());
+            root.getChildren().add(car1.getCarStack());
             root.getChildren().addAll(car1.getSensorsList());
 
             // Spawn cars
@@ -85,11 +86,11 @@ public class MainApp extends Application {
                             sensor.setTranslateY(sensor.getTranslateY() + car1.getSpeedY());
                         }
                         // Move enemy cars down
-                        for (ImageView enemyCar : spawner.getCarsImageView()) {
-                            enemyCar.setTranslateY(enemyCar.getTranslateY() + car1.getSpeedY());
+                        for (StackPane enemyStack : spawner.getCarsStack()) {
+                            enemyStack.setTranslateY(enemyStack.getTranslateY() + car1.getSpeedY());
                         }
                         // Move user car down
-                        car1.getCarImageView().setTranslateY(car1.getCarImageView().getTranslateY() + car1.getSpeedY());
+                        car1.getCarStack().setTranslateY(car1.getCarStack().getTranslateY() + car1.getSpeedY());
                         last = now;
                     }
                 }
