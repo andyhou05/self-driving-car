@@ -43,26 +43,17 @@ public class CarController {
             if (now - last > INTERVAL) {
                 checkCollisions();
                 updateCarSpeed();
-                car.getCarStack().setLayoutY(car.getCarStack().getLayoutY() - car.getSpeedY());
-                car.getCarStack().setLayoutX(car.getCarStack().getLayoutX() - car.getSpeedX());
+                moveCar(car);
                 car.getSensors().updateSensors(car.getCarStack().getRotate());
 
                 // Move enemy cars
                 for (Car enemyCar : enemyCars) {
-                    enemyCar.getCarStack().setLayoutY(enemyCar.getCarStack().getLayoutY() - enemyCar.getSpeedY());
+                    moveCar(enemyCar);
                 }
 
-                for (int i = 0; i < car.getSensorsList().length;i++) {
-                    // Loop through enemy cars, if there is a reading with one or more of them, keep the highest
-                    double enemyCarReading = 0;
-                    Line sensor = car.getSensorsList()[i];
-                    for(Car enemyCar:enemyCars){
-                        enemyCarReading = Math.max(enemyCarReading, getSensorCarReading(sensor, enemyCar));
-                    }
-                    // Set the raeding of the sensor to be the highest reading between enemyCar and border
-                    double newReading = Math.max(getSensorBorderReading(sensor), enemyCarReading);
-                    car.getSensors().getReadings()[i] = newReading;
-                    System.out.println("Reading for Sensor " + (i+1)+": "+car.getSensors().getReadings()[i]);
+                // Sensor Readings
+                for (int i = 0; i < car.getSensorsList().length; i++) {
+                    updateSensorReading(i);
                 }
 
                 last = now;
@@ -76,6 +67,27 @@ public class CarController {
         scene = car.getCarImageView().getScene();
         checkKeypress();
         animation.start();
+    }
+
+    private void moveCar(Car car) {
+        car.getCarStack().setLayoutY(car.getCarStack().getLayoutY() - car.getSpeedY());
+        car.getCarStack().setLayoutX(car.getCarStack().getLayoutX() - car.getSpeedX());
+    }
+
+    private void updateSensorReading(int sensorIndex) {
+        // Loop through enemy cars, if there is a reading with one or more of them, keep the highest
+        double enemyCarReading = 0;
+        Line sensor = car.getSensorsList()[sensorIndex];
+        for (Car enemyCar : enemyCars) {
+            enemyCarReading = Math.max(enemyCarReading, getSensorCarReading(sensor, enemyCar));
+        }
+        // Set the raeding of the sensor to be the highest reading between enemyCar and border
+        double newReading = Math.max(getSensorBorderReading(sensor), enemyCarReading);
+        car.getSensors().getReadings()[sensorIndex] = newReading;
+        double currentReading = car.getSensors().getReadings()[sensorIndex];
+        if (currentReading != 0) {
+            System.out.println("Reading for Sensor " + (sensorIndex + 1) + ": " + currentReading);
+        }
     }
 
     private double getSensorBorderReading(Line sensor) {

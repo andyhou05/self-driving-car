@@ -18,6 +18,7 @@ import javafx.scene.shape.Rectangle;
  * @author 2276884
  */
 public class CarSpawner {
+
     int carsToSpawn;
     ArrayList<StackPane> carsStack = new ArrayList<>();
     ArrayList<Car> cars = new ArrayList<>();
@@ -39,21 +40,23 @@ public class CarSpawner {
         this.carImage = carImage;
         spawn();
     }
-    private void spawn(){
-        
-        for(int i = 0; i < 100; i++, yPosition += yIncrement) {
+
+    private void spawn() {
+
+        for (int i = 0; i < 100; i++, yPosition += yIncrement) {
             double random = Math.random();
             Car car = new Car();
             car.getCarImageView().setImage(carImage);
             car.setSpeedY(2);
+            car.setSpeedX(0);
             car.setyPosition(yPosition);
-            if(random <= 1f/3f){
+            if (random <= 1f / 3f) {
                 car.setxPosition(road.getX_position_lane_one());
                 carsStack.add(car.getCarStack());
-            } else if(random <= 2f/3f){
+            } else if (random <= 2f / 3f) {
                 car.setxPosition(road.getX_position_lane_two());
                 carsStack.add(car.getCarStack());
-            } else{
+            } else {
                 car.setxPosition(road.getX_position_lane_three());
                 carsStack.add(car.getCarStack());
             }
@@ -129,5 +132,5 @@ public class CarSpawner {
     public void setCarImage(Image carImage) {
         this.carImage = carImage;
     }
-    
+
 }
