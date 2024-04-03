@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import static javafx.application.Application.launch;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -54,7 +55,7 @@ public class MainApp extends Application {
 
             // Create a car and link it to its controller.
             ArrayList<Car> carGeneration = new ArrayList<>();
-            for(int i = 0;i < 100;i++){
+            for(int i = 0;i < 25;i++){
                 Car newCar = new Car(road1.getX_position_lane_two(), 450, playerImage);
                 newCar.setRoad(road1);
                 carGeneration.add(newCar);
@@ -64,7 +65,7 @@ public class MainApp extends Application {
             root.getChildren().addAll(carToFollow.getSensorsLines());
 
             // Spawn cars
-            CarSpawner spawner = new CarSpawner(1, -400, road1, root, enemyImage);
+            CarSpawner spawner = new CarSpawner(4, -400, road1, root, enemyImage);
             
             // Controller for all cars
             CarController controller = new CarController(carGeneration, spawner.getCars());
@@ -90,8 +91,12 @@ public class MainApp extends Application {
                         for (StackPane enemyStack : spawner.getCarsStack()) {
                             enemyStack.setTranslateY(enemyStack.getTranslateY() + carToFollow.getSpeedY());
                         }
-                        // Move user car down
-                        carToFollow.getCarStack().setTranslateY(carToFollow.getCarStack().getTranslateY() + carToFollow.getSpeedY());
+                        
+                        // Move generation cars down
+                        for(Car otherCar:carGeneration){
+                            otherCar.getCarStack().setTranslateY(otherCar.getCarStack().getTranslateY() + carToFollow.getSpeedY());
+                        }
+                        
                         last = now;
                     }
                 }
