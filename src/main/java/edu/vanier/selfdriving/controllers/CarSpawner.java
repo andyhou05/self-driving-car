@@ -24,7 +24,7 @@ public class CarSpawner {
     ArrayList<Car> cars = new ArrayList<>();
     Road road;
     double yIncrement;
-    double yPosition = -200;
+    double yPosition = 150;
     double roadWidth;
     Pane root;
     Image carImage;
@@ -43,7 +43,7 @@ public class CarSpawner {
 
     private void spawn() {
 
-        for (int i = 0; i < 100; i++, yPosition += yIncrement) {
+        for (int i = 0; i < carsToSpawn; i++, yPosition += yIncrement) {
             double random = Math.random();
             Car car = new Car();
             car.getCarImageView().setImage(carImage);
