@@ -6,7 +6,11 @@ package edu.vanier.selfdriving.controllers;
 
 import edu.vanier.selfdriving.models.Car;
 import edu.vanier.selfdriving.models.Road;
+import edu.vanier.selfdriving.models.Sensor;
+import static edu.vanier.selfdriving.models.Sensor.sensorStartX;
+import static edu.vanier.selfdriving.models.Sensor.sensorStartY;
 import edu.vanier.selfdriving.neuralnetwork.NeuralNetwork;
+import edu.vanier.selfdriving.utils.MathUtils;
 import java.util.ArrayList;
 import javafx.animation.AnimationTimer;
 import javafx.scene.Scene;
@@ -45,7 +49,7 @@ public class CarController {
                 checkCollisions();
                 updateCarSpeed();
                 moveCar(car);
-                car.getSensors().updateSensors(car.getCarStack().getRotate());
+                updateSensors(car.getCarStack().getRotate());
 
                 // Move enemy cars
                 for (Car enemyCar : enemyCars) {
@@ -53,13 +57,15 @@ public class CarController {
                 }
 
                 // Sensor Readings
-                for (int i = 0; i < car.getSensorsList().length; i++) {
-                    updateSensorReading(i);
+                double [] inputs = new double [car.getSensorCount()];
+                for (int i = 0; i < car.getSensorCount(); i++) {
+                    updateSensorReading(car.getSensors()[i]);
+                    inputs[i] = car.getSensors()[i].getReading();
                 }
 
                 // Neural Network
                 NeuralNetwork neuralNetwork = car.getNeuralNetwork();
-                neuralNetwork.setInput(car.getSensors().getReadings());
+                neuralNetwork.setInput(inputs);
                 neuralNetwork.feedforward();
                 for (int i = 0; i < neuralNetwork.getOutput().length; i++) {
                     double value = neuralNetwork.getOutput()[i];
@@ -97,29 +103,56 @@ public class CarController {
         car.getCarStack().setLayoutY(car.getCarStack().getLayoutY() - car.getSpeedY());
         car.getCarStack().setLayoutX(car.getCarStack().getLayoutX() - car.getSpeedX());
     }
+    
+    /**
+     * Update the position of the Sensors when the Car moves.
+     * @param angle
+     */
+    public void updateSensors(double angle){
+        for(int i = 0; i < car.getSensorCount(); i++){
+            // Move the Sensor with the Car.
+            Sensor sensor = car.getSensors()[i];
+            Line sensorLine = sensor.getSensorLine();
+            double sensorSpread = car.getSensorSpread();
+            sensorLine.setLayoutX(car.getCarStack().getLayoutX());
+            sensorLine.setLayoutY(car.getCarStack().getLayoutY());
+            
+            // Update the angle of the Sensor with the angle of the Car.
+            double rayAngle = MathUtils.lerp(sensorSpread / 2, -sensorSpread / 2, (double) i / (car.getSensorCount() - 1)) - (angle * Math.PI/180);
+            double startX = sensorLine.getStartX();
+            double startY = sensorLine.getStartY();
+            double endX = startX - Math.sin(rayAngle) * Sensor.getSensorLength();
+            double endY = startY - Math.cos(rayAngle) * Sensor.getSensorLength();
+            sensorLine.setEndX(endX);
+            sensorLine.setEndY(endY);
+            sensorStartX = startX+car.getCarStack().getLayoutX();
+            sensorStartY = startY+car.getCarStack().getLayoutY()+car.getCarStack().getTranslateY();
+        }
+    }
 
-    private void updateSensorReading(int sensorIndex) {
+    private void updateSensorReading(Sensor sensor) {
         // Loop through enemy cars, if there is a reading with one or more of them, keep the highest
+        Line sensorLine = sensor.getSensorLine();
         double enemyCarReading = 0;
-        Line sensor = car.getSensorsList()[sensorIndex];
         for (Car enemyCar : enemyCars) {
             enemyCarReading = Math.max(enemyCarReading, getSensorCarReading(sensor, enemyCar));
         }
         // Set the raeding of the sensor to be the highest reading between enemyCar and border
         double newReading = Math.max(getSensorBorderReading(sensor), enemyCarReading);
-        car.getSensors().getReadings()[sensorIndex] = newReading;
+        sensor.setReading(newReading);
     }
 
-    private double getSensorBorderReading(Line sensor) {
+    private double getSensorBorderReading(Sensor sensor) {
+        Line sensorLine = sensor.getSensorLine();
         Line leftBorder = car.getRoad().getLeftBorder();
         Line rightBorder = car.getRoad().getRightBorder();
-        double sensorLength = car.getSensors().getSensorLength();
+        double sensorLength = Sensor.getSensorLength();
         double position_x = car.getCarStack().getLayoutX() + 0.5 * car.getCarWidth();
         double position_y = car.getyPosition() + 0.5 * car.getCarLength();
 
         // Create a shape between intersection of sensor and left and right borders.
-        Shape leftIntersection = Shape.intersect(sensor, leftBorder);
-        Shape rightIntersection = Shape.intersect(sensor, rightBorder);
+        Shape leftIntersection = Shape.intersect(sensorLine, leftBorder);
+        Shape rightIntersection = Shape.intersect(sensorLine, rightBorder);
 
         // Get the x/y positions of the intersection shape
         double leftIntersection_x = leftIntersection.getBoundsInParent().getMaxX(); // If there is no intersection, this returns a shape with maxX == -1
@@ -152,9 +185,10 @@ public class CarController {
         return 0;
     }
 
-    private double getSensorCarReading(Line sensor, Car car) {
-        Shape intersection = Shape.intersect(sensor, car.getHitBox()); // If there is no intersection, this returns a shape with centerX == -0.5
-        double sensorLength = this.car.getSensors().getSensorLength();
+    private double getSensorCarReading(Sensor sensor, Car car) {
+        Line sensorLine = sensor.getSensorLine();
+        Shape intersection = Shape.intersect(sensorLine, car.getHitBox()); // If there is no intersection, this returns a shape with centerX == -0.5
+        double sensorLength = Sensor.getSensorLength();
         double position_x = this.car.getCarStack().getLayoutX() + 0.5 * car.getCarWidth();
         double position_y = this.car.getyPosition() + 0.5 * car.getCarLength();
         double intersection_x = intersection.getBoundsInParent().getCenterX();

@@ -5,18 +5,15 @@ import edu.vanier.selfdriving.controllers.CarSpawner;
 import edu.vanier.selfdriving.models.Car;
 import edu.vanier.selfdriving.controllers.FXMLMainAppController;
 import edu.vanier.selfdriving.models.Road;
-import edu.vanier.selfdriving.models.Sensor;
 import java.io.IOException;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Line;
-import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,11 +53,10 @@ public class MainApp extends Application {
 
             // Create a car and link it to its controller.
             Car car1 = new Car(road1.getX_position_lane_two(), 450, playerImage);
-            car1.setSensors(new Sensor(car1));
             car1.setRoad(road1);
 
             root.getChildren().add(car1.getCarStack());
-            root.getChildren().addAll(car1.getSensorsList());
+            root.getChildren().addAll(car1.getSensorsLines());
 
             // Spawn cars
             CarSpawner spawner = new CarSpawner(1, -400, road1, root, enemyImage);
@@ -82,7 +78,7 @@ public class MainApp extends Application {
                             roadLine.setTranslateY(roadLine.getTranslateY() + car1.getSpeedY());
                         }
                         // Move sensors down
-                        for (Line sensor : car1.getSensorsList()) {
+                        for (Line sensor : car1.getSensorsLines()) {
                             sensor.setTranslateY(sensor.getTranslateY() + car1.getSpeedY());
                         }
                         // Move enemy cars down

@@ -4,8 +4,6 @@
  */
 package edu.vanier.selfdriving.models;
 
-import edu.vanier.selfdriving.utils.MathUtils;
-import java.util.ArrayList;
 import javafx.scene.shape.Line;
 
 /**
@@ -15,14 +13,14 @@ import javafx.scene.shape.Line;
 public class Sensor {
 
     Car car;
-    int sensorCount = 5;
-    double sensorLength = 400;
-    double[] readings = new double[sensorCount];
-    double sensorSpread = Math.PI / 2; // Angle between the most-left and most-right sensor in rad
-    Line[] sensors = new Line[sensorCount];
-    public static ArrayList<Double> listOfAngles = new ArrayList<Double>();
+    static double sensorLength = 400;
+    double reading = 0;
+    Line sensorLine;
     public static double sensorStartX;
     public static double sensorStartY;
+
+    public Sensor() {
+    }
 
     /**
      * Constructor for Sensor.
@@ -30,80 +28,14 @@ public class Sensor {
      */
     public Sensor(Car car) {
         this.car = car;
-        initSensors();
-    }
-
-    /**
-     * Initialize the position of the Sensors based on the Car.
-     * @param xPosition
-     * @param yPosition
-     */
-    public void initSensors() {
-        double xPosition = 0;
-        double yPosition = 0;
-        for (int i = 0; i < sensorCount; i++) {
-            double rayAngle = MathUtils.lerp(sensorSpread / 2, -sensorSpread / 2, (double) i / (sensorCount - 1));
-            listOfAngles.add(rayAngle);
-            
-            // Start the Sensor in the middle of the Car.
-            double startX = xPosition + 0.5 * car.carWidth;
-            double startY = yPosition + 0.5 * car.carLength;
-            
-            // Trig to direct Sensor in the correct direction
-            double endX = startX - Math.sin(rayAngle) * sensorLength;
-            double endY = startY - Math.cos(rayAngle) * sensorLength;
-            sensors[i] = new Line(startX, startY, endX, endY);
-            sensors[i].setStrokeWidth(2);
-        }
     }
     
-    /**
-     * Update the position of the Sensors when the Car moves.
-     * @param angle
-     */
-    public void updateSensors(double angle){
-        listOfAngles.clear();
-        for(int i = 0; i < sensorCount; i++){
-            // Move the Sensor with the Car.
-            sensors[i].setLayoutX(car.getCarStack().getLayoutX());
-            sensors[i].setLayoutY(car.getCarStack().getLayoutY());
-            
-            // Update the angle of the Sensor with the angle of the Car.
-            double rayAngle = MathUtils.lerp(sensorSpread / 2, -sensorSpread / 2, (double) i / (sensorCount - 1)) - (angle * Math.PI/180);
-            listOfAngles.add(rayAngle);
-            double startX = sensors[i].getStartX();
-            double startY = sensors[i].getStartY();
-            double endX = startX - Math.sin(rayAngle) * sensorLength;
-            double endY = startY - Math.cos(rayAngle) * sensorLength;
-            sensors[i].setEndX(endX);
-            sensors[i].setEndY(endY);
-            sensorStartX = startX+car.getCarStack().getLayoutX();
-            sensorStartY = startY+car.getCarStack().getLayoutY()+car.getCarStack().getTranslateY();
-        }
-    }
-    
-    public double getSensorLength(){
+    public static double getSensorLength(){
         return sensorLength;
     }
 
     public Car getCar() {
         return car;
-    }
-
-    public int getSensorCount() {
-        return sensorCount;
-    }
-
-    public double getSensorSpread() {
-        return sensorSpread;
-    }
-
-    public Line[] getSensors() {
-        return sensors;
-    }
-
-    public static ArrayList<Double> getListOfAngles() {
-        return listOfAngles;
     }
 
     public static double getSensorStartX() {
@@ -114,14 +46,20 @@ public class Sensor {
         return sensorStartY;
     }
 
-    public double[] getReadings() {
-        return readings;
+    public double getReading() {
+        return reading;
     }
 
-    public void setReadings(double[] reading) {
-        this.readings = reading;
+    public void setReading(double reading) {
+        this.reading = reading;
+    }
+
+    public Line getSensorLine() {
+        return sensorLine;
+    }
+
+    public void setSensorLine(Line sensorLine) {
+        this.sensorLine = sensorLine;
     }
     
-    
-
 }

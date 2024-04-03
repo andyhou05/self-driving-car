@@ -5,6 +5,7 @@
 package edu.vanier.selfdriving.models;
 
 import edu.vanier.selfdriving.neuralnetwork.NeuralNetwork;
+import edu.vanier.selfdriving.utils.MathUtils;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
@@ -39,11 +40,14 @@ public class Car {
     double lengthHitboxOffset = 20;
     double accelerationValue = 0.3;
     double deccelerationValue = accelerationValue;
-    Sensor sensors;
+    int sensorCount = 5;
+    double sensorSpread = Math.PI/2;
+    Sensor[] sensors = new Sensor[5];
     Road road;
     NeuralNetwork neuralNetwork = new NeuralNetwork(5, 6, 4);
 
     public Car() {
+        initSensors();
         carImageView.setFitHeight(carLength);
         carImageView.setFitWidth(carWidth);
         hitBox = new Rectangle(carWidth - widthHitboxOffset, carLength - lengthHitboxOffset);
@@ -61,6 +65,33 @@ public class Car {
         carImageView.setImage(carImage);
         carStack.setLayoutX(x);
         carStack.setLayoutY(y);
+    }
+    /**
+     * Initialize the position of the Sensors based on the Car.
+     * @param xPosition
+     * @param yPosition
+     */
+    public void initSensors() {
+        for(int i = 0; i < sensorCount;i++){
+            Sensor sensor = new Sensor(this); // not sure
+            sensors[i] = sensor;
+        }
+        double xPosition = 0;
+        double yPosition = 0;
+        for (int i = 0; i < sensorCount; i++) {
+            double rayAngle = MathUtils.lerp(sensorSpread / 2, -sensorSpread / 2, (double) i / (sensorCount - 1));
+            
+            // Start the Sensor in the middle of the Car.
+            double startX = xPosition + 0.5 * carWidth;
+            double startY = yPosition + 0.5 * carLength;
+            
+            // Trig to direct Sensor in the correct direction
+            double endX = startX - Math.sin(rayAngle) * Sensor.getSensorLength();
+            double endY = startY - Math.cos(rayAngle) * Sensor.getSensorLength();
+            Line sensorLine = new Line(startX, startY, endX, endY);
+            sensorLine.setStrokeWidth(2);
+            sensors[i].setSensorLine(sensorLine);
+        }
     }
 
     public void acceleration(int direction) {
@@ -190,18 +221,19 @@ public class Car {
         this.carMoving = carMoving;
     }
 
-    public Sensor getSensors() {
+    public Sensor[] getSensors() {
         return this.sensors;
     }
 
-    public Line[] getSensorsList() {
-        return sensors.sensors;
+    public Line[] getSensorsLines() {
+        Line [] sensorLines = new Line[sensorCount];
+        for(int i = 0; i < sensorCount;i++){
+            Sensor sensor = sensors[i];
+            sensorLines[i] = sensor.getSensorLine();
+        }
+        return sensorLines;
     }
-
-    public void setSensors(Sensor sensors) {
-        this.sensors = sensors;
-    }
-
+    
     public double getDeccelerationValue() {
         return deccelerationValue;
     }
@@ -248,6 +280,38 @@ public class Car {
 
     public void setNeuralNetwork(NeuralNetwork neuralNetwork) {
         this.neuralNetwork = neuralNetwork;
+    }
+
+    public double getWidthHitboxOffset() {
+        return widthHitboxOffset;
+    }
+
+    public void setWidthHitboxOffset(double widthHitboxOffset) {
+        this.widthHitboxOffset = widthHitboxOffset;
+    }
+
+    public double getLengthHitboxOffset() {
+        return lengthHitboxOffset;
+    }
+
+    public void setLengthHitboxOffset(double lengthHitboxOffset) {
+        this.lengthHitboxOffset = lengthHitboxOffset;
+    }
+
+    public int getSensorCount() {
+        return sensorCount;
+    }
+
+    public void setSensorCount(int sensorCount) {
+        this.sensorCount = sensorCount;
+    }
+
+    public double getSensorSpread() {
+        return sensorSpread;
+    }
+
+    public void setSensorSpread(double sensorSpread) {
+        this.sensorSpread = sensorSpread;
     }
 
 }
