@@ -42,6 +42,11 @@ public class Car {
     double deccelerationValue = accelerationValue;
     int sensorCount = 5;
     double sensorSpread = Math.PI/2;
+    int direction = 0;
+    boolean accelerating = false;
+    boolean turningRight = false;
+    boolean turningLeft = false;
+    boolean flipRotate = false;
     Sensor[] sensors = new Sensor[5];
     Road road;
     NeuralNetwork neuralNetwork = new NeuralNetwork(5, 6, 4);
@@ -312,6 +317,46 @@ public class Car {
 
     public void setSensorSpread(double sensorSpread) {
         this.sensorSpread = sensorSpread;
+    }
+
+    public int getDirection() {
+        return direction;
+    }
+
+    public void setDirection(int direction) {
+        this.direction = direction;
+    }
+
+    public boolean isAccelerating() {
+        return accelerating;
+    }
+
+    public void setAccelerating(boolean accelerating) {
+        this.accelerating = accelerating;
+    }
+
+    public boolean isTurningRight() {
+        return turningRight;
+    }
+
+    public void setTurningRight(boolean turningRight) {
+        this.turningRight = turningRight;
+    }
+
+    public boolean isTurningLeft() {
+        return turningLeft;
+    }
+
+    public void setTurningLeft(boolean turningLeft) {
+        this.turningLeft = turningLeft;
+    }
+
+    public boolean isFlipRotate() {
+        return flipRotate;
+    }
+
+    public void setFlipRotate(boolean flipRotate) {
+        this.flipRotate = flipRotate;
     }
 
 }
