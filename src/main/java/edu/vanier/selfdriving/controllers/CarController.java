@@ -32,11 +32,6 @@ public class CarController {
     ArrayList<Car> cars;
     ArrayList<Car> enemyCars = new ArrayList<>();
     Scene scene;
-    int direction = 0;
-    boolean accelerating = false;
-    boolean turningRight = false;
-    boolean turningLeft = false;
-    boolean flipRotate = false;
     AnimationTimer animation = new AnimationTimer() {
         private long FPS = 120L;
         private long INTERVAL = 1000000000L / FPS;
@@ -46,16 +41,15 @@ public class CarController {
         @Override
         public void handle(long now) {
             if (now - last > INTERVAL) {
+                // Move enemy cars
+                for (Car enemyCar : enemyCars) {
+                    moveCar(enemyCar);
+                }
                 for (Car car : cars) {
                     checkCollisions(car);
                     updateCarSpeed(car);
                     moveCar(car);
                     updateSensors(car);
-
-                    // Move enemy cars
-                    for (Car enemyCar : enemyCars) {
-                        moveCar(enemyCar);
-                    }
 
                     // Sensor Readings
                     double[] inputs = new double[car.getSensorCount()];
@@ -73,16 +67,16 @@ public class CarController {
                         if (value == 1) {
                             switch (i) {
                                 case 0:
-                                    goForward();
+                                    goForward(car);
                                     break;
                                 case 1:
-                                    goBackward();
+                                    goBackward(car);
                                     break;
                                 case 2:
-                                    goLeft();
+                                    goLeft(car);
                                     break;
                                 case 3:
-                                    goRight();
+                                    goRight(car);
                                     break;
                             }
                         }
@@ -98,7 +92,7 @@ public class CarController {
         this.cars = cars;
         this.enemyCars = enemyCars;
         scene = cars.get(0).getCarImageView().getScene();
-        checkKeypress();
+        //checkKeypress();
         animation.start();
     }
 
@@ -238,21 +232,21 @@ public class CarController {
     }
 
     private void updateCarSpeed(Car car) {
-        if (accelerating) {
-            car.acceleration(direction);
+        if (car.isAccelerating()) {
+            car.acceleration(car.getDirection());
         } else {
             if (car.isCarMoving()) {
-                car.decceleration(direction);
+                car.decceleration(car.getDirection());
             }
         }
-        if (turningRight && (Math.abs(car.getSpeedY()) > 0 || Math.abs(car.getSpeedX()) > 0)) {
-            if (flipRotate) {
+        if (car.isTurningRight() && (Math.abs(car.getSpeedY()) > 0 || Math.abs(car.getSpeedX()) > 0)) {
+            if (car.isFlipRotate()) {
                 rotate(car, 1);
             } else {
                 rotate(car, -1);
             }
-        } else if (turningLeft && (Math.abs(car.getSpeedY()) > 0 || Math.abs(car.getSpeedX()) > 0)) {
-            if (flipRotate) {
+        } else if (car.isTurningLeft() && (Math.abs(car.getSpeedY()) > 0 || Math.abs(car.getSpeedX()) > 0)) {
+            if (car.isFlipRotate()) {
                 rotate(car, -1);
             } else {
                 rotate(car, 1);
@@ -264,20 +258,20 @@ public class CarController {
         car.getCarStack().setRotate(car.getCarStack().getRotate() - 1 * direction);
     }
 
-    public void checkKeypress() {
+    public void checkKeypress(Car car) {
         scene.setOnKeyPressed((event) -> {
             switch (event.getCode()) {
                 case W:
-                    goForward();
+                    goForward(car);
                     break;
                 case S:
-                    goBackward();
+                    goBackward(car);
                     break;
                 case A:
-                    goLeft();
+                    goLeft(car);
                     break;
                 case D:
-                    goRight();
+                    goRight(car);
                     break;
             }
         });
@@ -285,48 +279,48 @@ public class CarController {
             switch (event.getCode()) {
                 case W:
                 case S:
-                    slowDown();
+                    slowDown(car);
                     break;
                 case A:
-                    noLeftTurn();
+                    noLeftTurn(car);
                     break;
                 case D:
-                    noRightTurn();
+                    noRightTurn(car);
                     break;
             }
         });
     }
 
-    private void goForward() {
-        flipRotate = false;
-        accelerating = true;
-        direction = 1;
+    private void goForward(Car car) {
+        car.setFlipRotate(false);
+        car.setAccelerating(true);
+        car.setDirection(1);
     }
 
-    private void goBackward() {
-        flipRotate = true;
-        accelerating = true;
-        direction = -1;
+    private void goBackward(Car car) {
+        car.setFlipRotate(true);
+        car.setAccelerating(true);
+        car.setDirection(-1);
     }
 
-    private void goRight() {
-        turningRight = true;
+    private void goRight(Car car) {
+        car.setTurningRight(true);
     }
 
-    private void goLeft() {
-        turningLeft = true;
+    private void goLeft(Car car) {
+        car.setTurningLeft(true);
     }
 
-    private void slowDown() {
-        accelerating = false;
+    private void slowDown(Car car) {
+        car.setAccelerating(false);
     }
 
-    private void noRightTurn() {
-        turningRight = false;
+    private void noRightTurn(Car car) {
+        car.setTurningRight(false);
     }
 
-    private void noLeftTurn() {
-        turningLeft = false;
+    private void noLeftTurn(Car car) {
+        car.setTurningLeft(false);
     }
 
     public ArrayList<Car> getCars() {
@@ -343,46 +337,6 @@ public class CarController {
 
     public void setScene(Scene scene) {
         this.scene = scene;
-    }
-
-    public int getDirection() {
-        return direction;
-    }
-
-    public void setDirection(int direction) {
-        this.direction = direction;
-    }
-
-    public boolean isAccelerating() {
-        return accelerating;
-    }
-
-    public void setAccelerating(boolean accelerating) {
-        this.accelerating = accelerating;
-    }
-
-    public boolean isTurningRight() {
-        return turningRight;
-    }
-
-    public void setTurningRight(boolean turningRight) {
-        this.turningRight = turningRight;
-    }
-
-    public boolean isTurningLeft() {
-        return turningLeft;
-    }
-
-    public void setTurningLeft(boolean turningLeft) {
-        this.turningLeft = turningLeft;
-    }
-
-    public boolean isFlipRotate() {
-        return flipRotate;
-    }
-
-    public void setFlipRotate(boolean flipRotate) {
-        this.flipRotate = flipRotate;
     }
 
     public AnimationTimer getAnimation() {
