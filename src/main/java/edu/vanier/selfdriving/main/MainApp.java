@@ -6,6 +6,7 @@ import edu.vanier.selfdriving.models.Car;
 import edu.vanier.selfdriving.controllers.FXMLMainAppController;
 import edu.vanier.selfdriving.models.Road;
 import java.io.IOException;
+import java.util.ArrayList;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -52,17 +53,21 @@ public class MainApp extends Application {
             root.getChildren().addAll(road1.getLines());
 
             // Create a car and link it to its controller.
-            Car car1 = new Car(road1.getX_position_lane_two(), 450, playerImage);
-            car1.setRoad(road1);
-
-            root.getChildren().add(car1.getCarStack());
-            root.getChildren().addAll(car1.getSensorsLines());
+            ArrayList<Car> carGeneration = new ArrayList<>();
+            for(int i = 0;i < 100;i++){
+                Car newCar = new Car(road1.getX_position_lane_two(), 450, playerImage);
+                newCar.setRoad(road1);
+                carGeneration.add(newCar);
+                root.getChildren().add(newCar.getCarStack());
+            }
+            Car carToFollow = carGeneration.get(0);
+            root.getChildren().addAll(carToFollow.getSensorsLines());
 
             // Spawn cars
             CarSpawner spawner = new CarSpawner(1, -400, road1, root, enemyImage);
             
             // Controller for all cars
-            CarController controller = new CarController(car1, spawner.getCars());
+            CarController controller = new CarController(carGeneration, spawner.getCars());
 
             // Reference: https://www.youtube.com/watch?v=CYUjjnoXdrM
             AnimationTimer camera = new AnimationTimer() {
@@ -75,18 +80,18 @@ public class MainApp extends Application {
                     if (now - last > INTERVAL) {
                         // Move road lines down
                         for (Line roadLine : road1.getLines()) {
-                            roadLine.setTranslateY(roadLine.getTranslateY() + car1.getSpeedY());
+                            roadLine.setTranslateY(roadLine.getTranslateY() + carToFollow.getSpeedY());
                         }
                         // Move sensors down
-                        for (Line sensor : car1.getSensorsLines()) {
-                            sensor.setTranslateY(sensor.getTranslateY() + car1.getSpeedY());
+                        for (Line sensor : carToFollow.getSensorsLines()) {
+                            sensor.setTranslateY(sensor.getTranslateY() + carToFollow.getSpeedY());
                         }
                         // Move enemy cars down
                         for (StackPane enemyStack : spawner.getCarsStack()) {
-                            enemyStack.setTranslateY(enemyStack.getTranslateY() + car1.getSpeedY());
+                            enemyStack.setTranslateY(enemyStack.getTranslateY() + carToFollow.getSpeedY());
                         }
                         // Move user car down
-                        car1.getCarStack().setTranslateY(car1.getCarStack().getTranslateY() + car1.getSpeedY());
+                        carToFollow.getCarStack().setTranslateY(carToFollow.getCarStack().getTranslateY() + carToFollow.getSpeedY());
                         last = now;
                     }
                 }
