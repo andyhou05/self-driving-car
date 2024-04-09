@@ -30,6 +30,7 @@ import javafx.scene.shape.Shape;
 public class CarController {
 
     ArrayList<Car> cars;
+    Car carToFollow;
     ArrayList<Car> enemyCars = new ArrayList<>();
     Scene scene;
     AnimationTimer animation = new AnimationTimer() {
@@ -45,42 +46,19 @@ public class CarController {
                 for (Car enemyCar : enemyCars) {
                     moveCar(enemyCar);
                 }
+
+                // Update car properties
                 for (Car car : cars) {
                     checkCollisions(car);
                     updateCarSpeed(car);
                     moveCar(car);
                     updateSensors(car);
-
-                    // Sensor Readings
-                    double[] inputs = new double[car.getSensorCount()];
+                    // Sensor Readings and Inputs
                     for (int i = 0; i < car.getSensorCount(); i++) {
                         updateSensorReading(car, car.getSensors()[i]);
-                        inputs[i] = car.getSensors()[i].getReading();
+                        car.getInputs()[i] = car.getSensors()[i].getReading();
                     }
-
-                    // Neural Network
-                    NeuralNetwork neuralNetwork = car.getNeuralNetwork();
-                    neuralNetwork.setInput(inputs);
-                    neuralNetwork.feedforward();
-                    for (int i = 0; i < neuralNetwork.getOutput().length; i++) {
-                        double value = neuralNetwork.getOutput()[i];
-                        if (value == 1) {
-                            switch (i) {
-                                case 0:
-                                    goForward(car);
-                                    break;
-                                case 1:
-                                    goBackward(car);
-                                    break;
-                                case 2:
-                                    goLeft(car);
-                                    break;
-                                case 3:
-                                    goRight(car);
-                                    break;
-                            }
-                        }
-                    }
+                    updateNeuralNetwork(car);
                 }
                 last = now;
 
@@ -228,6 +206,7 @@ public class CarController {
     public void checkCollisions(Car car) {
         if (checkRoadCollision(car) || checkCarCollisions(car)) {
             car.setMaxSpeed(0);
+            car.setDead(true);
         }
     }
 
@@ -250,6 +229,32 @@ public class CarController {
                 rotate(car, -1);
             } else {
                 rotate(car, 1);
+            }
+        }
+    }
+
+    private void updateNeuralNetwork(Car car) {
+        NeuralNetwork neuralNetwork = car.getNeuralNetwork();
+        neuralNetwork.setInput(car.getInputs());
+        neuralNetwork.feedforward();
+        // Move Car based on output
+        for (int i = 0; i < neuralNetwork.getOutput().length; i++) {
+            double value = neuralNetwork.getOutput()[i];
+            if (value == 1) {
+                switch (i) {
+                    case 0:
+                        goForward(car);
+                        break;
+                    case 1:
+                        goBackward(car);
+                        break;
+                    case 2:
+                        goLeft(car);
+                        break;
+                    case 3:
+                        goRight(car);
+                        break;
+                }
             }
         }
     }
@@ -353,6 +358,14 @@ public class CarController {
 
     public void setEnemyCars(ArrayList<Car> enemyCars) {
         this.enemyCars = enemyCars;
+    }
+
+    public Car getCarToFollow() {
+        return carToFollow;
+    }
+
+    public void setCarToFollow(Car carToFollow) {
+        this.carToFollow = carToFollow;
     }
 
 }

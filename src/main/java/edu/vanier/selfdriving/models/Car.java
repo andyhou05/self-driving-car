@@ -47,9 +47,11 @@ public class Car {
     boolean turningRight = false;
     boolean turningLeft = false;
     boolean flipRotate = false;
+    boolean dead = false;
     Sensor[] sensors = new Sensor[5];
     Road road;
     NeuralNetwork neuralNetwork = new NeuralNetwork(5, 6, 4);
+    double [] inputs = new double [sensorCount];
 
     public Car() {
         initSensors();
@@ -81,14 +83,12 @@ public class Car {
             Sensor sensor = new Sensor(this); // not sure
             sensors[i] = sensor;
         }
-        double xPosition = 0;
-        double yPosition = 0;
         for (int i = 0; i < sensorCount; i++) {
             double rayAngle = MathUtils.lerp(sensorSpread / 2, -sensorSpread / 2, (double) i / (sensorCount - 1));
             
             // Start the Sensor in the middle of the Car.
-            double startX = xPosition + 0.5 * carWidth;
-            double startY = yPosition + 0.5 * carLength;
+            double startX = getxPosition() + 0.5 * carWidth;
+            double startY = getyPosition() + 0.5 * carLength;
             
             // Trig to direct Sensor in the correct direction
             double endX = startX - Math.sin(rayAngle) * Sensor.getSensorLength();
@@ -177,7 +177,7 @@ public class Car {
     }
 
     public double getxPosition() {
-        return xPosition;
+        return carStack.getLayoutX();
     }
 
     public void setxPosition(double xPosition) {
@@ -186,7 +186,7 @@ public class Car {
     }
 
     public double getyPosition() {
-        return yPosition;
+        return carStack.getLayoutY();
     }
 
     public void setyPosition(double yPosition) {
@@ -357,6 +357,22 @@ public class Car {
 
     public void setFlipRotate(boolean flipRotate) {
         this.flipRotate = flipRotate;
+    }
+
+    public boolean isDead() {
+        return dead;
+    }
+
+    public void setDead(boolean dead) {
+        this.dead = dead;
+    }
+
+    public double[] getInputs() {
+        return inputs;
+    }
+
+    public void setInputs(double[] inputs) {
+        this.inputs = inputs;
     }
 
 }

@@ -5,6 +5,7 @@ import edu.vanier.selfdriving.controllers.CarSpawner;
 import edu.vanier.selfdriving.models.Car;
 import edu.vanier.selfdriving.controllers.FXMLMainAppController;
 import edu.vanier.selfdriving.models.Road;
+import edu.vanier.selfdriving.models.Sensor;
 import java.io.IOException;
 import java.util.ArrayList;
 import javafx.animation.AnimationTimer;
@@ -53,22 +54,39 @@ public class MainApp extends Application {
             Road road1 = new Road(scene.getWidth() / 2, roadWidth);
             root.getChildren().addAll(road1.getLines());
 
-            // Create a car and link it to its controller.
+            // Spawn traffic
+            CarSpawner spawner = new CarSpawner(4, -400, road1, root, enemyImage);
+
+            // Create a generation of cars to train
             ArrayList<Car> carGeneration = new ArrayList<>();
-            for(int i = 0;i < 25;i++){
+            int carCount = 100;
+            for (int i = 0; i < carCount; i++) {
                 Car newCar = new Car(road1.getX_position_lane_two(), 450, playerImage);
                 newCar.setRoad(road1);
                 carGeneration.add(newCar);
                 root.getChildren().add(newCar.getCarStack());
-            }
-            Car carToFollow = carGeneration.get(0);
-            root.getChildren().addAll(carToFollow.getSensorsLines());
+                root.getChildren().addAll(newCar.getSensorsLines());
 
-            // Spawn cars
-            CarSpawner spawner = new CarSpawner(4, -400, road1, root, enemyImage);
-            
+                // Make sensor lines invisible
+                for (Line sensorLine : newCar.getSensorsLines()) {
+                    sensorLine.setVisible(false);
+                }
+            }
+            // Make them all less opaque
+            for (Car car : carGeneration) {
+                car.getCarImageView().setOpacity(0.2);
+            }
+
             // Controller for all cars
             CarController controller = new CarController(carGeneration, spawner.getCars());
+
+            // Select one car to follow, make it more visible
+            Car carToFollow = carGeneration.get(0);
+            carToFollow.getCarImageView().setOpacity(1.0);
+            for (Line sensorLine : carToFollow.getSensorsLines()) {
+                sensorLine.setVisible(true);
+            }
+            controller.setCarToFollow(carToFollow);
 
             // Reference: https://www.youtube.com/watch?v=CYUjjnoXdrM
             AnimationTimer camera = new AnimationTimer() {
@@ -79,6 +97,37 @@ public class MainApp extends Application {
                 @Override
                 public void handle(long now) {
                     if (now - last > INTERVAL) {
+                        Car carToFollow = controller.getCarToFollow();
+                        if (carToFollow.isDead()) {
+                            double deltaPosition = 0;
+                            double deathPosition = carToFollow.getCarStack().getLayoutY();
+                            root.getChildren().removeAll(carToFollow.getSensorsLines());
+                            // Choose car that is doing the best
+                            for (int i = 0; i < carGeneration.size(); i++) {
+                                double previousY = controller.getCarToFollow().getCarStack().getLayoutY();
+                                double currentY = carGeneration.get(i).getCarStack().getLayoutY();
+                                if (currentY < previousY) {
+                                    carToFollow.getCarImageView().setOpacity(0.2);
+                                    controller.setCarToFollow(carGeneration.get(i));
+                                    deltaPosition = controller.getCarToFollow().getCarStack().getLayoutY() - deathPosition;
+                                }
+                            }
+                            controller.getCarToFollow().getCarImageView().setOpacity(1.0);
+                            for (Line sensorLine : controller.getCarToFollow().getSensorsLines()) {
+                                sensorLine.setVisible(true);
+                                sensorLine.setTranslateY(controller.getCarToFollow().getCarStack().getTranslateY());
+                            }
+                            // Move enemy cars down
+                            for (StackPane enemyStack : spawner.getCarsStack()) {
+                                enemyStack.setLayoutY(enemyStack.getLayoutY() - deltaPosition);
+                            }
+
+                            // Move generation cars down
+                            for (Car otherCar : carGeneration) {
+                                otherCar.getCarStack().setLayoutY(otherCar.getCarStack().getLayoutY() - deltaPosition);
+                            }
+                            // Move sensors down
+                        }
                         // Move road lines down
                         for (Line roadLine : road1.getLines()) {
                             roadLine.setTranslateY(roadLine.getTranslateY() + carToFollow.getSpeedY());
@@ -91,12 +140,12 @@ public class MainApp extends Application {
                         for (StackPane enemyStack : spawner.getCarsStack()) {
                             enemyStack.setTranslateY(enemyStack.getTranslateY() + carToFollow.getSpeedY());
                         }
-                        
+
                         // Move generation cars down
-                        for(Car otherCar:carGeneration){
+                        for (Car otherCar : carGeneration) {
                             otherCar.getCarStack().setTranslateY(otherCar.getCarStack().getTranslateY() + carToFollow.getSpeedY());
                         }
-                        
+
                         last = now;
                     }
                 }
