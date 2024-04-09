@@ -50,9 +50,12 @@ public class CarController {
                 // Update car properties
                 for (int i = 0; i < cars.size(); i++) {
                     Car car = cars.get(i);
+                    moveCar(car);
+                    if(car.isDead()){
+                        continue;
+                    }
                     checkCollisions(car);
                     updateCarSpeed(car);
-                    moveCar(car);
                     updateSensors(car);
                     // Sensor Readings and Inputs
                     for (int j = 0; j < car.getSensorCount(); j++) {
@@ -208,7 +211,6 @@ public class CarController {
         if (checkRoadCollision(car) || checkCarCollisions(car)) {
             car.setMaxSpeed(0);
             car.setDead(true);
-            cars.remove(car);
         }
     }
 

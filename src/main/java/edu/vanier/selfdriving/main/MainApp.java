@@ -59,22 +59,18 @@ public class MainApp extends Application {
 
             // Create a generation of cars to train
             ArrayList<Car> carGeneration = new ArrayList<>();
-            int carCount = 100;
+            int carCount = 50;
             for (int i = 0; i < carCount; i++) {
                 Car newCar = new Car(road1.getX_position_lane_two(), 450, playerImage);
                 newCar.setRoad(road1);
                 carGeneration.add(newCar);
                 root.getChildren().add(newCar.getCarStack());
                 root.getChildren().addAll(newCar.getSensorsLines());
-
-                // Make sensor lines invisible
-                for (Line sensorLine : newCar.getSensorsLines()) {
-                    sensorLine.setVisible(false);
-                }
+                newCar.setSensorsVisible(false);
             }
             // Make them all less opaque
             for (Car car : carGeneration) {
-                car.getCarImageView().setOpacity(0.2);
+                car.setCarVisible(false);
             }
 
             // Controller for all cars
@@ -82,10 +78,8 @@ public class MainApp extends Application {
 
             // Select one car to follow, make it more visible
             Car carToFollow = carGeneration.get(0);
-            carToFollow.getCarImageView().setOpacity(1.0);
-            for (Line sensorLine : carToFollow.getSensorsLines()) {
-                sensorLine.setVisible(true);
-            }
+            carToFollow.setCarVisible(true);
+            carToFollow.setSensorsVisible(true);
             controller.setCarToFollow(carToFollow);
 
             // Reference: https://www.youtube.com/watch?v=CYUjjnoXdrM
@@ -98,35 +92,40 @@ public class MainApp extends Application {
                 public void handle(long now) {
                     if (now - last > INTERVAL) {
                         Car carToFollow = controller.getCarToFollow();
-                        if (carToFollow.isDead()) {
+
+                        // Choose the next car that is doing the best
+                        if (carToFollow.isDead() && !carGeneration.isEmpty()) {
+                            carToFollow.setCarVisible(false);
+                            carToFollow.setSensorsVisible(false);
                             double deltaPosition = 0;
                             double deathPosition = carToFollow.getCarStack().getLayoutY();
-                            root.getChildren().removeAll(carToFollow.getSensorsLines());
-                            // Choose car that is doing the best
                             for (int i = 0; i < carGeneration.size(); i++) {
-                                double previousY = controller.getCarToFollow().getCarStack().getLayoutY();
-                                double currentY = carGeneration.get(i).getCarStack().getLayoutY();
-                                if (currentY < previousY) {
-                                    carToFollow.getCarImageView().setOpacity(0.2);
-                                    controller.setCarToFollow(carGeneration.get(i));
+                                Car currentBestCar = controller.getCarToFollow();
+                                Car currentCar = carGeneration.get(i);
+                                if (currentCar.isDead()) {
+                                    continue;
+                                }
+                                double bestY = currentBestCar.getCarStack().getLayoutY();
+                                double currentY = currentCar.getCarStack().getLayoutY();
+                                if (currentY < bestY) {
+                                    controller.setCarToFollow(currentCar);
                                     deltaPosition = controller.getCarToFollow().getCarStack().getLayoutY() - deathPosition;
                                 }
                             }
-                            controller.getCarToFollow().getCarImageView().setOpacity(1.0);
-                            for (Line sensorLine : controller.getCarToFollow().getSensorsLines()) {
+                            carToFollow = controller.getCarToFollow();
+                            carToFollow.setCarVisible(true);
+
+                            // In order to follow a new car, we must move everything down into the scene's frame
+                            for (Line sensorLine : carToFollow.getSensorsLines()) {
                                 sensorLine.setVisible(true);
                                 sensorLine.setTranslateY(controller.getCarToFollow().getCarStack().getTranslateY());
                             }
-                            // Move enemy cars down
                             for (StackPane enemyStack : spawner.getCarsStack()) {
                                 enemyStack.setLayoutY(enemyStack.getLayoutY() - deltaPosition);
                             }
-
-                            // Move generation cars down
                             for (Car otherCar : carGeneration) {
                                 otherCar.getCarStack().setLayoutY(otherCar.getCarStack().getLayoutY() - deltaPosition);
                             }
-                            // Move sensors down
                         }
                         // Move road lines down
                         for (Line roadLine : road1.getLines()) {
@@ -140,7 +139,6 @@ public class MainApp extends Application {
                         for (StackPane enemyStack : spawner.getCarsStack()) {
                             enemyStack.setTranslateY(enemyStack.getTranslateY() + carToFollow.getSpeedY());
                         }
-
                         // Move generation cars down
                         for (Car otherCar : carGeneration) {
                             otherCar.getCarStack().setTranslateY(otherCar.getCarStack().getTranslateY() + carToFollow.getSpeedY());
