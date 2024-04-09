@@ -48,15 +48,16 @@ public class CarController {
                 }
 
                 // Update car properties
-                for (Car car : cars) {
+                for (int i = 0; i < cars.size(); i++) {
+                    Car car = cars.get(i);
                     checkCollisions(car);
                     updateCarSpeed(car);
                     moveCar(car);
                     updateSensors(car);
                     // Sensor Readings and Inputs
-                    for (int i = 0; i < car.getSensorCount(); i++) {
-                        updateSensorReading(car, car.getSensors()[i]);
-                        car.getInputs()[i] = car.getSensors()[i].getReading();
+                    for (int j = 0; j < car.getSensorCount(); j++) {
+                        updateSensorReading(car, car.getSensors()[j]);
+                        car.getInputs()[j] = car.getSensors()[j].getReading();
                     }
                     updateNeuralNetwork(car);
                 }
@@ -207,6 +208,7 @@ public class CarController {
         if (checkRoadCollision(car) || checkCarCollisions(car)) {
             car.setMaxSpeed(0);
             car.setDead(true);
+            cars.remove(car);
         }
     }
 
