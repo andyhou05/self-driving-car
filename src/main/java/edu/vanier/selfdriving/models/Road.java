@@ -28,7 +28,7 @@ public class Road {
     public static ArrayList<Line> borderLines = new ArrayList<>();
     Line leftBorder;
     Line rightBorder;
-    ArrayList<Line> lines = new ArrayList<>();
+    public ArrayList<Line> lines = new ArrayList<>();
 
     public Road() {
     }
@@ -59,6 +59,12 @@ public class Road {
             }
             lines.get(i).setStroke(Color.WHITE);
             lines.get(i).setStrokeWidth(5);
+        }
+    }
+    
+    public void resetLinePositions(){
+        for(Line roadLine:lines){
+            roadLine.setTranslateY(0);
         }
     }
 

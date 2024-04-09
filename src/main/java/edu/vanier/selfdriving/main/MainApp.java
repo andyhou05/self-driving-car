@@ -117,6 +117,7 @@ public class MainApp extends Application {
             removeAllCars();
             spawner.spawn();
             createCarGeneration();
+            road.resetLinePositions();
         }
     };
 
