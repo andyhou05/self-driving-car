@@ -148,6 +148,11 @@ public class Car {
         carImageView.setOpacity(opacity);
     }
     
+    public void setVisible(boolean visible){
+        setCarVisible(visible);
+        setSensorsVisible(visible);
+    }
+    
     public Image getCarImage() {
         return carImage;
     }

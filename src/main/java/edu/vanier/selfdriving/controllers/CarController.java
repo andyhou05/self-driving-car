@@ -30,7 +30,6 @@ import javafx.scene.shape.Shape;
 public class CarController {
 
     ArrayList<Car> cars;
-    Car carToFollow;
     ArrayList<Car> enemyCars = new ArrayList<>();
     Scene scene;
     AnimationTimer animation = new AnimationTimer() {
@@ -362,14 +361,6 @@ public class CarController {
 
     public void setEnemyCars(ArrayList<Car> enemyCars) {
         this.enemyCars = enemyCars;
-    }
-
-    public Car getCarToFollow() {
-        return carToFollow;
-    }
-
-    public void setCarToFollow(Car carToFollow) {
-        this.carToFollow = carToFollow;
     }
 
 }

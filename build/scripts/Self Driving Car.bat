@@ -67,7 +67,7 @@ goto fail
 :execute
 @rem Setup the command line
 
-set CLASSPATH=%APP_HOME%\lib\Self Driving Car.jar;%APP_HOME%\lib\javafx-fxml-20.0.2-mac.jar;%APP_HOME%\lib\javafx-controls-20.0.2-mac.jar;%APP_HOME%\lib\javafx-controls-20.0.2.jar;%APP_HOME%\lib\javafx-media-20.0.2-mac.jar;%APP_HOME%\lib\javafx-graphics-20.0.2-mac.jar;%APP_HOME%\lib\javafx-graphics-20.0.2.jar;%APP_HOME%\lib\javafx-base-20.0.2-mac.jar;%APP_HOME%\lib\javafx-base-20.0.2.jar;%APP_HOME%\lib\logback-classic-1.4.11.jar;%APP_HOME%\lib\logback-core-1.4.11.jar;%APP_HOME%\lib\slf4j-api-2.0.7.jar
+set CLASSPATH=%APP_HOME%\lib\Self Driving Car.jar;%APP_HOME%\lib\javafx-fxml-20.0.2-win.jar;%APP_HOME%\lib\javafx-controls-20.0.2-win.jar;%APP_HOME%\lib\javafx-controls-20.0.2.jar;%APP_HOME%\lib\javafx-media-20.0.2-win.jar;%APP_HOME%\lib\javafx-graphics-20.0.2-win.jar;%APP_HOME%\lib\javafx-graphics-20.0.2.jar;%APP_HOME%\lib\javafx-base-20.0.2-win.jar;%APP_HOME%\lib\javafx-base-20.0.2.jar;%APP_HOME%\lib\logback-classic-1.4.11.jar;%APP_HOME%\lib\logback-core-1.4.11.jar;%APP_HOME%\lib\slf4j-api-2.0.7.jar
 
 
 @rem Execute Self Driving Car

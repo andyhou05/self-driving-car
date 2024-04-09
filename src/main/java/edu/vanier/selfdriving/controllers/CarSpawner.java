@@ -24,7 +24,7 @@ public class CarSpawner {
     ArrayList<Car> cars = new ArrayList<>();
     Road road;
     double yIncrement;
-    double yPosition = 150;
+    double yPosition;
     double roadWidth;
     Pane root;
     Image carImage;
@@ -41,8 +41,8 @@ public class CarSpawner {
         spawn();
     }
 
-    private void spawn() {
-
+    public void spawn() {
+        yPosition = 150;
         for (int i = 0; i < carsToSpawn; i++, yPosition += yIncrement) {
             double random = Math.random();
             Car car = new Car();
@@ -63,6 +63,11 @@ public class CarSpawner {
             cars.add(car);
             root.getChildren().add(car.getCarStack());
         }
+    }
+    
+    public void clear(){
+        carsStack.clear();
+        cars.clear();
     }
 
     public int getCarsToSpawn() {
