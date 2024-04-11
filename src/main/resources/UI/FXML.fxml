@@ -10,7 +10,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<Pane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="502.0" prefWidth="834.0" style="-fx-background-color: #80848a;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="FXMLController">
+<Pane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="502.0" prefWidth="834.0" style="-fx-background-color: #80848a;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="FXMLController">
    <children>
       <VBox alignment="TOP_CENTER" blendMode="SRC_ATOP" layoutX="348.0" layoutY="132.0" prefHeight="178.0" prefWidth="148.0" spacing="30.0">
          <children>
@@ -48,12 +48,12 @@
       </VBox>
       <ImageView blendMode="OVERLAY" fitHeight="502.0" fitWidth="847.0" layoutY="1.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../Images%20-%20Copy/vector-summer-spring-landscape-background-road-green-vall-valley-mountains-hills-clouds-sun-sky-flat-design-57173348-ezgif.com-resize.png" />
+            <Image url="@Images%20-%20Copy/vector-summer-spring-landscape-background-road-green-vall-valley-mountains-hills-clouds-sun-sky-flat-design-57173348-ezgif.com-resize.png" />
          </image>
       </ImageView>
       <ImageView fitHeight="98.0" fitWidth="148.0" layoutX="400.0" layoutY="369.0">
          <image>
-            <Image url="@../Images%20-%20Copy/auto-3040255_1280.png" />
+            <Image url="@Images%20-%20Copy/auto-3040255_1280.png" />
          </image>
       </ImageView>
       <Text layoutX="272.0" layoutY="51.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: WHITE;" text="Self-Driving      Simulator" wrappingWidth="372.49658203125">
@@ -66,3 +66,4 @@
       </Text>
    </children>
 </Pane>
+
