@@ -5,7 +5,7 @@
 package edu.vanier.selfdriving.main;
 
 import edu.vanier.selfdriving.controllers.FXMLGamemodeController;
-import edu.vanier.selfdriving.controllers.FXMLLevelsController;
+import edu.vanier.selfdriving.controllers.FXMLLevelPickerController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;

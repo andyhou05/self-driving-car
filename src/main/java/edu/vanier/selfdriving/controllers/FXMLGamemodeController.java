@@ -30,14 +30,14 @@ public class FXMLGamemodeController {
     @FXML
     Button btnAiPlay;
 
-    FXMLLoader levelLoader = new FXMLLoader(getClass().getResource("/fxml/levels.fxml"));
-    FXMLLevelsController levelsController = new FXMLLevelsController();
+    FXMLLoader levelPickerLoader = new FXMLLoader(getClass().getResource("/fxml/levels.fxml"));
+    FXMLLevelPickerController levelPickerController = new FXMLLevelPickerController();
 
     EventHandler<ActionEvent> clickEvent = new EventHandler<>() {
         @Override
         public void handle(ActionEvent event) {
             try {
-                Main.scene.setRoot(levelLoader.load());
+                Main.scene.setRoot(levelPickerLoader.load());
             } catch (IOException ex) {
                 Logger.getLogger(FXMLGamemodeController.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -46,7 +46,7 @@ public class FXMLGamemodeController {
 
     public FXMLGamemodeController(Scene scene) {
         this.scene = scene;
-        levelLoader.setController(levelsController);
+        levelPickerLoader.setController(levelPickerController);
     }
 
     @FXML
