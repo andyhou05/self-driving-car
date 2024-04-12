@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+
+<Pane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1100.0" style="-fx-background-color: #80848a;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <ImageView blendMode="OVERLAY" fitHeight="800.0" fitWidth="1100.0" layoutY="3.0" nodeOrientation="INHERIT" pickOnBounds="true">
+         <image>
+            <Image url="@../UI/Images%20-%20Copy/vector-summer-spring-landscape-background-road-green-vall-valley-mountains-hills-clouds-sun-sky-flat-design-57173348-ezgif.com-resize.png" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="98.0" fitWidth="148.0" layoutX="496.0" layoutY="661.0">
+         <image>
+            <Image url="@../UI/Images%20-%20Copy/auto-3040255_1280.png" />
+         </image>
+      </ImageView>
+      <Text layoutX="389.0" layoutY="82.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: WHITE;" text="Self-Driving      Simulator" wrappingWidth="361.49658203125">
+         <font>
+            <Font name="System Bold Italic" size="55.0" />
+         </font>
+         <effect>
+            <DropShadow />
+         </effect>
+      </Text>
+      <VBox alignment="TOP_CENTER" blendMode="SRC_ATOP" layoutX="480.0" layoutY="275.0" prefHeight="178.0" prefWidth="148.0" spacing="30.0">
+         <children>
+            <Button fx:id="btnPlay" mnemonicParsing="false" prefHeight="33.0" prefWidth="103.0" style="-fx-background-insets: 0,0 0 5 0, 0 0 6 0, 0 0 7 0; -fx-background-radius: 8; -fx-font-weight: bold;" text="Play" textAlignment="CENTER">
+               <padding>
+                  <Insets bottom="8.0" left="10.0" right="10.0" top="8.0" />
+               </padding>
+               <opaqueInsets>
+                  <Insets bottom="5.0" />
+               </opaqueInsets>
+               <effect>
+                  <DropShadow />
+               </effect>
+            </Button>
+            <Button fx:id="btnAiPlay" mnemonicParsing="false" prefHeight="33.0" prefWidth="103.0" style="-fx-background-insets: 0,0 0 5 0, 0 0 6 0, 0 0 7 0; -fx-background-radius: 8; -fx-font-weight: bold;" text="AI play">
+               <padding>
+                  <Insets bottom="8.0" left="10.0" right="10.0" top="8.0" />
+               </padding>
+               <effect>
+                  <DropShadow />
+               </effect>
+            </Button>
+            <Button fx:id="btnAiVs" mnemonicParsing="false" prefHeight="33.0" prefWidth="103.0" style="-fx-background-insets: 0,0 0 5 0, 0 0 6 0, 0 0 7 0;; -fx-background-radius: 8;" text="Vs AI">
+               <padding>
+                  <Insets bottom="8.0" left="10.0" right="10.0" top="8.0" />
+               </padding>
+               <effect>
+                  <DropShadow />
+               </effect>
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Button>
+         </children>
+         <padding>
+            <Insets top="10.0" />
+         </padding>
+      </VBox>
+   </children>
+</Pane>

@@ -41,8 +41,8 @@ public class MainApp extends Application {
     CarController carController;
     Car carToFollow;
     ArrayList<Car> carGeneration = new ArrayList<>();
-    Image playerImage = new Image("/images/car_blue_5.png");
-    Image enemyImage = new Image("/images/car_yellow_3.png");
+    Image playerImage = new Image("/sprites/car_blue_5.png");
+    Image enemyImage = new Image("/sprites/car_yellow_3.png");
     int carCount = 50;
 
     @Override
