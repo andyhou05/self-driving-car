@@ -25,6 +25,10 @@ import org.slf4j.LoggerFactory;
 public class FXMLGameController {
 
     @FXML
+    Pane roadPane;
+    @FXML
+    Pane visualizerPane;
+    @FXML
     Button btnReset;
 
     public Road road;
@@ -36,7 +40,6 @@ public class FXMLGameController {
     Image enemyImage = new Image("/sprites/car_yellow_3.png");
     int carCount = 50;
     Pane root;
-    Scene scene = Main.scene;
     public AnimationTimer camera = new AnimationTimer() {
         private long FPS = 120L;
         private long INTERVAL = 1000000000L / FPS;
@@ -85,8 +88,8 @@ public class FXMLGameController {
     }
 
     public void createRoad() {
-        double roadWidth = Main.scene.getWidth() * 0.95;
-        road = new Road(Main.scene.getWidth() / 2, roadWidth);
+        double roadWidth = roadPane.getPrefWidth() * 0.95;
+        road = new Road(roadPane.getPrefWidth() / 2, roadWidth);
         root.getChildren().addAll(road.getLines());
     }
 
