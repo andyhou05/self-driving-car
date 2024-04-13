@@ -40,6 +40,8 @@ public class FXMLGameController {
     Image enemyImage = new Image("/sprites/car_yellow_3.png");
     int carCount = 50;
     Pane root;
+    Visualizer visualizer;
+    
     public AnimationTimer camera = new AnimationTimer() {
         private long FPS = 120L;
         private long INTERVAL = 1000000000L / FPS;
@@ -56,7 +58,7 @@ public class FXMLGameController {
                 }
 
                 moveCameraDown();
-
+                visualizer.updateVisualizer(carToFollow.getNeuralNetwork());
                 last = now;
             }
         }
@@ -83,7 +85,7 @@ public class FXMLGameController {
         spawner = new CarSpawner(4, -400, road, root, enemyImage);
         createCarGeneration();
         carController = new CarController(carGeneration, spawner.getCars());
-        Visualizer visualizer = new Visualizer(visualizerPane, carToFollow.getNeuralNetwork());
+        visualizer = new Visualizer(visualizerPane, carToFollow.getNeuralNetwork());
         
         camera.start();
     }
