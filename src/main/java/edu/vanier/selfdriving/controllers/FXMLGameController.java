@@ -83,6 +83,7 @@ public class FXMLGameController {
         spawner = new CarSpawner(4, -400, road, root, enemyImage);
         createCarGeneration();
         carController = new CarController(carGeneration, spawner.getCars());
+        Visualizer visualizer = new Visualizer(visualizerPane, carToFollow.getNeuralNetwork());
         
         camera.start();
     }
