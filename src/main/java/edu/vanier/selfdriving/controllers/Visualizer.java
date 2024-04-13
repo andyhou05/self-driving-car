@@ -11,6 +11,7 @@ import javafx.animation.AnimationTimer;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
 import javafx.scene.shape.StrokeType;
 
 /**
@@ -27,7 +28,7 @@ public class Visualizer {
     double bottom;
     double xOffset = 60;
     double yOffset = 120;
-    ArrayList<Circle> nodes = new ArrayList<>();
+    ArrayList<Circle> biases = new ArrayList<>();
     AnimationTimer animation = new AnimationTimer() {
         private long FPS = 120L;
         private long INTERVAL = 1000000000L / FPS;
@@ -36,7 +37,7 @@ public class Visualizer {
         @Override
         public void handle(long now) {
             if (now - last > INTERVAL) {
-                for (Circle node : nodes) {
+                for (Circle node : biases) {
                     node.setRotate(node.getRotate() + 0.5);
                 }
             }
@@ -53,29 +54,64 @@ public class Visualizer {
         right = pane.getPrefWidth() - xOffset;
         top = yOffset;
         bottom = pane.getPrefHeight() - yOffset;
-        initializeNodes();
+        initializeVisualizer();
         animation.start();
     }
 
     public void initializeVisualizer() {
-
+        initializeNodes();
     }
 
     void initializeNodes() {
         initializeNodesInLayer(network.getInput(), bottom);
         initializeNodesInLayer(network.getHidden(), MathUtils.lerp(bottom, top, 0.5));
         initializeNodesInLayer(network.getOutput(), top);
+        
+        initializeConnections();
     }
 
     void initializeNodesInLayer(double[] layer, double yPosition) {
         for (int i = 0; i < layer.length; i++) {
             double xPosition = MathUtils.lerp(left, right, (double) i / (layer.length - 1));
-            Circle node = new Circle(xPosition, yPosition, 20, Color.TRANSPARENT);
-            node.setStroke(Color.WHITE);
-            node.setStrokeWidth(2);
-            node.getStrokeDashArray().addAll(4d, 7.4d);
-            pane.getChildren().add(node);
-            nodes.add(node);
+            Circle bias = new Circle(xPosition, yPosition, 25, Color.TRANSPARENT);
+            Circle node = new Circle(xPosition, yPosition, 20, Color.WHITE);
+            bias.setStroke(Color.WHITE);
+            bias.setStrokeWidth(2);
+            bias.getStrokeDashArray().addAll(4d, 7.4d);
+            pane.getChildren().addAll(node, bias);
+            biases.add(bias);
         }
+    }
+
+    void initializeConnections(){
+        int inputAmount = network.getInput().length;
+        int hiddenAmount = network.getHidden().length;
+        int outputAmount = network.getOutput().length;
+        
+        for(int i = 0; i < inputAmount;i++){
+            Circle inputNode = biases.get(i);
+            for(int j = inputAmount; j < biases.size() - outputAmount;j++){
+                Circle hiddenNode = biases.get(j);
+                Line connection_ih = new Line(inputNode.getCenterX(), inputNode.getCenterY() - inputNode.getRadius(), hiddenNode.getCenterX(), hiddenNode.getCenterY() + hiddenNode.getRadius());
+                connection_ih.setStrokeWidth(1.5);
+                connection_ih.setStroke(Color.WHITE);
+                pane.getChildren().add(connection_ih);
+            }
+        }
+        
+        for(int i = inputAmount; i < biases.size() - outputAmount;i++){
+            Circle hiddenNode = biases.get(i);
+            for(int j = inputAmount + hiddenAmount; j < biases.size(); j++){
+                Circle outputNode = biases.get(j);
+                Line connection_ho = new Line(hiddenNode.getCenterX(), hiddenNode.getCenterY() - hiddenNode.getRadius(), outputNode.getCenterX(), outputNode.getCenterY() + outputNode.getRadius());
+                connection_ho.setStrokeWidth(1.5);
+                connection_ho.setStroke(Color.WHITE);
+                pane.getChildren().add(connection_ho);
+            }
+        }
+    }
+    
+    void initalizeConnectionsInLayer(){
+        
     }
 }
