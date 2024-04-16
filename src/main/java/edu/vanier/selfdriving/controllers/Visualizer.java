@@ -29,6 +29,8 @@ public class Visualizer {
     double yOffset = 120;
     ArrayList<Circle> biases = new ArrayList<>();
     ArrayList<Circle> nodes = new ArrayList<>();
+    ArrayList<Line> connections_ih = new ArrayList<>();
+    ArrayList<Line> connections_ho = new ArrayList<>();
     AnimationTimer animation = new AnimationTimer() {
         private long FPS = 120L;
         private long INTERVAL = 1000000000L / FPS;
@@ -95,7 +97,7 @@ public class Visualizer {
                 Circle hiddenNode = biases.get(j);
                 Line connection_ih = new Line(inputNode.getCenterX(), inputNode.getCenterY() - inputNode.getRadius(), hiddenNode.getCenterX(), hiddenNode.getCenterY() + hiddenNode.getRadius());
                 connection_ih.setStrokeWidth(1.5);
-                connection_ih.setStroke(Color.WHITE);
+                connections_ih.add(connection_ih);
                 pane.getChildren().add(connection_ih);
             }
         }
@@ -105,8 +107,8 @@ public class Visualizer {
             for (int j = inputAmount + hiddenAmount; j < biases.size(); j++) {
                 Circle outputNode = biases.get(j);
                 Line connection_ho = new Line(hiddenNode.getCenterX(), hiddenNode.getCenterY() - hiddenNode.getRadius(), outputNode.getCenterX(), outputNode.getCenterY() + outputNode.getRadius());
-                connection_ho.setStrokeWidth(1.5);
-                connection_ho.setStroke(Color.WHITE);
+                connection_ho.setStrokeWidth(2);
+                connections_ho.add(connection_ho);
                 pane.getChildren().add(connection_ho);
             }
         }
@@ -115,33 +117,54 @@ public class Visualizer {
     public void updateVisualizer(NeuralNetwork newNetwork) {
         network = newNetwork;
         updateLayer(network.getInput(), 0, network.getInput().length);
-        updateLayer(network.getHidden(),network.getBias_h(), network.getInput().length, nodes.size() - network.getOutput().length);
-        updateLayer(network.getOutput(),network.getBias_o(), nodes.size() - network.getOutput().length, nodes.size());
+        updateLayer(network.getHidden(), network.getBias_h(), network.getInput().length, nodes.size() - network.getOutput().length);
+        updateLayer(network.getOutput(), network.getBias_o(), nodes.size() - network.getOutput().length, nodes.size());
+        
+        updateConnections(network.getWeights_ih(), connections_ih);
+        updateConnections(network.getWeights_ho(), connections_ho);
     }
 
-    
     void updateLayer(double[] layer, int startIndex, int endIndex) {
         for (int i = startIndex, j = 0; i < endIndex; j++, i++) {
             double nodeReading = layer[j];
             Circle node = nodes.get(i);
-            node.setFill(Color.GREEN);
+            node.setFill(Color.LIME);
             node.setOpacity(nodeReading);
         }
     }
-    
-    void updateLayer(double[] layer, double [] bias, int startIndex, int endIndex) {
+
+    void updateLayer(double[] layer, double[] bias, int startIndex, int endIndex) {
         updateLayer(layer, startIndex, endIndex);
         Color biasColor;
         for (int i = startIndex, j = 0; i < endIndex; j++, i++) {
             double nodeBias = bias[j];
             Circle biasCircle = biases.get(i);
-            if(nodeBias > 0){
-                biasColor = Color.GREEN;
-            } else{
-                biasColor = Color.RED;
+            if (nodeBias > 0) {
+                biasColor = Color.LIME;
+            } else {
+                biasColor = Color.CRIMSON;
             }
             biasCircle.setStroke(biasColor);
             biasCircle.setOpacity(Math.abs(nodeBias));
+        }
+    }
+
+    void updateConnections(double[][] weights, ArrayList<Line> connections) {
+        int counter = 0;
+        for (int i = 0; i < weights.length; i++) {
+            for (int j = 0; j < weights[i].length; j++, counter++) {
+                double weight = weights[i][j];
+                Line connection = connections.get(counter);
+                Color color;
+                if (weight > 0) {
+                    color = Color.LIME;
+                } else {
+                    color = Color.CRIMSON;
+                }
+                double percentage = Math.abs(weight)/3.0f;
+                connection.setStroke(color);
+                connection.setOpacity(percentage);
+            }
         }
     }
 }
