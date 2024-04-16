@@ -29,11 +29,23 @@ public class FXMLGamemodeController {
     Button btnAiVs;
     @FXML
     Button btnAiPlay;
-
+    @FXML
+    Button carChooser;
     FXMLLoader levelPickerLoader = new FXMLLoader(getClass().getResource("/fxml/levels.fxml"));
     FXMLLevelPickerController levelPickerController = new FXMLLevelPickerController();
-    FXMLLoader carsPicker = new FXMLLoader(getClass().getResource("/fxml/levels.cars"));
+    FXMLLoader carsPickerLoader = new FXMLLoader(getClass().getResource("/fxml/cars.fxml"));
     FXMLCarsPickerController carsPickerController = new FXMLCarsPickerController();
+    
+    EventHandler<ActionEvent> carChooserClickEvent = new EventHandler<>() {
+        @Override
+        public void handle(ActionEvent event) {
+            try {
+                Main.scene.setRoot(carsPickerLoader.load());
+            } catch (IOException ex) {
+                Logger.getLogger(FXMLGamemodeController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    };
     
     EventHandler<ActionEvent> clickEvent = new EventHandler<>() {
         @Override
@@ -49,8 +61,11 @@ public class FXMLGamemodeController {
     public FXMLGamemodeController(Scene scene) {
         this.scene = scene;
         levelPickerLoader.setController(levelPickerController);
+        carsPickerLoader.setController(carsPickerController);
     }
-
+    
+    
+    
     @FXML
     public void initialize() {
         btnPlay.setOnAction(clickEvent);
@@ -58,5 +73,6 @@ public class FXMLGamemodeController {
         btnAiVs.setOnAction(clickEvent);
 
         btnAiPlay.setOnAction(clickEvent);
+        carChooser.setOnAction(carChooserClickEvent);
     }
 }

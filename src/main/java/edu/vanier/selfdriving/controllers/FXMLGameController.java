@@ -36,10 +36,12 @@ public class FXMLGameController {
     CarController carController;
     Car carToFollow;
     ArrayList<Car> carGeneration = new ArrayList<>();
-    Image playerImage = new Image("/sprites/car_blue_5.png");
+    Image playerImage = new Image(carNumber);
     Image enemyImage = new Image("/sprites/car_yellow_3.png");
     int carCount = 50;
     Pane root;
+    public static String carNumber = "";
+    
     public AnimationTimer camera = new AnimationTimer() {
         private long FPS = 120L;
         private long INTERVAL = 1000000000L / FPS;

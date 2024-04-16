@@ -1,1 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<Pane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1100.0" style="-fx-background-color: #80848a;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <HBox alignment="CENTER" layoutX="157.0" layoutY="173.0" prefHeight="495.0" prefWidth="788.0" spacing="70.0">
+         <children>
+            <Button fx:id="btnLevel11" blendMode="SRC_ATOP" mnemonicParsing="false" prefHeight="303.0" prefWidth="173.0" style="-fx-background-color: GREY;">
+               <graphic>
+                  <ImageView fitHeight="322.0" fitWidth="194.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../sprites/car_black_5.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <Button fx:id="btnLevel21" mnemonicParsing="false" prefHeight="303.0" prefWidth="173.0" style="-fx-background-color: GREY;">
+               <graphic>
+                  <ImageView fitHeight="398.0" fitWidth="194.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../sprites/car_blue_5.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <Button fx:id="btnLevel31" mnemonicParsing="false" prefHeight="303.0" prefWidth="173.0" style="-fx-background-color: GREY;">
+               <graphic>
+                  <ImageView fitHeight="348.0" fitWidth="194.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../sprites/car_green_5.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <Button fx:id="btnLevel311" mnemonicParsing="false" prefHeight="303.0" prefWidth="173.0" style="-fx-background-color: GREY;">
+               <graphic>
+                  <ImageView fitHeight="348.0" fitWidth="194.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../sprites/car_red_5.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+         </children>
+         <padding>
+            <Insets left="-120.0" />
+         </padding>
+      </HBox>
+      <ImageView blendMode="OVERLAY" fitHeight="800.0" fitWidth="1100.0" layoutY="3.0" nodeOrientation="INHERIT" opacity="0.0" pickOnBounds="true">
+         <image>
+            <Image url="@../UI/Images%20-%20Copy/Background%20pic.jpeg" />
+         </image>
+      </ImageView>
+      <Text layoutX="409.0" layoutY="162.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: WHITE;" text="The Garage" wrappingWidth="361.49658203125">
+         <font>
+            <Font name="System Bold Italic" size="55.0" />
+         </font>
+         <effect>
+            <DropShadow />
+         </effect>
+      </Text>
+   </children>
+</Pane>
