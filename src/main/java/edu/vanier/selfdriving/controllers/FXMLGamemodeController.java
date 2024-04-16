@@ -5,6 +5,7 @@
 package edu.vanier.selfdriving.controllers;
 
 import edu.vanier.selfdriving.main.Main;
+import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -14,6 +15,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 
 /**
  *
@@ -22,6 +25,7 @@ import javafx.scene.control.Button;
 public class FXMLGamemodeController {
 
     Scene scene;
+    MediaPlayer mediaPlayer;
 
     @FXML
     Button btnPlay;
@@ -32,6 +36,8 @@ public class FXMLGamemodeController {
 
     FXMLLoader levelPickerLoader = new FXMLLoader(getClass().getResource("/fxml/levels.fxml"));
     FXMLLevelPickerController levelPickerController = new FXMLLevelPickerController();
+    FXMLLoader carsPicker = new FXMLLoader(getClass().getResource("/fxml/levels.cars"));
+    FXMLCarsPickerController carsPickerController = new FXMLCarsPickerController();
 
     EventHandler<ActionEvent> clickEvent = new EventHandler<>() {
         @Override
@@ -56,5 +62,14 @@ public class FXMLGamemodeController {
         btnAiVs.setOnAction(clickEvent);
 
         btnAiPlay.setOnAction(clickEvent);
+        music("src/main/resources/Music/Homepage_Level.mp3");
     }
+
+    public void music(String path) {
+        File soundFile = new File(path);
+        Media h = new Media(soundFile.toURI().toString());
+        mediaPlayer = new MediaPlayer(h);
+        mediaPlayer.play();
+    }
+
 }

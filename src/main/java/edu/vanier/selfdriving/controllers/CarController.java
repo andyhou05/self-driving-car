@@ -117,17 +117,18 @@ public class CarController {
             enemyCarReading = Math.max(enemyCarReading, getSensorCarReading(sensor, enemyCar));
         }
         // Set the raeding of the sensor to be the highest reading between enemyCar and border
-        double newReading = Math.max(getSensorBorderReading(car, sensor), enemyCarReading);
+        double newReading = Math.max(getSensorBorderReading(sensor), enemyCarReading);
         sensor.setReading(newReading);
     }
 
-    private double getSensorBorderReading(Car car, Sensor sensor) {
+    private double getSensorBorderReading(Sensor sensor) {
+        Car car = sensor.getCar();
         Line sensorLine = sensor.getSensorLine();
         Line leftBorder = car.getRoad().getLeftBorder();
         Line rightBorder = car.getRoad().getRightBorder();
         double sensorLength = Sensor.getSensorLength();
-        double position_x = car.getCarStack().getLayoutX() + 0.5 * car.getCarWidth();
-        double position_y = car.getyPosition() + 0.5 * car.getCarLength();
+        double position_x = car.getCarStack().getBoundsInParent().getCenterX();
+        double position_y = car.getCarStack().getBoundsInParent().getCenterY();
 
         // Create a shape between intersection of sensor and left and right borders.
         Shape leftIntersection = Shape.intersect(sensorLine, leftBorder);
@@ -168,8 +169,8 @@ public class CarController {
         Line sensorLine = sensor.getSensorLine();
         Shape intersection = Shape.intersect(sensorLine, car.getHitBox()); // If there is no intersection, this returns a shape with centerX == -0.5
         double sensorLength = Sensor.getSensorLength();
-        double position_x = car.getCarStack().getLayoutX() + 0.5 * car.getCarWidth();
-        double position_y = car.getyPosition() + 0.5 * car.getCarLength();
+        double position_x = sensor.getCar().getCarStack().getBoundsInParent().getCenterX();
+        double position_y = sensor.getCar().getCarStack().getBoundsInParent().getCenterY();
         double intersection_x = intersection.getBoundsInParent().getCenterX();
         double intersection_y = intersection.getBoundsInParent().getMaxY();
         if (intersection_x != -0.5) {

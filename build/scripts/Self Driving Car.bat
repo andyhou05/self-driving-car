@@ -71,7 +71,7 @@ set CLASSPATH=%APP_HOME%\lib\Self Driving Car.jar;%APP_HOME%\lib\javafx-fxml-20.
 
 
 @rem Execute Self Driving Car
-"%JAVA_EXE%" %DEFAULT_JVM_OPTS% %JAVA_OPTS% %SELF_DRIVING_CAR_OPTS%  -classpath "%CLASSPATH%" edu.vanier.selfdriving.main.MainApp %*
+"%JAVA_EXE%" %DEFAULT_JVM_OPTS% %JAVA_OPTS% %SELF_DRIVING_CAR_OPTS%  -classpath "%CLASSPATH%" edu.vanier.selfdriving.main.Main %*
 
 :end
 @rem End local scope for the variables with windows NT shell
