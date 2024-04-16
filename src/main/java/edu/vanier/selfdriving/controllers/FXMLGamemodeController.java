@@ -69,6 +69,7 @@ public class FXMLGamemodeController {
         File soundFile = new File(path);
         Media h = new Media(soundFile.toURI().toString());
         mediaPlayer = new MediaPlayer(h);
+        mediaPlayer.setVolume(0.1);
         mediaPlayer.play();
     }
 

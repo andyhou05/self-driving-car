@@ -12,7 +12,6 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
-import javafx.scene.shape.StrokeType;
 
 /**
  *
@@ -125,34 +124,24 @@ public class Visualizer {
         for (int i = startIndex, j = 0; i < endIndex; j++, i++) {
             double nodeReading = layer[j];
             Circle node = nodes.get(i);
-            Circle biasCircle = biases.get(i);
-            Color nodeColor;
-            if (nodeReading > 0.25) {
-                nodeColor = Color.GREEN;
-            } else {
-                nodeColor = Color.RED;
-            }
-            node.setFill(nodeColor);
-            biasCircle.setStroke(nodeColor);
-            
+            node.setFill(Color.GREEN);
+            node.setOpacity(nodeReading);
         }
     }
     
     void updateLayer(double[] layer, double [] bias, int startIndex, int endIndex) {
+        updateLayer(layer, startIndex, endIndex);
+        Color biasColor;
         for (int i = startIndex, j = 0; i < endIndex; j++, i++) {
-            double nodeReading = layer[j];
             double nodeBias = bias[j];
-            Circle node = nodes.get(i);
             Circle biasCircle = biases.get(i);
-            Color nodeColor;
-            if (nodeReading > nodeBias) {
-                nodeColor = Color.GREEN;
-            } else {
-                nodeColor = Color.RED;
+            if(nodeBias > 0){
+                biasColor = Color.GREEN;
+            } else{
+                biasColor = Color.RED;
             }
-            node.setFill(nodeColor);
-            biasCircle.setStroke(nodeColor);
-
+            biasCircle.setStroke(biasColor);
+            biasCircle.setOpacity(Math.abs(nodeBias));
         }
     }
 }
