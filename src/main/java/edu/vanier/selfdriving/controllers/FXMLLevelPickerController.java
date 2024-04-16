@@ -54,5 +54,13 @@ public class FXMLLevelPickerController {
         btnLevel2.setOnAction(gameSwitch);
 
         btnLevel3.setOnAction(gameSwitch);
+         music();
+    }
+        MediaPlayer mediaPlayer;
+        public void music(){
+  File soundFile = new File("C:\\Users\\2264257\\Documents\\self-driving-car\\src\\main\\resources\\Music\\Homepage_Level.mp3");
+		Media h = new Media(soundFile.toURI().toString());
+		mediaPlayer = new MediaPlayer(h);
+		mediaPlayer.play();
     }
 }
