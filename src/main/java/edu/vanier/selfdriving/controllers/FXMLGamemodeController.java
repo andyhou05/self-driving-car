@@ -32,7 +32,9 @@ public class FXMLGamemodeController {
 
     FXMLLoader levelPickerLoader = new FXMLLoader(getClass().getResource("/fxml/levels.fxml"));
     FXMLLevelPickerController levelPickerController = new FXMLLevelPickerController();
-
+    FXMLLoader carsPicker = new FXMLLoader(getClass().getResource("/fxml/levels.cars"));
+    FXMLCarsPickerController carsPickerController = new FXMLCarsPickerController();
+    
     EventHandler<ActionEvent> clickEvent = new EventHandler<>() {
         @Override
         public void handle(ActionEvent event) {
