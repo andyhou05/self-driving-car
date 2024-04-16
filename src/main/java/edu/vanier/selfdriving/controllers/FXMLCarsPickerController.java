@@ -3,6 +3,7 @@ package edu.vanier.selfdriving.controllers;
 import edu.vanier.selfdriving.models.Car;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 /*
@@ -30,16 +31,19 @@ public class FXMLCarsPickerController {
     Button switchCars;
     
     
+    public void updateCars(){
+        
+    }
+    
     
     @FXML
     void initalize(){
         
-        for(int i = 0; i< Car.listOfTypes[typeCounter%4].length;i++){
-              
-        }
+        
         
         switchCars.setOnAction(e ->{
-            
+            typeCounter+=1;
+            updateCars();
     });
         
         
