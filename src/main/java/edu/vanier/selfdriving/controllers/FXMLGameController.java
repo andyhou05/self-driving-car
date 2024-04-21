@@ -36,10 +36,10 @@ public class FXMLGameController {
     CarController carController;
     Car carToFollow;
     ArrayList<Car> carGeneration = new ArrayList<>();
-    Image playerImage = new Image(carNumber);
     Image enemyImage = new Image("/sprites/car_yellow_3.png");
     int carCount = 50;
     Pane root;
+    public static String carColor = "";
     public static String carNumber = "";
     
     public AnimationTimer camera = new AnimationTimer() {
@@ -66,37 +66,7 @@ public class FXMLGameController {
 
     @FXML
     public void initialize() {
-        btnReset.setOnAction(resetEvent);
-    }
-
-    EventHandler<ActionEvent> resetEvent = new EventHandler<>() {
-        @Override
-        public void handle(ActionEvent event) {
-            removeAllCars();
-            spawner.spawn();
-            createCarGeneration();
-            road.resetLinePositions();
-        }
-    };
-
-    public void initalizeLevel() {
-        root = (Pane) Main.scene.getRoot();
-        createRoad();
-        spawner = new CarSpawner(4, -400, road, root, enemyImage);
-        createCarGeneration();
-        carController = new CarController(carGeneration, spawner.getCars());
-        Visualizer visualizer = new Visualizer(visualizerPane, carToFollow.getNeuralNetwork());
-        
-        camera.start();
-    }
-
-    public void createRoad() {
-        double roadWidth = roadPane.getPrefWidth() * 0.95;
-        road = new Road(roadPane.getPrefWidth() / 2, roadWidth);
-        root.getChildren().addAll(road.getLines());
-    }
-
-    public void createCarGeneration() {
+        Image playerImage = new Image("/sprites/car_"+carColor+"_"+carNumber+".png");
         for (int i = 0; i < carCount; i++) {
             Car newCar = new Car(road.getX_position_lane_two(), 450, playerImage);
             newCar.setRoad(road);
@@ -111,7 +81,35 @@ public class FXMLGameController {
         }
         carToFollow = carGeneration.get(0);
         carToFollow.setVisible(true);
+        btnReset.setOnAction(resetEvent);
     }
+
+    EventHandler<ActionEvent> resetEvent = new EventHandler<>() {
+        @Override
+        public void handle(ActionEvent event) {
+            removeAllCars();
+            spawner.spawn();
+            
+            road.resetLinePositions();
+        }
+    };
+
+    public void initalizeLevel() {
+        root = (Pane) Main.scene.getRoot();
+        createRoad();
+        spawner = new CarSpawner(4, -400, road, root, enemyImage);
+        carController = new CarController(carGeneration, spawner.getCars());
+        Visualizer visualizer = new Visualizer(visualizerPane, carToFollow.getNeuralNetwork());
+        
+        camera.start();
+    }
+
+    public void createRoad() {
+        double roadWidth = roadPane.getPrefWidth() * 0.95;
+        road = new Road(roadPane.getPrefWidth() / 2, roadWidth);
+        root.getChildren().addAll(road.getLines());
+    }
+
 
     private void chooseNextCar(double deathPosition) {
         Car nextCar = carToFollow;
