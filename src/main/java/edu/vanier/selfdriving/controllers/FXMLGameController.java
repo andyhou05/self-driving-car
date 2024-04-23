@@ -3,6 +3,8 @@ package edu.vanier.selfdriving.controllers;
 import edu.vanier.selfdriving.main.Main;
 import edu.vanier.selfdriving.models.Car;
 import edu.vanier.selfdriving.models.Road;
+import edu.vanier.selfdriving.neuralnetwork.Mutation;
+import edu.vanier.selfdriving.neuralnetwork.NeuralNetwork;
 import java.util.ArrayList;
 import javafx.animation.AnimationTimer;
 import javafx.event.ActionEvent;
@@ -30,9 +32,12 @@ public class FXMLGameController {
     Pane visualizerPane;
     @FXML
     Button btnReset;
+    @FXML
+    Button btnSave;
 
     public Road road;
     public CarSpawner spawner;
+    NeuralNetwork bestNetwork;
     CarController carController;
     Car carToFollow;
     ArrayList<Car> carGeneration = new ArrayList<>();
@@ -41,7 +46,9 @@ public class FXMLGameController {
     int carCount = 50;
     Pane root;
     Visualizer visualizer;
-    
+    int index = 0;
+
+    // Animation that controls the game itself
     public AnimationTimer camera = new AnimationTimer() {
         private long FPS = 120L;
         private long INTERVAL = 1000000000L / FPS;
@@ -50,14 +57,17 @@ public class FXMLGameController {
         @Override
         public void handle(long now) {
             if (now - last > INTERVAL) {
-                // Choose the next car that is doing the best
+                // Choose the next car if current one is dead
                 if (carToFollow.isDead() && !carGeneration.isEmpty()) {
                     carToFollow.setVisible(false);
                     chooseNextCar(carToFollow.getCarStack().getLayoutY());
                     carToFollow.setCarVisible(true);
                 }
 
+                // Update Camera
                 moveCameraDown();
+
+                // Update Viualizer
                 visualizer.updateVisualizer(carToFollow.getNeuralNetwork());
                 last = now;
             }
@@ -67,6 +77,7 @@ public class FXMLGameController {
     @FXML
     public void initialize() {
         btnReset.setOnAction(resetEvent);
+        btnSave.setOnAction(saveEvent);
     }
 
     EventHandler<ActionEvent> resetEvent = new EventHandler<>() {
@@ -74,8 +85,24 @@ public class FXMLGameController {
         public void handle(ActionEvent event) {
             removeAllCars();
             spawner.spawn();
-            createCarGeneration();
+            createCarGeneration(bestNetwork);
             road.resetLinePositions();
+        }
+    };
+    EventHandler<ActionEvent> saveEvent = new EventHandler<>() {
+        @Override
+        public void handle(ActionEvent event) {
+            bestNetwork = carToFollow.getNeuralNetwork();
+            removeAllCars();
+            spawner.spawn();
+            createCarGeneration(bestNetwork);
+            road.resetLinePositions();
+        }
+    };
+    EventHandler<ActionEvent> nextEvent = new EventHandler<>() {
+        @Override
+        public void handle(ActionEvent event) {
+            goToNextCar(carToFollow.getCarStack().getLayoutY());
         }
     };
 
@@ -86,7 +113,7 @@ public class FXMLGameController {
         createCarGeneration();
         carController = new CarController(carGeneration, spawner.getCars());
         visualizer = new Visualizer(visualizerPane, carToFollow.getNeuralNetwork());
-        
+
         camera.start();
     }
 
@@ -113,6 +140,16 @@ public class FXMLGameController {
         carToFollow.setVisible(true);
     }
 
+    public void createCarGeneration(NeuralNetwork network) {
+        createCarGeneration();
+        if (network != null) {
+            for (int i = 0; i < carCount; i++) {
+                carGeneration.get(i).setNeuralNetwork(Mutation.mutate(network));
+            }
+            carToFollow.setNeuralNetwork(bestNetwork);
+        }
+    }
+
     private void chooseNextCar(double deathPosition) {
         Car nextCar = carToFollow;
         double deltaPosition = 0;
@@ -127,6 +164,30 @@ public class FXMLGameController {
                 nextCar = currentCar;
                 deltaPosition = nextCar.getCarStack().getLayoutY() - deathPosition;
             }
+        }
+        carToFollow = nextCar;
+
+        // In order to follow a new car, we must move everything down into the scene's frame
+        for (Line sensorLine : nextCar.getSensorsLines()) {
+            sensorLine.setVisible(true);
+            sensorLine.setTranslateY(carToFollow.getCarStack().getTranslateY());
+        }
+        for (StackPane enemyStack : spawner.getCarsStack()) {
+            enemyStack.setLayoutY(enemyStack.getLayoutY() - deltaPosition);
+        }
+        for (Car otherCar : carGeneration) {
+            otherCar.getCarStack().setLayoutY(otherCar.getCarStack().getLayoutY() - deltaPosition);
+        }
+    }
+
+    private void goToNextCar(double position) {
+        Car nextCar = carToFollow;
+        double deltaPosition = 0;
+        for (int i = 0; i < carGeneration.size(); i++) {
+            updateIndex();
+            nextCar = carGeneration.get(index);
+            deltaPosition = nextCar.getCarStack().getLayoutY() - position;
+
         }
         carToFollow = nextCar;
 
@@ -176,5 +237,12 @@ public class FXMLGameController {
         }
         spawner.clear();
         carGeneration.clear();
+    }
+    
+    void updateIndex(){
+        index++;
+        if(index > carGeneration.size() - 1){
+            index = 0;
+        }
     }
 }

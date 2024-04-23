@@ -50,6 +50,7 @@ public class CarController {
                 for (int i = 0; i < cars.size(); i++) {
                     Car car = cars.get(i);
                     moveCar(car);
+                    // If the current car is dead, no need to check for collisions/sensors
                     if(car.isDead()){
                         continue;
                     }
@@ -61,6 +62,7 @@ public class CarController {
                         updateSensorReading(car, car.getSensors()[j]);
                         car.getInputs()[j] = car.getSensors()[j].getReading();
                     }
+                    // Update Neural Network
                     updateNeuralNetwork(car);
                 }
                 last = now;

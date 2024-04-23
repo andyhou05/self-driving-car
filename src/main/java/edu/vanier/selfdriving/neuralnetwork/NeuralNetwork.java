@@ -41,6 +41,13 @@ public class NeuralNetwork {
         randomize();
     }
 
+    public NeuralNetwork(double[] bias_h, double[] bias_o, double[][] weights_ih, double[][] weights_ho) {
+        this.bias_h = bias_h;
+        this.bias_o = bias_o;
+        this.weights_ih = weights_ih;
+        this.weights_ho = weights_ho;
+    }
+
     // Randomize all the input values, weights, and biases
     public void randomize() {
         // Bias values of the hidden layer
@@ -49,7 +56,7 @@ public class NeuralNetwork {
         }
         // Bias values of the output layer
         for (int i = 0; i < bias_o.length; i++) {
-            bias_o[i] = Math.random(); // random number between 0 and 1
+            bias_o[i] = Math.random() * 2 - 1; // random number between -1 and 1
         }
         // Weights between the input and hidden layers
         for (int i = 0; i < weights_ih.length; i++) {
