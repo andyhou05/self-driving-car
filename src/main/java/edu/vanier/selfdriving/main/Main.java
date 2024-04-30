@@ -6,10 +6,13 @@ package edu.vanier.selfdriving.main;
 
 import edu.vanier.selfdriving.controllers.FXMLGamemodeController;
 import edu.vanier.selfdriving.controllers.FXMLLevelPickerController;
+import java.io.File;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
 
 /**
@@ -17,6 +20,14 @@ import javafx.stage.Stage;
  * @author USER
  */
 public class Main extends Application {
+    MediaPlayer mediaPlayer;
+    public void music(String path) {
+        File soundFile = new File(path);
+        Media h = new Media(soundFile.toURI().toString());
+        mediaPlayer = new MediaPlayer(h);
+        mediaPlayer.setVolume(0.1);
+        mediaPlayer.play();
+    }
 
     public static Scene scene;
     
@@ -29,7 +40,9 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-
+                
+        
+        music("src/main/resources/Music/Homepage_Level.mp3");
         gamemodeLoader.setController(gamemodeController);
 
         Parent root = gamemodeLoader.load();

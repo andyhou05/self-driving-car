@@ -5,7 +5,6 @@
 package edu.vanier.selfdriving.controllers;
 
 import edu.vanier.selfdriving.main.Main;
-import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -14,9 +13,6 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
-import javafx.scene.layout.Pane;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
 
 /**
  *
@@ -30,7 +26,9 @@ public class FXMLLevelPickerController {
     Button btnLevel2;
     @FXML
     Button btnLevel3;
-
+    @FXML
+    Button returnButton;
+    
     FXMLLoader levelLoader = new FXMLLoader(getClass().getResource("/fxml/game.fxml"));
     FXMLGameController levelController = new FXMLGameController();
 
@@ -52,10 +50,20 @@ public class FXMLLevelPickerController {
 
     @FXML
     public void initialize() {
+        FXMLLoader menuLoader = new FXMLLoader(getClass().getResource("/fxml/gamemode.fxml"));
+         FXMLGamemodeController menuController = new FXMLGamemodeController(Main.scene);
+         menuLoader.setController(menuController);
         btnLevel1.setOnAction(gameSwitch);
 
         btnLevel2.setOnAction(gameSwitch);
 
         btnLevel3.setOnAction(gameSwitch);
+        returnButton.setOnAction(e->{
+            try {
+                Main.scene.setRoot(menuLoader.load());
+            } catch (IOException ex) {
+                Logger.getLogger(FXMLGamemodeController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
     }
 }
