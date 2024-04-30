@@ -261,6 +261,15 @@ public class CarController {
                         goRight(car);
                         break;
                 }
+            } else{
+                switch(i){
+                    case 2:
+                        noLeftTurn(car);
+                        break;
+                    case 3:
+                        noRightTurn(car);
+                        break;
+                }
             }
         }
     }
