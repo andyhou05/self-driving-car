@@ -5,19 +5,20 @@ import edu.vanier.selfdriving.models.Car;
 import edu.vanier.selfdriving.models.Road;
 import edu.vanier.selfdriving.neuralnetwork.Mutation;
 import edu.vanier.selfdriving.neuralnetwork.NeuralNetwork;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.animation.AnimationTimer;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.Scene;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Line;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Controller class of the MainApp's UI.
@@ -36,7 +37,9 @@ public class FXMLGameController {
     Button btnSave;
     @FXML
     Button btnHardReset;
-
+    @FXML
+    Button returnButton;
+    
     public Road road;
     public CarSpawner spawner;
     NeuralNetwork bestNetwork;
@@ -83,9 +86,21 @@ public class FXMLGameController {
 
     @FXML
     public void initialize() {
+        FXMLLoader levelsLoader = new FXMLLoader(getClass().getResource("/fxml/levels.fxml"));
+        FXMLLevelPickerController levelsController = new FXMLLevelPickerController();
+        levelsLoader.setController(levelsController);
         btnReset.setOnAction(resetEvent);
         btnSave.setOnAction(saveEvent);
         btnHardReset.setOnAction(hardResetEvent);
+        returnButton.setOnAction(e->{
+            try {
+                Main.scene.setRoot(levelsLoader.load());
+            } catch (IOException ex) {
+                Logger.getLogger(FXMLGameController.class.getName()).log(Level.SEVERE, null, ex);
+                
+            }
+        
+        });
     }
 
     EventHandler<ActionEvent> resetEvent = new EventHandler<>() {
