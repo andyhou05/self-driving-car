@@ -33,12 +33,25 @@ public class FXMLGamemodeController {
     Button btnAiVs;
     @FXML
     Button btnAiPlay;
-
+    @FXML
+    Button carChooser;
     FXMLLoader levelPickerLoader = new FXMLLoader(getClass().getResource("/fxml/levels.fxml"));
     FXMLLevelPickerController levelPickerController = new FXMLLevelPickerController();
-    FXMLLoader carsPicker = new FXMLLoader(getClass().getResource("/fxml/levels.cars"));
+    FXMLLoader carsPickerLoader = new FXMLLoader(getClass().getResource("/fxml/cars.fxml"));
     FXMLCarsPickerController carsPickerController = new FXMLCarsPickerController();
 
+    
+    EventHandler<ActionEvent> carChooserClickEvent = new EventHandler<>() {
+        @Override
+        public void handle(ActionEvent event) {
+            try {
+                Main.scene.setRoot(carsPickerLoader.load());
+            } catch (IOException ex) {
+                Logger.getLogger(FXMLGamemodeController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    };
+    
     EventHandler<ActionEvent> clickEvent = new EventHandler<>() {
         @Override
         public void handle(ActionEvent event) {
@@ -53,8 +66,11 @@ public class FXMLGamemodeController {
     public FXMLGamemodeController(Scene scene) {
         this.scene = scene;
         levelPickerLoader.setController(levelPickerController);
+        carsPickerLoader.setController(carsPickerController);
     }
-
+    
+    
+    
     @FXML
     public void initialize() {
         btnPlay.setOnAction(clickEvent);
@@ -63,6 +79,7 @@ public class FXMLGamemodeController {
 
         btnAiPlay.setOnAction(clickEvent);
         music("src/main/resources/Music/Homepage_Level.mp3");
+        carChooser.setOnAction(carChooserClickEvent);
     }
 
     public void music(String path) {

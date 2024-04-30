@@ -22,7 +22,7 @@ public class Main extends Application {
     
     FXMLLoader gamemodeLoader = new FXMLLoader(getClass().getResource("/fxml/gamemode.fxml"));
     FXMLGamemodeController gamemodeController = new FXMLGamemodeController(scene);
-
+    
     public static void main(String[] args) {
         launch(args);
     }

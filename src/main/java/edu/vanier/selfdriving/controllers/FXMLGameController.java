@@ -51,6 +51,9 @@ public class FXMLGameController {
     int index = 0;
 
     // Animation that controls the game itself
+    public static String carNumber = "";
+    public static String carColor = "";
+            
     public AnimationTimer camera = new AnimationTimer() {
         private long FPS = 120L;
         private long INTERVAL = 1000000000L / FPS;
@@ -71,6 +74,8 @@ public class FXMLGameController {
 
                 // Update Viualizer
                 visualizer.updateVisualizer(carToFollow.getNeuralNetwork());
+               
+                
                 last = now;
             }
         }
@@ -107,19 +112,20 @@ EventHandler<ActionEvent> hardResetEvent = new EventHandler<>() {
         public void handle(ActionEvent event) {
             removeAllCars();
             spawner.spawn();
-            createCarGeneration();
+            createCarGeneration(playerImage);
             road.resetLinePositions();
         }
     };
 
     public void initalizeLevel() {
+        playerImage = new Image("/sprites/car_"+carColor+"_"+carNumber+".png");
         root = (Pane) Main.scene.getRoot();
         createRoad();
         spawner = new CarSpawner(8, -400, road, root, enemyImage);
-        createCarGeneration();
+        createCarGeneration(playerImage);
         carController = new CarController(carGeneration, spawner.getCars());
         visualizer = new Visualizer(visualizerPane, carToFollow.getNeuralNetwork());
-
+        
         camera.start();
     }
 
@@ -129,9 +135,9 @@ EventHandler<ActionEvent> hardResetEvent = new EventHandler<>() {
         root.getChildren().addAll(road.getLines());
     }
 
-    public void createCarGeneration() {
+    public void createCarGeneration(Image image) {
         for (int i = 0; i < carCount; i++) {
-            Car newCar = new Car(road.getX_position_lane_two(), 450, playerImage);
+            Car newCar = new Car(road.getX_position_lane_two(), 450, image);
             newCar.setRoad(road);
             carGeneration.add(newCar);
             root.getChildren().add(newCar.getCarStack());
@@ -147,7 +153,7 @@ EventHandler<ActionEvent> hardResetEvent = new EventHandler<>() {
     }
 
     public void createCarGeneration(NeuralNetwork network) {
-        createCarGeneration();
+        createCarGeneration(playerImage);
         if (network != null) {
             for (int i = 0; i < carCount; i++) {
                 carGeneration.get(i).setNeuralNetwork(Mutation.mutate(network));
@@ -252,3 +258,4 @@ EventHandler<ActionEvent> hardResetEvent = new EventHandler<>() {
         }
     }
 }
+
