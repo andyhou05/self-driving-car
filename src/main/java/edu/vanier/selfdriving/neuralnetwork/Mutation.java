@@ -12,7 +12,7 @@ import edu.vanier.selfdriving.utils.MathUtils;
  */
 public class Mutation {
 
-    static double mutationRate = 0.3;
+    static double mutationRate = 0.25;
 
     public static NeuralNetwork mutate(NeuralNetwork network) {
         double[] bias_h = mutateBias(network.bias_h);
@@ -34,7 +34,7 @@ public class Mutation {
         double[][] newWeight = new double[weight.length][weight[0].length];
         for(int i = 0; i < weight.length;i++){
             for(int j = 0; j < weight[i].length;j++){
-                newWeight[i][j] = MathUtils.lerp(weight[i][j], Math.random() * 6 - 3, mutationRate);
+                newWeight[i][j] = MathUtils.lerp(weight[i][j], Math.random() * 8 - 4, mutationRate);
             }
         }
         return newWeight;

@@ -34,6 +34,8 @@ public class FXMLGameController {
     Button btnReset;
     @FXML
     Button btnSave;
+    @FXML
+    Button btnHardReset;
 
     public Road road;
     public CarSpawner spawner;
@@ -78,6 +80,7 @@ public class FXMLGameController {
     public void initialize() {
         btnReset.setOnAction(resetEvent);
         btnSave.setOnAction(saveEvent);
+        btnHardReset.setOnAction(hardResetEvent);
     }
 
     EventHandler<ActionEvent> resetEvent = new EventHandler<>() {
@@ -99,17 +102,20 @@ public class FXMLGameController {
             road.resetLinePositions();
         }
     };
-    EventHandler<ActionEvent> nextEvent = new EventHandler<>() {
+EventHandler<ActionEvent> hardResetEvent = new EventHandler<>() {
         @Override
         public void handle(ActionEvent event) {
-            goToNextCar(carToFollow.getCarStack().getLayoutY());
+            removeAllCars();
+            spawner.spawn();
+            createCarGeneration();
+            road.resetLinePositions();
         }
     };
 
     public void initalizeLevel() {
         root = (Pane) Main.scene.getRoot();
         createRoad();
-        spawner = new CarSpawner(4, -400, road, root, enemyImage);
+        spawner = new CarSpawner(8, -400, road, root, enemyImage);
         createCarGeneration();
         carController = new CarController(carGeneration, spawner.getCars());
         visualizer = new Visualizer(visualizerPane, carToFollow.getNeuralNetwork());

@@ -61,13 +61,13 @@ public class NeuralNetwork {
         // Weights between the input and hidden layers
         for (int i = 0; i < weights_ih.length; i++) {
             for (int j = 0; j < weights_ih[i].length; j++) {
-                weights_ih[i][j] = Math.random() * 6 - 3; // random number between -3 and 3
+                weights_ih[i][j] = Math.random() * 8 - 4; // random number between -3 and 3
             }
         }
         // Weights between the hidden and output layers
         for (int i = 0; i < weights_ho.length; i++) {
             for (int j = 0; j < weights_ho[i].length; j++) {
-                weights_ho[i][j] = Math.random() * 6 - 3;
+                weights_ho[i][j] = Math.random() * 8 - 4;
             }
         }
     }
