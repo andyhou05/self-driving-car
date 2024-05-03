@@ -402,5 +402,5 @@ public class Car {
     public void setInputs(double[] inputs) {
         this.inputs = inputs;
     }
-    
+
 }

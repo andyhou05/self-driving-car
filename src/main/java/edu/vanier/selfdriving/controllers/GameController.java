@@ -1,3 +1,7 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package edu.vanier.selfdriving.controllers;
 
 import edu.vanier.selfdriving.main.Main;
@@ -7,125 +11,81 @@ import edu.vanier.selfdriving.neuralnetwork.Mutation;
 import edu.vanier.selfdriving.neuralnetwork.NeuralNetwork;
 import java.util.ArrayList;
 import javafx.animation.AnimationTimer;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.fxml.FXML;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Line;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
- * Controller class of the MainApp's UI.
  *
- * @author frostybee
+ * @author USER
  */
-public class FXMLGameController {
+public class GameController {
 
-    @FXML
-    Pane roadPane;
-    @FXML
-    Pane visualizerPane;
-    @FXML
-    Button btnReset;
-    @FXML
-    Button btnSave;
-    @FXML
-    Button btnHardReset;
-
-    public Road road;
-    public CarSpawner spawner;
-    NeuralNetwork bestNetwork;
+    // Car Properties
+    int carCount = 50;
+    Road road;
+    CarSpawner spawner;
     CarController carController;
     Car carToFollow;
     ArrayList<Car> carGeneration = new ArrayList<>();
-    Image playerImage = new Image("/sprites/car_blue_5.png");
-    Image enemyImage = new Image("/sprites/car_yellow_3.png");
-    int carCount = 50;
-    Pane root;
+    
+    // UI Properties
+    Image playerImage;
+    public static String carNumber = "5";
+    public static String carColor = "blue";
+    
+    // FX Properties
+    Pane root = (Pane) Main.scene.getRoot();
+    Pane roadPane;
+
+    // AI Gamemode Properties
+    NeuralNetwork bestNetwork;
     Visualizer visualizer;
-    int index = 0;
+    
 
-    // Animation that controls the game itself
-    public static String carNumber = "";
-    public static String carColor = "";
-            
-    public AnimationTimer camera = new AnimationTimer() {
-        private long FPS = 120L;
-        private long INTERVAL = 1000000000L / FPS;
-        private long last = 0;
+    // Camera Animation
+    public AnimationTimer camera;
 
-        @Override
-        public void handle(long now) {
-            if (now - last > INTERVAL) {
-                // Choose the next car if current one is dead
-                if (carToFollow.isDead() && !carGeneration.isEmpty()) {
-                    carToFollow.setVisible(false);
-                    chooseNextCar(carToFollow.getCarStack().getLayoutY());
-                    carToFollow.setCarVisible(true);
-                }
-
-                // Update Camera
-                moveCameraDown();
-
-                // Update Viualizer
-                visualizer.updateVisualizer(carToFollow.getNeuralNetwork());
-               
-                
-                last = now;
-            }
-        }
-    };
-
-    @FXML
-    public void initialize() {
-        btnReset.setOnAction(resetEvent);
-        btnSave.setOnAction(saveEvent);
-        btnHardReset.setOnAction(hardResetEvent);
+    private GameController(CarSpawner spawner, boolean userControlled, Pane roadPane) {
+        this.spawner = spawner;
+        this.roadPane = roadPane;
+        playerImage = new Image("/sprites/car_" + carColor + "_" + carNumber + ".png");
+        createRoad();
+        createCarGeneration(playerImage);
+        carController = new CarController(carGeneration, spawner.getCars(), userControlled);
     }
 
-    EventHandler<ActionEvent> resetEvent = new EventHandler<>() {
-        @Override
-        public void handle(ActionEvent event) {
-            removeAllCars();
-            spawner.spawn();
-            createCarGeneration(bestNetwork);
-            road.resetLinePositions();
-        }
-    };
-    EventHandler<ActionEvent> saveEvent = new EventHandler<>() {
-        @Override
-        public void handle(ActionEvent event) {
-            bestNetwork = carToFollow.getNeuralNetwork();
-            removeAllCars();
-            spawner.spawn();
-            createCarGeneration(bestNetwork);
-            road.resetLinePositions();
-        }
-    };
-EventHandler<ActionEvent> hardResetEvent = new EventHandler<>() {
-        @Override
-        public void handle(ActionEvent event) {
-            removeAllCars();
-            spawner.spawn();
-            createCarGeneration(playerImage);
-            road.resetLinePositions();
-        }
-    };
+    public GameController(CarSpawner spawner, Pane roadPane, Pane visualizerPane) {
+        this(spawner, false, roadPane);
 
-    public void initalizeLevel() {
-        playerImage = new Image("/sprites/car_"+carColor+"_"+carNumber+".png");
-        root = (Pane) Main.scene.getRoot();
-        createRoad();
-        spawner = new CarSpawner(8, -400, road, root, enemyImage);
-        createCarGeneration(playerImage);
-        carController = new CarController(carGeneration, spawner.getCars());
+        // Create camera for AI Controlled gamemode
+        camera = new AnimationTimer() {
+            private long FPS = 120L;
+            private long INTERVAL = 1000000000L / FPS;
+            private long last = 0;
+
+            @Override
+            public void handle(long now) {
+                if (now - last > INTERVAL) {
+                    // Choose the next car if current one is dead
+                    if (carToFollow.isDead() && !carGeneration.isEmpty()) {
+                        carToFollow.setVisible(false);
+                        chooseNextCar(carToFollow.getCarStack().getLayoutY());
+                        carToFollow.setCarVisible(true);
+                    }
+
+                    // Update Camera
+                    moveCameraDown();
+
+                    // Update Viualizer
+                    visualizer.updateVisualizer(carToFollow.getNeuralNetwork());
+
+                    last = now;
+                }
+            }
+        };
         visualizer = new Visualizer(visualizerPane, carToFollow.getNeuralNetwork());
-        
         camera.start();
     }
 
@@ -192,30 +152,6 @@ EventHandler<ActionEvent> hardResetEvent = new EventHandler<>() {
         }
     }
 
-    private void goToNextCar(double position) {
-        Car nextCar = carToFollow;
-        double deltaPosition = 0;
-        for (int i = 0; i < carGeneration.size(); i++) {
-            updateIndex();
-            nextCar = carGeneration.get(index);
-            deltaPosition = nextCar.getCarStack().getLayoutY() - position;
-
-        }
-        carToFollow = nextCar;
-
-        // In order to follow a new car, we must move everything down into the scene's frame
-        for (Line sensorLine : nextCar.getSensorsLines()) {
-            sensorLine.setVisible(true);
-            sensorLine.setTranslateY(carToFollow.getCarStack().getTranslateY());
-        }
-        for (StackPane enemyStack : spawner.getCarsStack()) {
-            enemyStack.setLayoutY(enemyStack.getLayoutY() - deltaPosition);
-        }
-        for (Car otherCar : carGeneration) {
-            otherCar.getCarStack().setLayoutY(otherCar.getCarStack().getLayoutY() - deltaPosition);
-        }
-    }
-
     private void moveCameraDown() {
         // Move road lines down
         for (Line roadLine : road.getLines()) {
@@ -235,7 +171,7 @@ EventHandler<ActionEvent> hardResetEvent = new EventHandler<>() {
         }
     }
 
-    private void removeAllCars() {
+    void removeAllCars() {
         for (int i = 0; i < carGeneration.size(); i++) {
             Car currentCar = carGeneration.get(i);
             root.getChildren().removeAll(currentCar.getSensorsLines());
@@ -250,12 +186,19 @@ EventHandler<ActionEvent> hardResetEvent = new EventHandler<>() {
         spawner.clear();
         carGeneration.clear();
     }
-    
-    void updateIndex(){
-        index++;
-        if(index > carGeneration.size() - 1){
-            index = 0;
-        }
+
+    public void reset() {
+        removeAllCars();
+        spawner.spawn();
+        createCarGeneration(bestNetwork);
+        road.resetLinePositions();
+    }
+
+    public void saveBestNetwork() {
+        bestNetwork = carToFollow.getNeuralNetwork();
+    }
+
+    public void hardResetNetwork() {
+        bestNetwork = null;
     }
 }
-

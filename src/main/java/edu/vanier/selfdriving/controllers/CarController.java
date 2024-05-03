@@ -32,6 +32,7 @@ public class CarController {
     ArrayList<Car> cars;
     ArrayList<Car> enemyCars = new ArrayList<>();
     Scene scene;
+    boolean userControlled = true;
     AnimationTimer animation = new AnimationTimer() {
         private long FPS = 120L;
         private long INTERVAL = 1000000000L / FPS;
@@ -51,19 +52,25 @@ public class CarController {
                     Car car = cars.get(i);
                     moveCar(car);
                     // If the current car is dead, no need to check for collisions/sensors
-                    if(car.isDead()){
+                    if (car.isDead()) {
                         continue;
                     }
                     checkCollisions(car);
                     updateCarSpeed(car);
-                    updateSensors(car);
-                    // Sensor Readings and Inputs
-                    for (int j = 0; j < car.getSensorCount(); j++) {
-                        updateSensorReading(car, car.getSensors()[j]);
-                        car.getInputs()[j] = car.getSensors()[j].getReading();
+
+                    /* Only for AI controlled cars: 
+                        --  Neural Network Based Movement
+                        --  Updating Sensors (readings, position)
+                     */
+                    if (!userControlled) {
+                        updateNeuralNetwork(car);
+                        updateSensorPositions(car);
+                        // Sensor Readings and Inputs
+                        for (int j = 0; j < car.getSensorCount(); j++) {
+                            updateSensorReading(car, car.getSensors()[j]);
+                            car.getInputs()[j] = car.getSensors()[j].getReading();
+                        }
                     }
-                    // Update Neural Network
-                    updateNeuralNetwork(car);
                 }
                 last = now;
 
@@ -71,11 +78,14 @@ public class CarController {
         }
     };
 
-    public CarController(ArrayList<Car> cars, ArrayList<Car> enemyCars) {
+    public CarController(ArrayList<Car> cars, ArrayList<Car> enemyCars, boolean userControlled) {
         this.cars = cars;
         this.enemyCars = enemyCars;
+        this.userControlled = userControlled;
         scene = cars.get(0).getCarImageView().getScene();
-        //checkKeypress();
+        if (userControlled) {
+            checkKeypress(cars.get(0));
+        }
         animation.start();
     }
 
@@ -89,7 +99,7 @@ public class CarController {
      *
      * @param angle
      */
-    public void updateSensors(Car car) {
+    public void updateSensorPositions(Car car) {
         double angle = car.getCarStack().getRotate();
         for (int i = 0; i < car.getSensorCount(); i++) {
             // Move the Sensor with the Car.
@@ -261,8 +271,8 @@ public class CarController {
                         goRight(car);
                         break;
                 }
-            } else{
-                switch(i){
+            } else {
+                switch (i) {
                     case 2:
                         noLeftTurn(car);
                         break;

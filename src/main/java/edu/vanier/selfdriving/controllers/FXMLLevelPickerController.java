@@ -32,14 +32,14 @@ public class FXMLLevelPickerController {
     Button btnLevel3;
 
     FXMLLoader levelLoader = new FXMLLoader(getClass().getResource("/fxml/game.fxml"));
-    FXMLGameController levelController = new FXMLGameController();
+    FXMLGameControllerAI levelController = new FXMLGameControllerAI();
 
     EventHandler<ActionEvent> gameSwitch = new EventHandler<>() {
         @Override
         public void handle(ActionEvent event) {
             try {
                 Main.scene.setRoot(levelLoader.load());
-                levelController.initalizeLevel();
+                levelController.loadGame();
             } catch (IOException ex) {
                 Logger.getLogger(FXMLLevelPickerController.class.getName()).log(Level.SEVERE, null, ex);
             }

@@ -50,7 +50,7 @@ public class FXMLCarsPickerController {
         secondImage.setImage(new Image("/sprites/car_"+listOfColors[1]+"_"+listOfTypes[typeCounter%4]+".png"));
         thirdImage.setImage(new Image("/sprites/car_"+listOfColors[2]+"_"+listOfTypes[typeCounter%4]+".png"));
         forthImage.setImage(new Image("/sprites/car_"+listOfColors[3]+"_"+listOfTypes[typeCounter%4]+".png"));
-        FXMLGameController.carNumber = Integer.toString(listOfTypes[typeCounter%4]);
+        GameController.carNumber = Integer.toString(listOfTypes[typeCounter%4]);
     }
 
     
@@ -75,16 +75,16 @@ public class FXMLCarsPickerController {
             }
         });
         car1.setOnAction(e->{
-            FXMLGameController.carColor = "black";
+            GameController.carColor = "black";
         });
         car2.setOnAction(e->{
-            FXMLGameController.carColor = "blue";
+            GameController.carColor = "blue";
         });
         car3.setOnAction(e->{
-            FXMLGameController.carColor = "green";
+            GameController.carColor = "green";
         });
         car4.setOnAction(e->{
-            FXMLGameController.carColor = "red";
+            GameController.carColor = "red";
         });
         
     }
