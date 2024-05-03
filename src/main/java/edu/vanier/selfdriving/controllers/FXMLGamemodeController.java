@@ -26,7 +26,6 @@ public class FXMLGamemodeController {
 
     Scene scene;
     MediaPlayer mediaPlayer;
-
     @FXML
     Button btnPlay;
     @FXML
@@ -78,16 +77,10 @@ public class FXMLGamemodeController {
         btnAiVs.setOnAction(clickEvent);
 
         btnAiPlay.setOnAction(clickEvent);
-        music("src/main/resources/Music/Homepage_Level.mp3");
+        
         carChooser.setOnAction(carChooserClickEvent);
     }
 
-    public void music(String path) {
-        File soundFile = new File(path);
-        Media h = new Media(soundFile.toURI().toString());
-        mediaPlayer = new MediaPlayer(h);
-        mediaPlayer.setVolume(0.1);
-        mediaPlayer.play();
-    }
+    
 
 }
