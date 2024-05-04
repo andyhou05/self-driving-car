@@ -1,5 +1,6 @@
-package edu.vanier.selfdriving.controllers;
+package edu.vanier.selfdriving.controllers.fxml;
 
+import edu.vanier.selfdriving.controllers.GameController;
 import edu.vanier.selfdriving.main.Main;
 import java.io.IOException;
 import java.util.logging.Level;

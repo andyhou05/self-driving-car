@@ -17,7 +17,7 @@ import javafx.scene.shape.Line;
  *
  * @author USER
  */
-public class Visualizer {
+public class VisualizerController {
 
     Pane pane;
     NeuralNetwork network;
@@ -46,10 +46,10 @@ public class Visualizer {
         }
     };
 
-    public Visualizer() {
+    public VisualizerController() {
     }
 
-    public Visualizer(Pane pane, NeuralNetwork network) {
+    public VisualizerController(Pane pane, NeuralNetwork network) {
         this.pane = pane;
         this.network = network;
         left = xOffset;

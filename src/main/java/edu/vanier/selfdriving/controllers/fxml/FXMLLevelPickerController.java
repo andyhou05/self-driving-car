@@ -2,8 +2,12 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package edu.vanier.selfdriving.controllers;
+package edu.vanier.selfdriving.controllers.fxml;
 
+import edu.vanier.selfdriving.controllers.GameController;
+import edu.vanier.selfdriving.controllers.fxml.FXMLGamemodeController;
+import edu.vanier.selfdriving.controllers.fxml.FXMLGameControllerUser;
+import edu.vanier.selfdriving.controllers.fxml.FXMLGameControllerAI;
 import edu.vanier.selfdriving.main.Main;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -50,7 +54,7 @@ public class FXMLLevelPickerController {
         levelLoaderUser.setController(levelControllerUser);
     }
 
-    void chooseLevel(FXMLLoader loader, FXMLGameControllerAI controller) { // to change to make controllers inherit GameController
+    void chooseLevel(FXMLLoader loader, FXMLGameControllerAI controller) {
         try {
             Main.scene.setRoot(loader.load());
             controller.loadGame();
@@ -59,7 +63,7 @@ public class FXMLLevelPickerController {
         }
     }
     
-    void chooseLevel(FXMLLoader loader, FXMLGameControllerUser controller) { // to change to make controllers inherit GameController
+    void chooseLevel(FXMLLoader loader, FXMLGameControllerUser controller) {
         try {
             Main.scene.setRoot(loader.load());
             controller.loadGame();

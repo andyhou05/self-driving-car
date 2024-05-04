@@ -17,7 +17,7 @@ import javafx.scene.shape.Rectangle;
  *
  * @author 2276884
  */
-public class CarSpawner {
+public class SpawnerController {
 
     int carsToSpawn;
     ArrayList<StackPane> carsStack = new ArrayList<>();
@@ -29,10 +29,10 @@ public class CarSpawner {
     Pane root;
     Image carImage;
 
-    public CarSpawner() {
+    public SpawnerController() {
     }
 
-    public CarSpawner(int carsToSpawn, double yIncrement, Road road, Pane root, Image carImage) {
+    public SpawnerController(int carsToSpawn, double yIncrement, Road road, Pane root, Image carImage) {
         this.carsToSpawn = carsToSpawn;
         this.yIncrement = yIncrement;
         this.road = road;

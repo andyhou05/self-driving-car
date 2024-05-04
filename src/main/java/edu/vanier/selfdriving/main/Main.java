@@ -4,8 +4,8 @@
  */
 package edu.vanier.selfdriving.main;
 
-import edu.vanier.selfdriving.controllers.FXMLGamemodeController;
-import edu.vanier.selfdriving.controllers.FXMLLevelPickerController;
+import edu.vanier.selfdriving.controllers.fxml.FXMLGamemodeController;
+import edu.vanier.selfdriving.controllers.fxml.FXMLLevelPickerController;
 import java.io.File;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;

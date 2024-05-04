@@ -26,7 +26,7 @@ public class GameController { //todo make controllers extend thgis class
     int carCount;
     public static boolean userControlled;
     Road road;
-    CarSpawner spawner;
+    SpawnerController spawner;
     CarController carController;
     Car carToFollow;
     ArrayList<Car> carGeneration = new ArrayList<>();
@@ -40,14 +40,10 @@ public class GameController { //todo make controllers extend thgis class
     Pane root = (Pane) Main.scene.getRoot();
     Pane roadPane;
 
-    // AI Gamemode Properties
-    NeuralNetwork bestNetwork;
-    Visualizer visualizer;
-
     // Camera Animation
     public AnimationTimer camera;
 
-    private GameController(CarSpawner spawner, boolean userControlled, Pane roadPane) {
+    public GameController(SpawnerController spawner, boolean userControlled, Pane roadPane) {
         this.spawner = spawner;
         this.userControlled = userControlled;
         this.roadPane = roadPane;
@@ -58,40 +54,7 @@ public class GameController { //todo make controllers extend thgis class
         carController = new CarController(carGeneration, spawner.getCars(), userControlled);
     }
 
-    public GameController(CarSpawner spawner, Pane roadPane, Pane visualizerPane) {
-        this(spawner, false, roadPane);
-
-        // Create camera for AI Controlled gamemode
-        camera = new AnimationTimer() {
-            private long FPS = 120L;
-            private long INTERVAL = 1000000000L / FPS;
-            private long last = 0;
-
-            @Override
-            public void handle(long now) {
-                if (now - last > INTERVAL) {
-                    // Choose the next car if current one is dead
-                    if (carToFollow.isDead() && !carGeneration.isEmpty()) {
-                        carToFollow.setVisible(false);
-                        chooseNextCar(carToFollow.getCarStack().getLayoutY());
-                        carToFollow.setCarVisible(true);
-                    }
-
-                    // Update Camera
-                    moveCameraDown();
-
-                    // Update Viualizer
-                    visualizer.updateVisualizer(carToFollow.getNeuralNetwork());
-
-                    last = now;
-                }
-            }
-        };
-        visualizer = new Visualizer(visualizerPane, carToFollow.getNeuralNetwork());
-        camera.start();
-    }
-
-    public GameController(CarSpawner spawner, Pane roadPane) {
+    public GameController(SpawnerController spawner, Pane roadPane) {
         this(spawner, true, roadPane);
         // Create camera for AI Controlled gamemode
         camera = new AnimationTimer() {
@@ -142,47 +105,7 @@ public class GameController { //todo make controllers extend thgis class
         carToFollow.setVisible(true);
     }
 
-    public void createCarGeneration(NeuralNetwork network) {
-        createCarGeneration(playerImage);
-        if (network != null) {
-            for (int i = 0; i < carCount; i++) {
-                carGeneration.get(i).setNeuralNetwork(Mutation.mutate(network));
-            }
-            carToFollow.setNeuralNetwork(bestNetwork);
-        }
-    }
-
-    private void chooseNextCar(double deathPosition) {
-        Car nextCar = carToFollow;
-        double deltaPosition = 0;
-        for (int i = 0; i < carGeneration.size(); i++) {
-            Car currentCar = carGeneration.get(i);
-            if (currentCar.isDead()) {
-                continue;
-            }
-            double bestY = nextCar.getCarStack().getLayoutY();
-            double currentY = currentCar.getCarStack().getLayoutY();
-            if (currentY < bestY) {
-                nextCar = currentCar;
-                deltaPosition = nextCar.getCarStack().getLayoutY() - deathPosition;
-            }
-        }
-        carToFollow = nextCar;
-
-        // In order to follow a new car, we must move everything down into the scene's frame
-        for (Line sensorLine : nextCar.getSensorsLines()) {
-            sensorLine.setVisible(true);
-            sensorLine.setTranslateY(carToFollow.getCarStack().getTranslateY());
-        }
-        for (StackPane enemyStack : spawner.getCarsStack()) {
-            enemyStack.setLayoutY(enemyStack.getLayoutY() - deltaPosition);
-        }
-        for (Car otherCar : carGeneration) {
-            otherCar.getCarStack().setLayoutY(otherCar.getCarStack().getLayoutY() - deltaPosition);
-        }
-    }
-
-    private void moveCameraDown() {
+    public void moveCameraDown() {
         // Move road lines down
         for (Line roadLine : road.getLines()) {
             roadLine.setTranslateY(roadLine.getTranslateY() + carToFollow.getSpeedY());
@@ -203,7 +126,7 @@ public class GameController { //todo make controllers extend thgis class
         }
     }
 
-    void removeAllCars() {
+    public void removeAllCars() {
         for (int i = 0; i < carGeneration.size(); i++) {
             Car currentCar = carGeneration.get(i);
             if (!userControlled) {
@@ -226,15 +149,7 @@ public class GameController { //todo make controllers extend thgis class
     public void reset() {
         removeAllCars();
         spawner.spawn();
-        createCarGeneration(bestNetwork);
+        createCarGeneration(playerImage);
         road.resetLinePositions();
-    }
-
-    public void saveBestNetwork() {
-        bestNetwork = carToFollow.getNeuralNetwork();
-    }
-
-    public void hardResetNetwork() {
-        bestNetwork = null;
     }
 }

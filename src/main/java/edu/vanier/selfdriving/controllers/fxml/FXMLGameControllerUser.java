@@ -2,8 +2,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package edu.vanier.selfdriving.controllers;
+package edu.vanier.selfdriving.controllers.fxml;
 
+import edu.vanier.selfdriving.controllers.GameController;
+import edu.vanier.selfdriving.controllers.SpawnerController;
 import edu.vanier.selfdriving.main.Main;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -31,7 +33,7 @@ public class FXMLGameControllerUser{
     GameController gameControllerUser;
 
     public void loadGame() {
-        gameControllerUser = new GameController(new CarSpawner(), roadPane);
+        gameControllerUser = new GameController(new SpawnerController(), roadPane);
     }
     
     @FXML

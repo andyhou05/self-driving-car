@@ -1,5 +1,8 @@
-package edu.vanier.selfdriving.controllers;
+package edu.vanier.selfdriving.controllers.fxml;
 
+import edu.vanier.selfdriving.controllers.GameController;
+import edu.vanier.selfdriving.controllers.GameControllerAI;
+import edu.vanier.selfdriving.controllers.SpawnerController;
 import edu.vanier.selfdriving.main.Main;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -31,7 +34,7 @@ public class FXMLGameControllerAI {
     @FXML
     Button btnReturn;
 
-    GameController gameControllerAI;
+    GameControllerAI gameControllerAI;
     FXMLLoader levelPickerLoader = new FXMLLoader(getClass().getResource("/fxml/levels.fxml"));
 
     @FXML
@@ -44,7 +47,7 @@ public class FXMLGameControllerAI {
     }
 
     public void loadGame() {
-        gameControllerAI = new GameController(new CarSpawner(), roadPane, visualizerPane);
+        gameControllerAI = new GameControllerAI(new SpawnerController(), roadPane, visualizerPane);
     }
 
     EventHandler<ActionEvent> returnEvent = new EventHandler<>() {
