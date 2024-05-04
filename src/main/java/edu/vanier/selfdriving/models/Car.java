@@ -92,15 +92,15 @@ public class Car {
      */
     public void initSensors() {
         for (int i = 0; i < sensorCount; i++) {
-            Sensor sensor = new Sensor(this); // not sure
+            Sensor sensor = new Sensor(this);
             sensors[i] = sensor;
         }
         for (int i = 0; i < sensorCount; i++) {
             double rayAngle = MathUtils.lerp(sensorSpread / 2, -sensorSpread / 2, (double) i / (sensorCount - 1));
 
             // Start the Sensor in the middle of the Car.
-            double startX = getxPosition() + 0.5 * carWidth;
-            double startY = getyPosition() + 0.5 * carLength;
+            double startX = 0.5 * carWidth;
+            double startY = 0.5 * carLength;
 
             // Trig to direct Sensor in the correct direction
             double endX = startX - Math.sin(rayAngle) * Sensor.getSensorLength();

@@ -44,7 +44,7 @@ public class FXMLGameControllerAI {
     }
 
     public void loadGame() {
-        gameControllerAI = new GameController(new CarSpawner(), roadPane);
+        gameControllerAI = new GameController(new CarSpawner(), roadPane, visualizerPane);
     }
 
     EventHandler<ActionEvent> returnEvent = new EventHandler<>() {
