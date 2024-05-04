@@ -20,11 +20,11 @@ import javafx.scene.shape.Line;
  *
  * @author USER
  */
-public class GameController {
-
+public class GameController { //todo make controllers extend thgis class
+    
     // Car Properties
     int carCount;
-    boolean userControlled;
+    public static boolean userControlled;
     Road road;
     CarSpawner spawner;
     CarController carController;

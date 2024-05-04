@@ -29,15 +29,18 @@ public class FXMLLevelPickerController {
     @FXML
     Button returnButton;
 
-    FXMLLoader levelLoader = new FXMLLoader(getClass().getResource("/fxml/game.fxml"));
-    FXMLGameControllerAI levelController = new FXMLGameControllerAI();
+    FXMLLoader levelLoaderAI = new FXMLLoader(getClass().getResource("/fxml/game.fxml"));
+    FXMLGameControllerAI levelControllerAI = new FXMLGameControllerAI();
+    FXMLLoader levelLoaderUser = new FXMLLoader(getClass().getResource("/fxml/gameUser.fxml"));
+    FXMLGameControllerUser levelControllerUser = new FXMLGameControllerUser();
+    
 
     EventHandler<ActionEvent> gameSwitch = new EventHandler<>() {
         @Override
         public void handle(ActionEvent event) {
             try {
-                Main.scene.setRoot(levelLoader.load());
-                levelController.loadGame();
+                Main.scene.setRoot(levelLoaderAI.load());
+                levelControllerAI.loadGame();
             } catch (IOException ex) {
                 Logger.getLogger(FXMLLevelPickerController.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -45,7 +48,8 @@ public class FXMLLevelPickerController {
     };
 
     public FXMLLevelPickerController() {
-        levelLoader.setController(levelController);
+        levelLoaderAI.setController(levelControllerAI);
+        levelLoaderUser.setController(levelControllerUser);
     }
 
     @FXML
