@@ -23,8 +23,6 @@ public class FXMLGameControllerUser{
     @FXML
     Pane roadPane;
     @FXML
-    Pane controlsPane;
-    @FXML
     Button btnReset;
     @FXML
     Button btnReturn;
@@ -46,6 +44,8 @@ public class FXMLGameControllerUser{
     EventHandler<ActionEvent> returnEvent = new EventHandler<>() {
         @Override
         public void handle(ActionEvent event) {
+            gameControllerUser.removeAllCars();
+            gameControllerUser.camera.stop();
             try {
                 Main.scene.setRoot(levelPickerLoader.load());
             } catch (IOException ex) {

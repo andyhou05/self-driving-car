@@ -49,16 +49,27 @@ public class FXMLGamemodeController {
         }
     };
     
-    EventHandler<ActionEvent> clickEvent = new EventHandler<>() {
+    EventHandler<ActionEvent> aiEvent = new EventHandler<>() {
         @Override
         public void handle(ActionEvent event) {
-            try {
+            chooseGamemode(false);
+        }
+    };
+    EventHandler<ActionEvent> userEvent = new EventHandler<>() {
+        @Override
+        public void handle(ActionEvent event) {
+            chooseGamemode(true);
+        }
+    };
+    
+    void chooseGamemode(boolean userControlled){
+        GameController.userControlled = userControlled;
+        try {
                 Main.scene.setRoot(levelPickerLoader.load());
             } catch (IOException ex) {
                 Logger.getLogger(FXMLGamemodeController.class.getName()).log(Level.SEVERE, null, ex);
             }
-        }
-    };
+    }
 
     public FXMLGamemodeController(Scene scene) {
         this.scene = scene;
@@ -70,11 +81,11 @@ public class FXMLGamemodeController {
     
     @FXML
     public void initialize() {
-        btnPlay.setOnAction(clickEvent);
+        btnPlay.setOnAction(userEvent);
 
-        btnAiVs.setOnAction(clickEvent);
+        btnAiVs.setOnAction(aiEvent);
 
-        btnAiPlay.setOnAction(clickEvent);
+        btnAiPlay.setOnAction(aiEvent);
         
         carChooser.setOnAction(carChooserClickEvent);
     }

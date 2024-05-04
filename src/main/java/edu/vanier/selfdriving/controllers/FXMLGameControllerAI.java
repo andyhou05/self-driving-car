@@ -50,6 +50,8 @@ public class FXMLGameControllerAI {
     EventHandler<ActionEvent> returnEvent = new EventHandler<>() {
         @Override
         public void handle(ActionEvent event) {
+            gameControllerAI.removeAllCars();
+            gameControllerAI.camera.stop();
             try {
                 Main.scene.setRoot(levelPickerLoader.load());
             } catch (IOException ex) {

@@ -21,7 +21,7 @@ import javafx.scene.shape.Line;
  * @author USER
  */
 public class GameController { //todo make controllers extend thgis class
-    
+
     // Car Properties
     int carCount;
     public static boolean userControlled;
@@ -206,13 +206,17 @@ public class GameController { //todo make controllers extend thgis class
     void removeAllCars() {
         for (int i = 0; i < carGeneration.size(); i++) {
             Car currentCar = carGeneration.get(i);
-            root.getChildren().removeAll(currentCar.getSensorsLines());
+            if (!userControlled) {
+                root.getChildren().removeAll(currentCar.getSensorsLines());
+            }
             root.getChildren().remove(currentCar.getCarStack());
         }
 
         for (int i = 0; i < spawner.getCarsToSpawn(); i++) {
             Car currentCar = spawner.getCars().get(i);
-            root.getChildren().removeAll(currentCar.getSensorsLines());
+            if (!userControlled) {
+                root.getChildren().removeAll(currentCar.getSensorsLines());
+            }
             root.getChildren().remove(currentCar.getCarStack());
         }
         spawner.clear();

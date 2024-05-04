@@ -33,16 +33,14 @@ public class FXMLLevelPickerController {
     FXMLGameControllerAI levelControllerAI = new FXMLGameControllerAI();
     FXMLLoader levelLoaderUser = new FXMLLoader(getClass().getResource("/fxml/gameUser.fxml"));
     FXMLGameControllerUser levelControllerUser = new FXMLGameControllerUser();
-    
 
     EventHandler<ActionEvent> gameSwitch = new EventHandler<>() {
         @Override
         public void handle(ActionEvent event) {
-            try {
-                Main.scene.setRoot(levelLoaderAI.load());
-                levelControllerAI.loadGame();
-            } catch (IOException ex) {
-                Logger.getLogger(FXMLLevelPickerController.class.getName()).log(Level.SEVERE, null, ex);
+            if(GameController.userControlled){
+                chooseLevel(levelLoaderUser, levelControllerUser);
+            } else{
+                chooseLevel(levelLoaderAI, levelControllerAI);
             }
         }
     };
@@ -50,6 +48,24 @@ public class FXMLLevelPickerController {
     public FXMLLevelPickerController() {
         levelLoaderAI.setController(levelControllerAI);
         levelLoaderUser.setController(levelControllerUser);
+    }
+
+    void chooseLevel(FXMLLoader loader, FXMLGameControllerAI controller) { // to change to make controllers inherit GameController
+        try {
+            Main.scene.setRoot(loader.load());
+            controller.loadGame();
+        } catch (IOException ex) {
+            Logger.getLogger(FXMLLevelPickerController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    void chooseLevel(FXMLLoader loader, FXMLGameControllerUser controller) { // to change to make controllers inherit GameController
+        try {
+            Main.scene.setRoot(loader.load());
+            controller.loadGame();
+        } catch (IOException ex) {
+            Logger.getLogger(FXMLLevelPickerController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @FXML
