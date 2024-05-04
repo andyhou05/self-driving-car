@@ -43,11 +43,11 @@ public class GameController { //todo make controllers extend thgis class
     // Camera Animation
     public AnimationTimer camera;
 
-    public GameController(SpawnerController spawner, boolean userControlled, Pane roadPane) {
+    public GameController(SpawnerController spawner, boolean userControlled, Pane roadPane, int carCount) {
         this.spawner = spawner;
         this.userControlled = userControlled;
         this.roadPane = roadPane;
-        carCount = userControlled ? 1 : 50;
+        this.carCount = carCount;
         playerImage = new Image("/sprites/car_" + carColor + "_" + carNumber + ".png");
         createRoad();
         createCarGeneration(playerImage);
@@ -55,7 +55,7 @@ public class GameController { //todo make controllers extend thgis class
     }
 
     public GameController(SpawnerController spawner, Pane roadPane) {
-        this(spawner, true, roadPane);
+        this(spawner, true, roadPane, 1);
         // Create camera for AI Controlled gamemode
         camera = new AnimationTimer() {
             private long FPS = 120L;
@@ -151,5 +151,6 @@ public class GameController { //todo make controllers extend thgis class
         spawner.spawn();
         createCarGeneration(playerImage);
         road.resetLinePositions();
+        carController.checkKeypress(carToFollow);
     }
 }

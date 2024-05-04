@@ -31,6 +31,7 @@ public class CarController {
 
     ArrayList<Car> cars;
     ArrayList<Car> enemyCars = new ArrayList<>();
+    Car carToFollow;
     Scene scene;
     boolean userControlled = true;
     AnimationTimer animation = new AnimationTimer() {
@@ -82,9 +83,10 @@ public class CarController {
         this.cars = cars;
         this.enemyCars = enemyCars;
         this.userControlled = userControlled;
+        carToFollow = cars.get(0);
         scene = cars.get(0).getCarImageView().getScene();
         if (userControlled) {
-            checkKeypress(cars.get(0));
+            checkKeypress(carToFollow);
         }
         animation.start();
     }
@@ -383,6 +385,22 @@ public class CarController {
 
     public void setEnemyCars(ArrayList<Car> enemyCars) {
         this.enemyCars = enemyCars;
+    }
+
+    public Car getCarToFollow() {
+        return carToFollow;
+    }
+
+    public void setCarToFollow(Car carToFollow) {
+        this.carToFollow = carToFollow;
+    }
+
+    public boolean isUserControlled() {
+        return userControlled;
+    }
+
+    public void setUserControlled(boolean userControlled) {
+        this.userControlled = userControlled;
     }
 
 }

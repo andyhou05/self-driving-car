@@ -23,7 +23,7 @@ public class GameControllerAI extends GameController {
     VisualizerController visualizer;
 
     public GameControllerAI(SpawnerController spawner, Pane roadPane, Pane visualizerPane) {
-        super(spawner, false, roadPane);
+        super(spawner, false, roadPane, 50);
 
         // Create camera for AI Controlled gamemode
         camera = new AnimationTimer() {
