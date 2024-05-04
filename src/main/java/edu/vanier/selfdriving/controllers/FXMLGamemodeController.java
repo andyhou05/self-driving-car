@@ -5,7 +5,6 @@
 package edu.vanier.selfdriving.controllers;
 
 import edu.vanier.selfdriving.main.Main;
-import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -15,7 +14,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 
 /**

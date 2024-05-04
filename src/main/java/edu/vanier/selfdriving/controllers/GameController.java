@@ -23,18 +23,19 @@ import javafx.scene.shape.Line;
 public class GameController {
 
     // Car Properties
-    int carCount = 50;
+    int carCount;
+    boolean userControlled;
     Road road;
     CarSpawner spawner;
     CarController carController;
     Car carToFollow;
     ArrayList<Car> carGeneration = new ArrayList<>();
-    
+
     // UI Properties
     Image playerImage;
     public static String carNumber = "5";
     public static String carColor = "blue";
-    
+
     // FX Properties
     Pane root = (Pane) Main.scene.getRoot();
     Pane roadPane;
@@ -42,14 +43,15 @@ public class GameController {
     // AI Gamemode Properties
     NeuralNetwork bestNetwork;
     Visualizer visualizer;
-    
 
     // Camera Animation
     public AnimationTimer camera;
 
     private GameController(CarSpawner spawner, boolean userControlled, Pane roadPane) {
         this.spawner = spawner;
+        this.userControlled = userControlled;
         this.roadPane = roadPane;
+        carCount = userControlled ? 1 : 50;
         playerImage = new Image("/sprites/car_" + carColor + "_" + carNumber + ".png");
         createRoad();
         createCarGeneration(playerImage);
@@ -89,6 +91,32 @@ public class GameController {
         camera.start();
     }
 
+    public GameController(CarSpawner spawner, Pane roadPane) {
+        this(spawner, true, roadPane);
+        // Create camera for AI Controlled gamemode
+        camera = new AnimationTimer() {
+            private long FPS = 120L;
+            private long INTERVAL = 1000000000L / FPS;
+            private long last = 0;
+
+            @Override
+            public void handle(long now) {
+                if (now - last > INTERVAL) {
+                    // Kill car if collision occurs
+                    if (carToFollow.isDead()) {
+                        carToFollow.setVisible(false);
+                    }
+
+                    // Update Camera
+                    moveCameraDown();
+
+                    last = now;
+                }
+            }
+        };
+        camera.start();
+    }
+
     public void createRoad() {
         double roadWidth = roadPane.getPrefWidth() * 0.95;
         road = new Road(roadPane.getPrefWidth() / 2, roadWidth);
@@ -97,12 +125,14 @@ public class GameController {
 
     public void createCarGeneration(Image image) {
         for (int i = 0; i < carCount; i++) {
-            Car newCar = new Car(road.getX_position_lane_two(), 450, image);
+            Car newCar = new Car(road.getX_position_lane_two(), 450, image, userControlled);
             newCar.setRoad(road);
             carGeneration.add(newCar);
             root.getChildren().add(newCar.getCarStack());
-            root.getChildren().addAll(newCar.getSensorsLines());
-            newCar.setSensorsVisible(false);
+            if (!userControlled) {
+                root.getChildren().addAll(newCar.getSensorsLines());
+                newCar.setSensorsVisible(false);
+            }
         }
         // Make them all less opaque
         for (Car car : carGeneration) {
@@ -157,10 +187,6 @@ public class GameController {
         for (Line roadLine : road.getLines()) {
             roadLine.setTranslateY(roadLine.getTranslateY() + carToFollow.getSpeedY());
         }
-        // Move sensors down
-        for (Line sensor : carToFollow.getSensorsLines()) {
-            sensor.setTranslateY(sensor.getTranslateY() + carToFollow.getSpeedY());
-        }
         // Move enemy cars down
         for (StackPane enemyStack : spawner.getCarsStack()) {
             enemyStack.setTranslateY(enemyStack.getTranslateY() + carToFollow.getSpeedY());
@@ -168,6 +194,12 @@ public class GameController {
         // Move generation cars down
         for (Car otherCar : carGeneration) {
             otherCar.getCarStack().setTranslateY(otherCar.getCarStack().getTranslateY() + carToFollow.getSpeedY());
+        }
+        if (!userControlled) {
+            // Move sensors down
+            for (Line sensor : carToFollow.getSensorsLines()) {
+                sensor.setTranslateY(sensor.getTranslateY() + carToFollow.getSpeedY());
+            }
         }
     }
 
