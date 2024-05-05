@@ -38,18 +38,35 @@ public class FXMLLevelPickerController {
     FXMLGameControllerAI levelControllerAI = new FXMLGameControllerAI();
     FXMLLoader levelLoaderUser = new FXMLLoader(getClass().getResource("/fxml/gameUser.fxml"));
     FXMLGameControllerUser levelControllerUser = new FXMLGameControllerUser();
-    
 
-    EventHandler<ActionEvent> gameSwitch = new EventHandler<>() {
+    EventHandler<ActionEvent> switchLevel1 = new EventHandler<>() {
         @Override
         public void handle(ActionEvent event) {
-            if(GameController.userControlled){
-                chooseLevel(levelLoaderUser, levelControllerUser);
-            } else{
-                chooseLevel(levelLoaderAI, levelControllerAI);
-            }
+            selectLevel("1");
         }
     };
+    EventHandler<ActionEvent> switchLevel2 = new EventHandler<>() {
+        @Override
+        public void handle(ActionEvent event) {
+            selectLevel("2");
+        }
+    };
+    EventHandler<ActionEvent> switchLevel3 = new EventHandler<>() {
+        @Override
+        public void handle(ActionEvent event) {
+            selectLevel("3");
+        }
+    };
+
+    void selectLevel(String level) {
+        if (GameController.userControlled) {
+            FXMLGameControllerUser.level = level;
+            chooseLevel(levelLoaderUser, levelControllerUser);
+        } else {
+            FXMLGameControllerAI.level = level;
+            chooseLevel(levelLoaderAI, levelControllerAI);
+        }
+    }
 
     public FXMLLevelPickerController() {
         levelLoaderAI.setController(levelControllerAI);
@@ -64,7 +81,7 @@ public class FXMLLevelPickerController {
             Logger.getLogger(FXMLLevelPickerController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     void chooseLevel(FXMLLoader loader, FXMLGameControllerUser controller) {
         try {
             Main.scene.setRoot(loader.load());
@@ -79,11 +96,11 @@ public class FXMLLevelPickerController {
         FXMLLoader menuLoader = new FXMLLoader(getClass().getResource("/fxml/gamemode.fxml"));
         FXMLGamemodeController menuController = new FXMLGamemodeController(Main.scene);
         menuLoader.setController(menuController);
-        btnLevel1.setOnAction(gameSwitch);
+        btnLevel1.setOnAction(switchLevel1);
 
-        btnLevel2.setOnAction(gameSwitch);
+        btnLevel2.setOnAction(switchLevel2);
 
-        btnLevel3.setOnAction(gameSwitch);
+        btnLevel3.setOnAction(switchLevel3);
         returnButton.setOnAction(e -> {
             try {
                 Main.scene.setRoot(menuLoader.load());

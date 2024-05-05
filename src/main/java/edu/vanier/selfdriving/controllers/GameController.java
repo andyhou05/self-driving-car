@@ -89,6 +89,13 @@ public class GameController {
         switch(level){
             case "1":
                 spawner.spawnLevelOne();
+                break;
+            case "2":
+                spawner.spawnLevelTwo();
+                break;
+            case "3":
+                spawner.spawnLevelThree();
+                break;
         }
         carController.setEnemyCars(spawner.getCars());
     }

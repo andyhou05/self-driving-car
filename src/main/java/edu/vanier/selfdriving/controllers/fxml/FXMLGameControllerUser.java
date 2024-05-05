@@ -31,9 +31,11 @@ public class FXMLGameControllerUser{
 
     FXMLLoader levelPickerLoader = new FXMLLoader(getClass().getResource("/fxml/levels.fxml"));
     GameController gameControllerUser;
+    
+    public static String level;
 
     public void loadGame() {
-        gameControllerUser = new GameController(new SpawnerController(), roadPane, "1");
+        gameControllerUser = new GameController(new SpawnerController(), roadPane, level);
     }
     
     @FXML

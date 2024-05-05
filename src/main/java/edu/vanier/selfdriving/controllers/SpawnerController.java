@@ -108,6 +108,126 @@ public class SpawnerController {
         }
     }
 
+    public void spawnLevelTwo() {
+        clear();
+        for (int i = 0; i < 9; i++) {
+            Car car = new Car();
+            car.getCarImageView().setImage(carImage);
+            car.setSpeedY(2);
+            car.setSpeedX(0);
+            car.setyPosition(yPosition);
+            switch (i) {
+                case 0:
+                    car.setyPosition(150);
+                    car.setxPosition(road.getX_position_lane_two());
+                    break;
+                case 1:
+                    car.setyPosition(-50);
+                    car.setxPosition(road.getX_position_lane_three());
+                    break;
+                case 2:
+                    car.setyPosition(-50);
+                    car.setxPosition(road.getX_position_lane_two());
+                    break;
+                case 3:
+                    car.setyPosition(-250);
+                    car.setxPosition(road.getX_position_lane_two());
+                    break;
+                case 4:
+                    car.setyPosition(-450);
+                    car.setxPosition(road.getX_position_lane_one());
+                    break;
+                case 5:
+                    car.setyPosition(-650);
+                    car.setxPosition(road.getX_position_lane_three());
+                    break;
+                case 6:
+                    car.setyPosition(-850);
+                    car.setxPosition(road.getX_position_lane_one());
+                    break;
+                case 7:
+                    car.setyPosition(-850);
+                    car.setxPosition(road.getX_position_lane_two());
+                    break;
+                case 8:
+                    car.setyPosition(-1050);
+                    car.setxPosition(road.getX_position_lane_one());
+                    break;
+                case 9:
+                    car.setyPosition(-1250);
+                    car.setxPosition(road.getX_position_lane_two());
+                    break;
+            }
+            cars.add(car);
+            carsStack.add(car.getCarStack());
+            root.getChildren().add(car.getCarStack());
+        }
+    }
+
+    public void spawnLevelThree() {
+        clear();
+        for (int i = 0; i < 11; i++) {
+            Car car = new Car();
+            car.getCarImageView().setImage(carImage);
+            car.setSpeedY(2);
+            car.setSpeedX(0);
+            car.setyPosition(yPosition);
+            switch (i) {
+                case 0:
+                    car.setyPosition(150);
+                    car.setxPosition(road.getX_position_lane_one());
+                    break;
+                case 1:
+                    car.setyPosition(150);
+                    car.setxPosition(road.getX_position_lane_three());
+                    break;
+                case 2:
+                    car.setyPosition(-250);
+                    car.setxPosition(road.getX_position_lane_two());
+                    break;
+                case 3:
+                    car.setyPosition(-550);
+                    car.setxPosition(road.getX_position_lane_three());
+                    break;
+                case 4:
+                    car.setyPosition(-850);
+                    car.setxPosition(road.getX_position_lane_two());
+                    break;
+                case 5:
+                    car.setyPosition(-850);
+                    car.setxPosition(road.getX_position_lane_one());
+                    break;
+                case 6:
+                    car.setyPosition(-1150);
+                    car.setxPosition(road.getX_position_lane_two());
+                    break;
+                case 7:
+                    car.setyPosition(-1150);
+                    car.setxPosition(road.getX_position_lane_three());
+                    break;
+                    case 8:
+                    car.setyPosition(-1450);
+                    car.setxPosition(road.getX_position_lane_one());
+                    break;
+                case 9:
+                    car.setyPosition(-1750);
+                    car.setxPosition(road.getX_position_lane_three());
+                    break;
+                case 10:
+                    car.setyPosition(-1950);
+                    car.setxPosition(road.getX_position_lane_one());
+                    break;
+                case 11:
+                    car.setyPosition(-1950);
+                    car.setxPosition(road.getX_position_lane_two());
+                    break;
+            }
+            cars.add(car);
+            carsStack.add(car.getCarStack());
+            root.getChildren().add(car.getCarStack());
+        }
+    }
+
     public void clear() {
         carsStack.clear();
         cars.clear();

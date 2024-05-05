@@ -36,6 +36,8 @@ public class FXMLGameControllerAI {
 
     GameControllerAI gameControllerAI;
     FXMLLoader levelPickerLoader = new FXMLLoader(getClass().getResource("/fxml/levels.fxml"));
+    
+    public static String level;
 
     @FXML
     public void initialize() {
@@ -47,7 +49,7 @@ public class FXMLGameControllerAI {
     }
 
     public void loadGame() {
-        gameControllerAI = new GameControllerAI(roadPane, visualizerPane, "1");
+        gameControllerAI = new GameControllerAI(roadPane, visualizerPane, level);
     }
 
     EventHandler<ActionEvent> returnEvent = new EventHandler<>() {
