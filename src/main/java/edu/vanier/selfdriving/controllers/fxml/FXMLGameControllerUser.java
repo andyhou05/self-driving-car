@@ -33,7 +33,7 @@ public class FXMLGameControllerUser{
     GameController gameControllerUser;
 
     public void loadGame() {
-        gameControllerUser = new GameController(new SpawnerController(), roadPane);
+        gameControllerUser = new GameController(new SpawnerController(), roadPane, "1");
     }
     
     @FXML

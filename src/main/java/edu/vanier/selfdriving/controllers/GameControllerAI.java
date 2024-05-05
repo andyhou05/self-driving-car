@@ -22,8 +22,8 @@ public class GameControllerAI extends GameController {
     NeuralNetwork bestNetwork;
     VisualizerController visualizer;
 
-    public GameControllerAI(SpawnerController spawner, Pane roadPane, Pane visualizerPane) {
-        super(spawner, false, roadPane, 50);
+    public GameControllerAI( Pane roadPane, Pane visualizerPane, String level) {
+        super(false, roadPane, 50, level);
 
         // Create camera for AI Controlled gamemode
         camera = new AnimationTimer() {
@@ -95,9 +95,9 @@ public class GameControllerAI extends GameController {
     }
     public void reset() {
         removeAllCars();
-        spawner.spawn();
         createCarGeneration(bestNetwork);
         road.resetLinePositions();
+        spawn();
     }
 
     public void saveBestNetwork() {

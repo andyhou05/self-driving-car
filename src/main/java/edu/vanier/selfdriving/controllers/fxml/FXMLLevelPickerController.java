@@ -5,6 +5,7 @@
 package edu.vanier.selfdriving.controllers.fxml;
 
 import edu.vanier.selfdriving.controllers.GameController;
+import edu.vanier.selfdriving.controllers.SpawnerController;
 import edu.vanier.selfdriving.controllers.fxml.FXMLGamemodeController;
 import edu.vanier.selfdriving.controllers.fxml.FXMLGameControllerUser;
 import edu.vanier.selfdriving.controllers.fxml.FXMLGameControllerAI;
@@ -37,6 +38,7 @@ public class FXMLLevelPickerController {
     FXMLGameControllerAI levelControllerAI = new FXMLGameControllerAI();
     FXMLLoader levelLoaderUser = new FXMLLoader(getClass().getResource("/fxml/gameUser.fxml"));
     FXMLGameControllerUser levelControllerUser = new FXMLGameControllerUser();
+    
 
     EventHandler<ActionEvent> gameSwitch = new EventHandler<>() {
         @Override

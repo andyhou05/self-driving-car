@@ -20,7 +20,7 @@ import javafx.scene.shape.Line;
  *
  * @author USER
  */
-public class GameController { //todo make controllers extend thgis class
+public class GameController { 
 
     // Car Properties
     int carCount;
@@ -33,6 +33,7 @@ public class GameController { //todo make controllers extend thgis class
 
     // UI Properties
     Image playerImage;
+    Image enemyImage = new Image("/sprites/car_red_5.png");
     public static String carNumber = "5";
     public static String carColor = "blue";
 
@@ -40,22 +41,26 @@ public class GameController { //todo make controllers extend thgis class
     Pane root = (Pane) Main.scene.getRoot();
     Pane roadPane;
 
+    String level;
+    
     // Camera Animation
     public AnimationTimer camera;
 
-    public GameController(SpawnerController spawner, boolean userControlled, Pane roadPane, int carCount) {
-        this.spawner = spawner;
+    public GameController(boolean userControlled, Pane roadPane, int carCount, String level) {
         this.userControlled = userControlled;
         this.roadPane = roadPane;
         this.carCount = carCount;
+        this.level = level;
         playerImage = new Image("/sprites/car_" + carColor + "_" + carNumber + ".png");
         createRoad();
         createCarGeneration(playerImage);
+        spawner = new SpawnerController(road, root, enemyImage);
         carController = new CarController(carGeneration, spawner.getCars(), userControlled);
+        spawn();
     }
 
-    public GameController(SpawnerController spawner, Pane roadPane) {
-        this(spawner, true, roadPane, 1);
+    public GameController(SpawnerController spawner, Pane roadPane, String level) {
+        this(true, roadPane, 1, level);
         // Create camera for AI Controlled gamemode
         camera = new AnimationTimer() {
             private long FPS = 120L;
@@ -80,6 +85,13 @@ public class GameController { //todo make controllers extend thgis class
         camera.start();
     }
 
+    public void spawn(){
+        switch(level){
+            case "1":
+                spawner.spawnLevelOne();
+        }
+        carController.setEnemyCars(spawner.getCars());
+    }
     public void createRoad() {
         double roadWidth = roadPane.getPrefWidth() * 0.95;
         road = new Road(roadPane.getPrefWidth() / 2, roadWidth);
@@ -135,11 +147,8 @@ public class GameController { //todo make controllers extend thgis class
             root.getChildren().remove(currentCar.getCarStack());
         }
 
-        for (int i = 0; i < spawner.getCarsToSpawn(); i++) {
+        for (int i = 0; i < spawner.getCars().size(); i++) {
             Car currentCar = spawner.getCars().get(i);
-            if (!userControlled) {
-                root.getChildren().removeAll(currentCar.getSensorsLines());
-            }
             root.getChildren().remove(currentCar.getCarStack());
         }
         spawner.clear();
@@ -148,9 +157,9 @@ public class GameController { //todo make controllers extend thgis class
 
     public void reset() {
         removeAllCars();
-        spawner.spawn();
         createCarGeneration(playerImage);
         road.resetLinePositions();
         carController.checkKeypress(carToFollow);
+        spawn();
     }
 }
