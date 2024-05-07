@@ -11,6 +11,7 @@ import edu.vanier.selfdriving.neuralnetwork.Mutation;
 import edu.vanier.selfdriving.neuralnetwork.NeuralNetwork;
 import java.util.ArrayList;
 import javafx.animation.AnimationTimer;
+import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
@@ -21,7 +22,9 @@ import javafx.scene.shape.Line;
  * @author USER
  */
 public class GameController { 
-
+    private double startTime;
+    private double elapsedTime;
+    
     // Car Properties
     int carCount;
     public static boolean userControlled;
@@ -70,9 +73,23 @@ public class GameController {
             @Override
             public void handle(long now) {
                 if (now - last > INTERVAL) {
+                    if (startTime == 0) {
+                    startTime = now;
+                    }
+                    elapsedTime = now - startTime;
                     // Kill car if collision occurs
                     if (carToFollow.isDead()) {
                         carToFollow.setVisible(false);
+                        stop();
+                        Alert deathAlert = new Alert(Alert.AlertType.INFORMATION);
+                        deathAlert.setContentText("You survived for: "+String.format("%.2f", elapsedTime/1000000000)+"s");
+                        deathAlert.setTitle("Game Over!");
+                        deathAlert.setHeaderText("Score");
+                        deathAlert.show();
+                        deathAlert.setOnCloseRequest(event -> {
+                            reset();
+                            start();
+                        });
                     }
 
                     // Update Camera

@@ -45,19 +45,7 @@ public class CarController {
     Car carToFollow;
     Scene scene;
     boolean userControlled = true;
-    private double startTime;
-    private double elapsedTime;
-    public boolean isGameOver() {
-        // Check if any car is dead
-        for (Car car : cars) {
-            if (car.isDead()) {
-                return true;
-            }
-        }
-        return false;
-    }
-    FXMLLoader levelPickerLoader = new FXMLLoader(getClass().getResource("/fxml/levels.fxml"));
-    GameController gameControllerUser;
+    
     
     AnimationTimer animation = new AnimationTimer() {
         private long FPS = 120L;
@@ -68,10 +56,7 @@ public class CarController {
         @Override
         public void handle(long now) {
             if (now - last > INTERVAL) {
-                if (startTime == 0) {
-                    startTime = now;
-                }
-                elapsedTime = now - startTime;
+                
                 // Move enemy cars
                 for (Car enemyCar : enemyCars) {
                     moveCar(enemyCar);
@@ -102,17 +87,8 @@ public class CarController {
                         }
                     
                     }
-                }
-                if (isGameOver()) {
-                        stop();
-                        Alert deathAlert = new Alert(AlertType.INFORMATION);
-                        deathAlert.setContentText("You survived for: "+String.format("%.2f", elapsedTime/1000000000)+"s");
-                        deathAlert.setTitle("Game Over!");
-                        deathAlert.setHeaderText("Score");
-                        deathAlert.show();
-                        deathAlert.setOnCloseRequest(event -> {
-                            //Add code to reset gameplay
-                        });
+                
+                        
                     }
                 last = now;
 
