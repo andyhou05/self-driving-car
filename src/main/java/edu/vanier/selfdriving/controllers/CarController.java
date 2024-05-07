@@ -4,6 +4,9 @@
  */
 package edu.vanier.selfdriving.controllers;
 
+import static edu.vanier.selfdriving.controllers.fxml.FXMLGameControllerUser.level;
+import edu.vanier.selfdriving.controllers.fxml.FXMLGamemodeController;
+import edu.vanier.selfdriving.main.Main;
 import edu.vanier.selfdriving.models.Car;
 import edu.vanier.selfdriving.models.Road;
 import edu.vanier.selfdriving.models.Sensor;
@@ -11,9 +14,17 @@ import static edu.vanier.selfdriving.models.Sensor.sensorStartX;
 import static edu.vanier.selfdriving.models.Sensor.sensorStartY;
 import edu.vanier.selfdriving.neuralnetwork.NeuralNetwork;
 import edu.vanier.selfdriving.utils.MathUtils;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.animation.AnimationTimer;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import static javafx.scene.input.KeyCode.A;
 import static javafx.scene.input.KeyCode.D;
 import static javafx.scene.input.KeyCode.S;
@@ -34,15 +45,33 @@ public class CarController {
     Car carToFollow;
     Scene scene;
     boolean userControlled = true;
+    private double startTime;
+    private double elapsedTime;
+    public boolean isGameOver() {
+        // Check if any car is dead
+        for (Car car : cars) {
+            if (car.isDead()) {
+                return true;
+            }
+        }
+        return false;
+    }
+    FXMLLoader levelPickerLoader = new FXMLLoader(getClass().getResource("/fxml/levels.fxml"));
+    GameController gameControllerUser;
+    
     AnimationTimer animation = new AnimationTimer() {
         private long FPS = 120L;
         private long INTERVAL = 1000000000L / FPS;
         private long last = 0;
-
+        
         // Reference: https://www.youtube.com/watch?v=CYUjjnoXdrM
         @Override
         public void handle(long now) {
             if (now - last > INTERVAL) {
+                if (startTime == 0) {
+                    startTime = now;
+                }
+                elapsedTime = now - startTime;
                 // Move enemy cars
                 for (Car enemyCar : enemyCars) {
                     moveCar(enemyCar);
@@ -71,8 +100,20 @@ public class CarController {
                             updateSensorReading(car, car.getSensors()[j]);
                             car.getInputs()[j] = car.getSensors()[j].getReading();
                         }
+                    
                     }
                 }
+                if (isGameOver()) {
+                        stop();
+                        Alert deathAlert = new Alert(AlertType.INFORMATION);
+                        deathAlert.setContentText("You survived for: "+String.format("%.2f", elapsedTime/1000000000)+"s");
+                        deathAlert.setTitle("Game Over!");
+                        deathAlert.setHeaderText("Score");
+                        deathAlert.show();
+                        deathAlert.setOnCloseRequest(event -> {
+                            //Add code to reset gameplay
+                        });
+                    }
                 last = now;
 
             }
@@ -402,5 +443,4 @@ public class CarController {
     public void setUserControlled(boolean userControlled) {
         this.userControlled = userControlled;
     }
-
 }
