@@ -17,11 +17,19 @@ import javafx.scene.image.ImageView;
  */
 
 /**
- *
+ * 
  * @author 2273410
+ * Controller for car selection
+ *
  */
 public class FXMLCarsPickerController {
+    
+    //Static ints and Strings to keep track of the type & color of cars being displayed
     public static int typeCounter = 0;
+    public static String[] listOfColors = {"black","blue","green","red"};
+    public static int[] listOfTypes = {1,2,3,4};
+    
+    
     @FXML
     Button car1;
     @FXML
@@ -44,8 +52,10 @@ public class FXMLCarsPickerController {
     Button switchCars;
 
     
-    public static String[] listOfColors = {"black","blue","green","red"};
-    public static int[] listOfTypes = {1,2,3,4};
+    /**
+     * Updates the ImageView with the new type of car
+     * This method is for when the user clicks the Next Models button
+     */
     public void updateCars(){
         firstImage.setImage(new Image("/sprites/car_"+listOfColors[0]+"_"+listOfTypes[typeCounter%4]+".png"));
         secondImage.setImage(new Image("/sprites/car_"+listOfColors[1]+"_"+listOfTypes[typeCounter%4]+".png"));
@@ -54,10 +64,12 @@ public class FXMLCarsPickerController {
         GameController.carNumber = Integer.toString(listOfTypes[typeCounter%4]);
     }
 
-    
+    /**
+     * Initializes the controller
+     * This method is called after the FXML file has been loaded
+    */
     @FXML
-    public void initialize(){
-            
+    public void initialize(){   
         FXMLLoader menuLoader = new FXMLLoader(getClass().getResource("/fxml/gamemode.fxml"));
         FXMLGamemodeController menuController = new FXMLGamemodeController(Main.scene);
         menuLoader.setController(menuController);
@@ -66,7 +78,6 @@ public class FXMLCarsPickerController {
             typeCounter+=1;
             updateCars();
           });
-        
         returnButton.setOnAction(e->{
             try {
                 Main.scene.setRoot(menuLoader.load());
@@ -74,19 +85,15 @@ public class FXMLCarsPickerController {
                 Logger.getLogger(FXMLGamemodeController.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
-        
         car1.setOnAction(e->{
             GameController.carColor = "black";
         });
-        
         car2.setOnAction(e->{
             GameController.carColor = "blue";
         });
-        
         car3.setOnAction(e->{
             GameController.carColor = "green";
-        });
-        
+        }); 
         car4.setOnAction(e->{
             GameController.carColor = "red";
         });
