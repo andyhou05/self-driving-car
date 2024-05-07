@@ -1,0 +1,6 @@
+edu.vanier.selfdriving.controllers
+edu.vanier.selfdriving.controllers.fxml
+edu.vanier.selfdriving.main
+edu.vanier.selfdriving.models
+edu.vanier.selfdriving.neuralnetwork
+edu.vanier.selfdriving.utils

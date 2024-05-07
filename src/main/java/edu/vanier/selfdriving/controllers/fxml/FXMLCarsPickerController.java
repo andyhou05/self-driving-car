@@ -59,15 +59,14 @@ public class FXMLCarsPickerController {
     public void initialize(){
             
         FXMLLoader menuLoader = new FXMLLoader(getClass().getResource("/fxml/gamemode.fxml"));
-         FXMLGamemodeController menuController = new FXMLGamemodeController(Main.scene);
-         menuLoader.setController(menuController);
+        FXMLGamemodeController menuController = new FXMLGamemodeController(Main.scene);
+        menuLoader.setController(menuController);
         updateCars();
-        
         switchCars.setOnAction(e ->{
             typeCounter+=1;
             updateCars();
+          });
         
-    });
         returnButton.setOnAction(e->{
             try {
                 Main.scene.setRoot(menuLoader.load());
@@ -75,15 +74,19 @@ public class FXMLCarsPickerController {
                 Logger.getLogger(FXMLGamemodeController.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
+        
         car1.setOnAction(e->{
             GameController.carColor = "black";
         });
+        
         car2.setOnAction(e->{
             GameController.carColor = "blue";
         });
+        
         car3.setOnAction(e->{
             GameController.carColor = "green";
         });
+        
         car4.setOnAction(e->{
             GameController.carColor = "red";
         });

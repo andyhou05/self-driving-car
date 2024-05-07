@@ -23,12 +23,6 @@ public class Car {
     Rectangle hitBox;
     Image carImage;
     ImageView carImageView = new ImageView();
-    public static String[] listOfCars5 = {"/sprites/car_blue_5.png", "/sprites/car_black_5.png", "/sprites/car_green_5.png", "/sprites/car_red_5.png"};
-    public static String[] listOfCars1 = {"/sprites/car_blue_1.png", "/sprites/car_black_1.png", "/sprites/car_green_1.png", "/sprites/car_red_1.png"};
-    public static String[] listOfCars3 = {"/sprites/car_blue_3.png", "/sprites/car_black_3.png", "/sprites/car_green_3.png", "/sprites/car_red_3.png"};
-    public static String[] listOfCars2 = {"/sprites/car_blue_2.png", "/sprites/car_black_2.png", "/sprites/car_green_2.png", "/sprites/car_red_2.png"};
-    public static String[] listOfCars4 = {"/sprites/car_blue_4.png", "/sprites/car_black_4.png", "/sprites/car_green_4.png", "/sprites/car_red_4.png"};
-    public static String[][] listOfTypes = {listOfCars1, listOfCars2, listOfCars3, listOfCars4, listOfCars5};
 
     //Transition properties
     double xPosition;
@@ -164,7 +158,8 @@ public class Car {
             setSensorsVisible(visible);
         }
     }
-
+    
+    //Getters and Setters for Car class physical properties
     public Image getCarImage() {
         return carImage;
     }
@@ -361,7 +356,7 @@ public class Car {
     public void setDirection(int direction) {
         this.direction = direction;
     }
-
+    //Setters and getters for Car movements properties
     public boolean isAccelerating() {
         return accelerating;
     }
