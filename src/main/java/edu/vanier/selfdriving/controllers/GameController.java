@@ -7,8 +7,6 @@ package edu.vanier.selfdriving.controllers;
 import edu.vanier.selfdriving.main.Main;
 import edu.vanier.selfdriving.models.Car;
 import edu.vanier.selfdriving.models.Road;
-import edu.vanier.selfdriving.neuralnetwork.Mutation;
-import edu.vanier.selfdriving.neuralnetwork.NeuralNetwork;
 import java.util.ArrayList;
 import javafx.animation.AnimationTimer;
 import javafx.scene.control.Alert;
@@ -18,16 +16,19 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Line;
 
 /**
+ * Class to control the game logic such as the timer, the camera, initialization
+ * of the game objects, etc. The Main controller of the Application.
  *
  * @author USER
  */
-public class GameController { 
+public class GameController {
+
     private double startTime;
     private double elapsedTime;
-    
+
     // Car Properties
     int carCount;
-    public static boolean userControlled;
+    public static boolean userControlled; // Updates based on the game mode chosen by the user.
     Road road;
     SpawnerController spawner;
     CarController carController;
@@ -36,7 +37,6 @@ public class GameController {
 
     // UI Properties
     Image playerImage;
-    Image enemyImage = new Image("/sprites/car_red_5.png");
     public static String carNumber = "5";
     public static String carColor = "blue";
 
@@ -44,11 +44,29 @@ public class GameController {
     Pane root = (Pane) Main.scene.getRoot();
     Pane roadPane;
 
+    // Game property
     String level;
-    
-    // Camera Animation
+
+    /**
+     * Camera Animation.
+     */
     public AnimationTimer camera;
 
+    /**
+     * Creates an empty GameController object.
+     */
+    public GameController() {
+    }
+
+    /**
+     * Creates a general GameController object, initializes the game components
+     * such as the roads and the cars based on which level is chosen.
+     *
+     * @param userControlled
+     * @param roadPane
+     * @param carCount
+     * @param level
+     */
     public GameController(boolean userControlled, Pane roadPane, int carCount, String level) {
         this.userControlled = userControlled;
         this.roadPane = roadPane;
@@ -57,14 +75,21 @@ public class GameController {
         playerImage = new Image("/sprites/car_" + carColor + "_" + carNumber + ".png");
         createRoad();
         createCarGeneration(playerImage);
-        spawner = new SpawnerController(road, root, enemyImage);
+        spawner = new SpawnerController(road, root);
         carController = new CarController(carGeneration, spawner.getCars(), userControlled);
         spawn();
     }
 
+    /**
+     * Creates a GameController for User Controlled game mode.
+     *
+     * @param spawner
+     * @param roadPane
+     * @param level
+     */
     public GameController(SpawnerController spawner, Pane roadPane, String level) {
         this(true, roadPane, 1, level);
-        // Create camera for AI Controlled gamemode
+        // Create camera for User Controlled gamemode
         camera = new AnimationTimer() {
             private long FPS = 120L;
             private long INTERVAL = 1000000000L / FPS;
@@ -74,7 +99,7 @@ public class GameController {
             public void handle(long now) {
                 if (now - last > INTERVAL) {
                     if (startTime == 0) {
-                    startTime = now;
+                        startTime = now;
                     }
                     elapsedTime = now - startTime;
                     // Kill car if collision occurs
@@ -82,7 +107,7 @@ public class GameController {
                         carToFollow.setVisible(false);
                         stop();
                         Alert deathAlert = new Alert(Alert.AlertType.INFORMATION);
-                        deathAlert.setContentText("You survived for: "+String.format("%.2f", elapsedTime/1000000000)+"s");
+                        deathAlert.setContentText("You survived for: " + String.format("%.2f", elapsedTime / 1000000000) + "s");
                         deathAlert.setTitle("Game Over!");
                         deathAlert.setHeaderText("Score");
                         deathAlert.show();
@@ -102,8 +127,11 @@ public class GameController {
         camera.start();
     }
 
-    public void spawn(){
-        switch(level){
+    /**
+     * Spawns enemy cars based on which level is chosen.
+     */
+    public void spawn() {
+        switch (level) {
             case "1":
                 spawner.spawnLevelOne();
                 break;
@@ -116,12 +144,21 @@ public class GameController {
         }
         carController.setEnemyCars(spawner.getCars());
     }
+
+    /**
+     * Initializes the roads of the level.
+     */
     public void createRoad() {
         double roadWidth = roadPane.getPrefWidth() * 0.95;
         road = new Road(roadPane.getPrefWidth() / 2, roadWidth);
         root.getChildren().addAll(road.getLines());
     }
 
+    /**
+     * Initializes the cars/car of the level.
+     *
+     * @param image
+     */
     public void createCarGeneration(Image image) {
         for (int i = 0; i < carCount; i++) {
             Car newCar = new Car(road.getX_position_lane_two(), 450, image, userControlled);
@@ -141,6 +178,9 @@ public class GameController {
         carToFollow.setVisible(true);
     }
 
+    /**
+     * Moves the camera to follow the carToFollow.
+     */
     public void moveCameraDown() {
         // Move road lines down
         for (Line roadLine : road.getLines()) {
@@ -162,6 +202,9 @@ public class GameController {
         }
     }
 
+    /**
+     * Removes all the cars from the scene.
+     */
     public void removeAllCars() {
         for (int i = 0; i < carGeneration.size(); i++) {
             Car currentCar = carGeneration.get(i);
@@ -179,6 +222,9 @@ public class GameController {
         carGeneration.clear();
     }
 
+    /**
+     * Reset the level.
+     */
     public void reset() {
         removeAllCars();
         createCarGeneration(playerImage);
@@ -186,4 +232,261 @@ public class GameController {
         carController.checkKeypress(carToFollow);
         spawn();
     }
+
+    /**
+     *
+     * @return Starting time of the level.
+     */
+    public double getStartTime() {
+        return startTime;
+    }
+
+    /**
+     *
+     * @param startTime
+     */
+    public void setStartTime(double startTime) {
+        this.startTime = startTime;
+    }
+
+    /**
+     *
+     * @return Elapsed time of the level.
+     */
+    public double getElapsedTime() {
+        return elapsedTime;
+    }
+
+    /**
+     *
+     * @param elapsedTime
+     */
+    public void setElapsedTime(double elapsedTime) {
+        this.elapsedTime = elapsedTime;
+    }
+
+    /**
+     *
+     * @return Cars to create in carGeneration.
+     */
+    public int getCarCount() {
+        return carCount;
+    }
+
+    /**
+     *
+     * @param carCount
+     */
+    public void setCarCount(int carCount) {
+        this.carCount = carCount;
+    }
+
+    /**
+     *
+     * @return Control type of the cars/car (AI or User)
+     */
+    public static boolean isUserControlled() {
+        return userControlled;
+    }
+
+    /**
+     *
+     * @param userControlled
+     */
+    public static void setUserControlled(boolean userControlled) {
+        GameController.userControlled = userControlled;
+    }
+
+    /**
+     *
+     * @return Road object of the level.
+     */
+    public Road getRoad() {
+        return road;
+    }
+
+    /**
+     *
+     * @param road
+     */
+    public void setRoad(Road road) {
+        this.road = road;
+    }
+
+    /**
+     *
+     * @return Spawner of the level.
+     */
+    public SpawnerController getSpawner() {
+        return spawner;
+    }
+
+    /**
+     *
+     * @param spawner
+     */
+    public void setSpawner(SpawnerController spawner) {
+        this.spawner = spawner;
+    }
+
+    /**
+     *
+     * @return CarController of the level.
+     */
+    public CarController getCarController() {
+        return carController;
+    }
+
+    /**
+     *
+     * @param carController
+     */
+    public void setCarController(CarController carController) {
+        this.carController = carController;
+    }
+
+    /**
+     *
+     * @return carToFollow which the camera will follow.
+     */
+    public Car getCarToFollow() {
+        return carToFollow;
+    }
+
+    /**
+     *
+     * @param carToFollow
+     */
+    public void setCarToFollow(Car carToFollow) {
+        this.carToFollow = carToFollow;
+    }
+
+    /**
+     *
+     * @return List of cars that are in the level.
+     */
+    public ArrayList<Car> getCarGeneration() {
+        return carGeneration;
+    }
+
+    /**
+     *
+     * @param carGeneration
+     */
+    public void setCarGeneration(ArrayList<Car> carGeneration) {
+        this.carGeneration = carGeneration;
+    }
+
+    /**
+     *
+     * @return Image of the player cars.
+     */
+    public Image getPlayerImage() {
+        return playerImage;
+    }
+
+    /**
+     *
+     * @param playerImage
+     */
+    public void setPlayerImage(Image playerImage) {
+        this.playerImage = playerImage;
+    }
+
+    /**
+     *
+     * @return The model number of the car.
+     */
+    public static String getCarNumber() {
+        return carNumber;
+    }
+
+    /**
+     *
+     * @param carNumber
+     */
+    public static void setCarNumber(String carNumber) {
+        GameController.carNumber = carNumber;
+    }
+
+    /**
+     *
+     * @return The color of the car.
+     */
+    public static String getCarColor() {
+        return carColor;
+    }
+
+    /**
+     *
+     * @param carColor
+     */
+    public static void setCarColor(String carColor) {
+        GameController.carColor = carColor;
+    }
+
+    /**
+     *
+     * @return Root element of the Scene.
+     */
+    public Pane getRoot() {
+        return root;
+    }
+
+    /**
+     *
+     * @param root
+     */
+    public void setRoot(Pane root) {
+        this.root = root;
+    }
+
+    /**
+     *
+     * @return Pane in which the road lives in.
+     */
+    public Pane getRoadPane() {
+        return roadPane;
+    }
+
+    /**
+     *
+     * @param roadPane
+     */
+    public void setRoadPane(Pane roadPane) {
+        this.roadPane = roadPane;
+    }
+
+    /**
+     *
+     * @return Level number.
+     */
+    public String getLevel() {
+        return level;
+    }
+
+    /**
+     *
+     * @param level
+     */
+    public void setLevel(String level) {
+        this.level = level;
+    }
+
+    /**
+     *
+     * @return Animation controlling the camera.
+     */
+    public AnimationTimer getCamera() {
+        return camera;
+    }
+
+    /**
+     *
+     * @param camera
+     */
+    public void setCamera(AnimationTimer camera) {
+        this.camera = camera;
+    }
+
 }

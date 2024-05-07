@@ -4,8 +4,6 @@
  */
 package edu.vanier.selfdriving.controllers;
 
-import static edu.vanier.selfdriving.controllers.fxml.FXMLGameControllerUser.level;
-import edu.vanier.selfdriving.controllers.fxml.FXMLGamemodeController;
 import edu.vanier.selfdriving.main.Main;
 import edu.vanier.selfdriving.models.Car;
 import edu.vanier.selfdriving.models.Road;
@@ -14,17 +12,9 @@ import static edu.vanier.selfdriving.models.Sensor.sensorStartX;
 import static edu.vanier.selfdriving.models.Sensor.sensorStartY;
 import edu.vanier.selfdriving.neuralnetwork.NeuralNetwork;
 import edu.vanier.selfdriving.utils.MathUtils;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.animation.AnimationTimer;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import static javafx.scene.input.KeyCode.A;
 import static javafx.scene.input.KeyCode.D;
 import static javafx.scene.input.KeyCode.S;
@@ -35,6 +25,8 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 
 /**
+ * Class that controls and updates all Car object properties such as their
+ * movement, sensors, collisions, etc.
  *
  * @author USER
  */
@@ -45,18 +37,17 @@ public class CarController {
     Car carToFollow;
     Scene scene;
     boolean userControlled = true;
-    
-    
+
+    // Animation that controls the cars (movement, sensors, neural network, collisions...)
     AnimationTimer animation = new AnimationTimer() {
+        // Reference: https://www.youtube.com/watch?v=CYUjjnoXdrM
         private long FPS = 120L;
         private long INTERVAL = 1000000000L / FPS;
         private long last = 0;
-        
-        // Reference: https://www.youtube.com/watch?v=CYUjjnoXdrM
+
         @Override
         public void handle(long now) {
             if (now - last > INTERVAL) {
-                
                 // Move enemy cars
                 for (Car enemyCar : enemyCars) {
                     moveCar(enemyCar);
@@ -80,28 +71,39 @@ public class CarController {
                     if (!userControlled) {
                         updateNeuralNetwork(car);
                         updateSensorPositions(car);
-                        // Sensor Readings and Inputs
+                        // Update Sensor Readings and Inputs
                         for (int j = 0; j < car.getSensorCount(); j++) {
-                            updateSensorReading(car, car.getSensors()[j]);
+                            updateSensorReading(car.getSensors()[j]);
                             car.getInputs()[j] = car.getSensors()[j].getReading();
                         }
-                    
                     }
-                
-                        
-                    }
+                }
                 last = now;
-
             }
         }
     };
 
+    /**
+     * Creates an empty CarController object.
+     */
+    public CarController() {
+    }
+
+    /**
+     * Creates a CarController with a list of cars and enemyCars, initializes
+     * movement for the car based on userControlled.
+     *
+     * @param cars
+     * @param enemyCars
+     * @param userControlled True if we want to control car with keyboard
+     * inputs. False if we want to control car with a neural network.
+     */
     public CarController(ArrayList<Car> cars, ArrayList<Car> enemyCars, boolean userControlled) {
         this.cars = cars;
         this.enemyCars = enemyCars;
         this.userControlled = userControlled;
         carToFollow = cars.get(0);
-        scene = cars.get(0).getCarImageView().getScene();
+        scene = Main.scene;
         if (userControlled) {
             checkKeypress(carToFollow);
         }
@@ -116,7 +118,7 @@ public class CarController {
     /**
      * Update the position of the Sensors when the Car moves.
      *
-     * @param angle
+     * @param car
      */
     public void updateSensorPositions(Car car) {
         double angle = car.getCarStack().getRotate();
@@ -141,13 +143,13 @@ public class CarController {
         }
     }
 
-    private void updateSensorReading(Car car, Sensor sensor) {
+    private void updateSensorReading(Sensor sensor) {
         // Loop through enemy cars, if there is a reading with one or more of them, keep the highest
         double enemyCarReading = 0;
         for (Car enemyCar : enemyCars) {
             enemyCarReading = Math.max(enemyCarReading, getSensorCarReading(sensor, enemyCar));
         }
-        // Set the raeding of the sensor to be the highest reading between enemyCar and border
+        // Set the reading of the sensor to be the highest reading between enemyCar and border
         double newReading = Math.max(getSensorBorderReading(sensor), enemyCarReading);
         sensor.setReading(newReading);
     }
@@ -177,7 +179,6 @@ public class CarController {
             if (distance > sensorLength) {
                 distance = sensorLength;
             }
-
             // Get the length of the intersection
             double delta = Math.abs(distance - sensorLength);
 
@@ -204,6 +205,7 @@ public class CarController {
         double position_y = sensor.getCar().getCarStack().getBoundsInParent().getCenterY();
         double intersection_x = intersection.getBoundsInParent().getCenterX();
         double intersection_y = intersection.getBoundsInParent().getMaxY();
+
         if (intersection_x != -0.5) {
             double distance = Math.sqrt(Math.pow(position_x - intersection_x, 2) + Math.pow(position_y - intersection_y, 2));
             if (distance > sensorLength) {
@@ -238,6 +240,11 @@ public class CarController {
         return false;
     }
 
+    /**
+     * Checks for collisions between car and the road/other cars
+     *
+     * @param car
+     */
     public void checkCollisions(Car car) {
         if (checkRoadCollision(car) || checkCarCollisions(car)) {
             car.setMaxSpeed(0);
@@ -254,17 +261,11 @@ public class CarController {
             }
         }
         if (car.isTurningRight() && (Math.abs(car.getSpeedY()) > 0 || Math.abs(car.getSpeedX()) > 0)) {
-            if (car.isFlipRotate()) {
-                rotate(car, 1);
-            } else {
-                rotate(car, -1);
-            }
+            int direction = car.isFlipRotate() ? 1 : -1;
+            rotate(car, direction);
         } else if (car.isTurningLeft() && (Math.abs(car.getSpeedY()) > 0 || Math.abs(car.getSpeedX()) > 0)) {
-            if (car.isFlipRotate()) {
-                rotate(car, -1);
-            } else {
-                rotate(car, 1);
-            }
+            int direction = car.isFlipRotate() ? -1 : 1;
+            rotate(car, direction);
         }
     }
 
@@ -303,10 +304,25 @@ public class CarController {
         }
     }
 
+    /**
+     * Rotates the car based on a direction.
+     *
+     * @param car
+     * @param direction the direction in which we want to rotate the car, can be
+     * 1 or -1.
+     */
     public void rotate(Car car, int direction) {
+        if (Math.abs(direction) != 1) {
+            throw new IllegalArgumentException("Direction must be either -1 or 1.");
+        }
         car.getCarStack().setRotate(car.getCarStack().getRotate() - 1 * direction);
     }
 
+    /**
+     * Updates the position of the car based on user input.
+     *
+     * @param car
+     */
     public void checkKeypress(Car car) {
         scene.setOnKeyPressed((event) -> {
             switch (event.getCode()) {
@@ -372,51 +388,108 @@ public class CarController {
         car.setTurningLeft(false);
     }
 
+    // Getters and Setters
+    /**
+     *
+     * @return List of cars to move.
+     */
     public ArrayList<Car> getCars() {
         return cars;
     }
 
+    /**
+     *
+     * @param cars
+     */
     public void setCar(ArrayList<Car> cars) {
         this.cars = cars;
     }
 
+    /**
+     *
+     * @return Main scene.
+     */
     public Scene getScene() {
         return scene;
     }
 
+    /**
+     *
+     * @param scene
+     */
     public void setScene(Scene scene) {
         this.scene = scene;
     }
 
+    /**
+     *
+     * @return Animation of the cars.
+     */
     public AnimationTimer getAnimation() {
         return animation;
     }
 
+    /**
+     *
+     * @param animation
+     */
     public void setAnimation(AnimationTimer animation) {
         this.animation = animation;
     }
 
+    /**
+     *
+     * @return List of enemy cars.
+     */
     public ArrayList<Car> getEnemyCars() {
         return enemyCars;
     }
 
+    /**
+     *
+     * @param enemyCars
+     */
     public void setEnemyCars(ArrayList<Car> enemyCars) {
         this.enemyCars = enemyCars;
     }
 
+    /**
+     *
+     * @return Car that the camera follows.
+     */
     public Car getCarToFollow() {
         return carToFollow;
     }
 
+    /**
+     *
+     * @param carToFollow
+     */
     public void setCarToFollow(Car carToFollow) {
         this.carToFollow = carToFollow;
     }
 
+    /**
+     *
+     * @return Control type of the car (user or AI)
+     */
     public boolean isUserControlled() {
         return userControlled;
     }
 
+    /**
+     *
+     * @param userControlled
+     */
     public void setUserControlled(boolean userControlled) {
         this.userControlled = userControlled;
+    }
+
+    /**
+     *
+     * @param cars
+     */
+    public void setCars(ArrayList<Car> cars) {
+        this.cars = cars;
     }
 }

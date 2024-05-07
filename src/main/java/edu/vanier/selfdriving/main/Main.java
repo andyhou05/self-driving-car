@@ -5,7 +5,6 @@
 package edu.vanier.selfdriving.main;
 
 import edu.vanier.selfdriving.controllers.fxml.FXMLGamemodeController;
-import edu.vanier.selfdriving.controllers.fxml.FXMLLevelPickerController;
 import java.io.File;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -20,8 +19,23 @@ import javafx.stage.Stage;
  * @author USER
  */
 public class Main extends Application {
+
     MediaPlayer mediaPlayer;
-    public void music(String path) {
+
+    /**
+     * Static Scene reference to add children to.
+     */
+    public static Scene scene;
+
+    FXMLLoader gamemodeLoader = new FXMLLoader(getClass().getResource("/fxml/gamemode.fxml"));
+    FXMLGamemodeController gamemodeController = new FXMLGamemodeController(scene);
+
+    /**
+     * Starts the background music.
+     *
+     * @param path
+     */
+    public void playBackgroundMusic(String path) {
         File soundFile = new File(path);
         Media h = new Media(soundFile.toURI().toString());
         mediaPlayer = new MediaPlayer(h);
@@ -29,20 +43,23 @@ public class Main extends Application {
         mediaPlayer.play();
     }
 
-    public static Scene scene;
-    
-    FXMLLoader gamemodeLoader = new FXMLLoader(getClass().getResource("/fxml/gamemode.fxml"));
-    FXMLGamemodeController gamemodeController = new FXMLGamemodeController(scene);
-    
+    /**
+     * Main method
+     *
+     * @param args
+     */
     public static void main(String[] args) {
         launch(args);
     }
 
+    /**
+     *
+     * @param primaryStage
+     * @throws Exception
+     */
     @Override
     public void start(Stage primaryStage) throws Exception {
-                
-        
-        music("src/main/resources/Music/Homepage_Level.mp3");
+        playBackgroundMusic("src/main/resources/Music/Homepage_Level.mp3");
         gamemodeLoader.setController(gamemodeController);
 
         Parent root = gamemodeLoader.load();

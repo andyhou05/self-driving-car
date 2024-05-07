@@ -12,7 +12,7 @@ import edu.vanier.selfdriving.utils.MathUtils;
  */
 public class Mutation {
 
-    static double mutationRate = 0.2;
+    static double mutationRate = 0.1;
 
     public static NeuralNetwork mutate(NeuralNetwork network) {
         double[] bias_h = mutateBias(network.bias_h);

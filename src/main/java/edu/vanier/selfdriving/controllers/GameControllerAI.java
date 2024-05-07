@@ -13,6 +13,8 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Line;
 
 /**
+ * GameController child class that is used for AI controlled game mode to
+ * control the network visualizer and network of the cars.
  *
  * @author USER
  */
@@ -22,7 +24,21 @@ public class GameControllerAI extends GameController {
     NeuralNetwork bestNetwork;
     VisualizerController visualizer;
 
-    public GameControllerAI( Pane roadPane, Pane visualizerPane, String level) {
+    /**
+     * Creates an empty GameControllerAI object.
+     */
+    public GameControllerAI() {
+    }
+
+    /**
+     * Creates a GameControllerAI object with 50 cars, initializes a visualizer
+     * for the neural network.
+     *
+     * @param roadPane
+     * @param visualizerPane
+     * @param level
+     */
+    public GameControllerAI(Pane roadPane, Pane visualizerPane, String level) {
         super(false, roadPane, 50, level);
 
         // Create camera for AI Controlled gamemode
@@ -54,6 +70,13 @@ public class GameControllerAI extends GameController {
         visualizer = new VisualizerController(visualizerPane, carToFollow.getNeuralNetwork());
         camera.start();
     }
+
+    /**
+     * Creates a carGeneration, each car having a mutated version of
+     * NeuralNetwork network.
+     *
+     * @param network
+     */
     public void createCarGeneration(NeuralNetwork network) {
         createCarGeneration(playerImage);
         if (network != null) {
@@ -64,9 +87,16 @@ public class GameControllerAI extends GameController {
         }
     }
 
+    /**
+     * Chooses next carToFollow if the current one is dead. Chooses with a
+     * simple fitness function: Choose the car that has the least y position in
+     * the pane.
+     *
+     * @param deathPosition
+     */
     public void chooseNextCar(double deathPosition) {
         Car nextCar = carToFollow;
-        double deltaPosition = 0;
+        double deltaPosition = 0; // Used to translate everything back down.
         for (int i = 0; i < carGeneration.size(); i++) {
             Car currentCar = carGeneration.get(i);
             if (currentCar.isDead()) {
@@ -81,7 +111,7 @@ public class GameControllerAI extends GameController {
         }
         carToFollow = nextCar;
 
-        // In order to follow a new car, we must move everything down into the scene's frame
+        // In order to follow the new car, we must translate everything down into the scene's frame
         for (Line sensorLine : nextCar.getSensorsLines()) {
             sensorLine.setVisible(true);
             sensorLine.setTranslateY(carToFollow.getCarStack().getTranslateY());
@@ -93,18 +123,63 @@ public class GameControllerAI extends GameController {
             otherCar.getCarStack().setLayoutY(otherCar.getCarStack().getLayoutY() - deltaPosition);
         }
     }
+
+    /**
+     * Reset the level.
+     */
     public void reset() {
         removeAllCars();
         createCarGeneration(bestNetwork);
+        visualizer.reset();
         road.resetLinePositions();
         spawn();
     }
 
-    public void saveBestNetwork() {
+    /**
+     * Save the NeuralNetwork of carToFollow.
+     */
+    public void saveNetwork() {
         bestNetwork = carToFollow.getNeuralNetwork();
     }
 
+    /**
+     * Completely resets the bestNetwork.
+     */
     public void hardResetNetwork() {
         bestNetwork = null;
     }
+
+    // Getters and Setters
+    /**
+     *
+     * @return Best NeuralNetwork of the level.
+     */
+    public NeuralNetwork getBestNetwork() {
+        return bestNetwork;
+    }
+
+    /**
+     *
+     * @param bestNetwork
+     */
+    public void setBestNetwork(NeuralNetwork bestNetwork) {
+        this.bestNetwork = bestNetwork;
+    }
+
+    /**
+     *
+     * @return Visualizer representing the network of carToFollow.
+     */
+    public VisualizerController getVisualizer() {
+        return visualizer;
+    }
+
+    /**
+     *
+     * @param visualizer
+     */
+    public void setVisualizer(VisualizerController visualizer) {
+        this.visualizer = visualizer;
+    }
+
 }

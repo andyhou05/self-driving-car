@@ -50,6 +50,7 @@ public class FXMLGameControllerUser{
         public void handle(ActionEvent event) {
             gameControllerUser.removeAllCars();
             gameControllerUser.camera.stop();
+            gameControllerUser.getCarController().getAnimation().stop();
             try {
                 Main.scene.setRoot(levelPickerLoader.load());
             } catch (IOException ex) {

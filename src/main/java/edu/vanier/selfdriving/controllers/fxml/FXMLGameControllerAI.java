@@ -57,6 +57,7 @@ public class FXMLGameControllerAI {
         public void handle(ActionEvent event) {
             gameControllerAI.removeAllCars();
             gameControllerAI.camera.stop();
+            gameControllerAI.getCarController().getAnimation().stop();
             try {
                 Main.scene.setRoot(levelPickerLoader.load());
             } catch (IOException ex) {
@@ -74,7 +75,7 @@ public class FXMLGameControllerAI {
     EventHandler<ActionEvent> saveEvent = new EventHandler<>() {
         @Override
         public void handle(ActionEvent event) {
-            gameControllerAI.saveBestNetwork();
+            gameControllerAI.saveNetwork();
             gameControllerAI.reset();
         }
     };

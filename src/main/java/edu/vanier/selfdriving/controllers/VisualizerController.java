@@ -14,6 +14,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 
 /**
+ * Class to control the NeuralNetwork Visualizer.
  *
  * @author USER
  */
@@ -21,16 +22,15 @@ public class VisualizerController {
 
     Pane pane;
     NeuralNetwork network;
-    double left;
-    double right;
-    double top;
-    double bottom;
+    double leftBorder;
+    double rightBorder;
+    double topBorder;
+    double bottomBorder;
     double xOffset = 60;
     double yOffset = 120;
     ArrayList<Circle> biases = new ArrayList<>();
-    ArrayList<Circle> nodes = new ArrayList<>();
-    ArrayList<Line> connections_ih = new ArrayList<>();
-    ArrayList<Line> connections_ho = new ArrayList<>();
+    ArrayList<Line> weights = new ArrayList<>();
+    ArrayList<ArrayList<Circle>> nodesLists = new ArrayList<>();
     AnimationTimer animation = new AnimationTimer() {
         private long FPS = 120L;
         private long INTERVAL = 1000000000L / FPS;
@@ -46,125 +46,330 @@ public class VisualizerController {
         }
     };
 
+    /**
+     * Creates empty VisualizerController object.
+     */
     public VisualizerController() {
     }
 
+    /**
+     * Creates and initializes a VisualizerController inside pane based off of
+     * NeuralNetwork network.
+     *
+     * @param pane
+     * @param network
+     */
     public VisualizerController(Pane pane, NeuralNetwork network) {
         this.pane = pane;
         this.network = network;
-        left = xOffset;
-        right = pane.getPrefWidth() - xOffset;
-        top = yOffset;
-        bottom = pane.getPrefHeight() - yOffset;
+        leftBorder = xOffset;
+        rightBorder = pane.getPrefWidth() - xOffset;
+        topBorder = yOffset;
+        bottomBorder = pane.getPrefHeight() - yOffset;
         initializeVisualizer();
         animation.start();
     }
 
+    /**
+     * Initializes the visualizer.
+     */
     public void initializeVisualizer() {
         initializeNodes();
         initializeConnections();
     }
 
     void initializeNodes() {
-        initializeNodesInLayer(network.getInput(), bottom);
-        initializeNodesInLayer(network.getHidden(), MathUtils.lerp(bottom, top, 0.5));
-        initializeNodesInLayer(network.getOutput(), top);
+        initializeNodesInLayer(network.getInput(), bottomBorder);
+        initializeNodesInLayer(network.getHidden(), network.getBias_h(), MathUtils.lerp(bottomBorder, topBorder, 0.5));
+        initializeNodesInLayer(network.getOutput(), network.getBias_o(), topBorder);
     }
 
     void initializeNodesInLayer(double[] layer, double yPosition) {
+        ArrayList<Circle> nodes = new ArrayList<>();
         for (int i = 0; i < layer.length; i++) {
-            double xPosition = MathUtils.lerp(left, right, (double) i / (layer.length - 1));
+            double xPosition = MathUtils.lerp(leftBorder, rightBorder, (double) i / (layer.length - 1));
 
-            Circle bias = new Circle(xPosition, yPosition, 25, Color.TRANSPARENT);
-            Circle node = new Circle(xPosition, yPosition, 20);
+            // Create a node.
+            Circle node = new Circle(xPosition, yPosition, 20); // Nodes will represent the value of a NeuralNetwork node.
+            node.setFill(Color.LIME);
+
+            pane.getChildren().addAll(node);
+            nodes.add(node);
+        }
+        nodesLists.add(nodes);
+    }
+
+    void initializeNodesInLayer(double[] layer, double[] biasValues, double yPosition) {
+        ArrayList<Circle> nodes = new ArrayList<>();
+        for (int i = 0; i < layer.length; i++) {
+            double xPosition = MathUtils.lerp(leftBorder, rightBorder, (double) i / (layer.length - 1));
+            double biasValue = biasValues[i];
+
+            // Create a bias and a node.
+            Circle node = new Circle(xPosition, yPosition, 20); // Nodes will represent the value of a NeuralNetwork node.
+            node.setFill(Color.LIME);
+
+            // Bias will surround the Node and its opacity depends on bias value.
+            Circle bias = new Circle(xPosition, yPosition, 25, Color.TRANSPARENT); // Biases will surround the Node
             bias.setStrokeWidth(2);
             bias.getStrokeDashArray().addAll(4d, 7.4d);
+            Color biasColor = (biasValue > 0) ? Color.LIME : Color.CRIMSON;
+            bias.setStroke(biasColor);
+            bias.setOpacity(Math.abs(biasValue));
 
             pane.getChildren().addAll(node, bias);
             biases.add(bias);
             nodes.add(node);
         }
+        nodesLists.add(nodes);
     }
 
     void initializeConnections() {
-        int inputAmount = network.getInput().length;
-        int hiddenAmount = network.getHidden().length;
-        int outputAmount = network.getOutput().length;
+        // Initalize connections between input - hidden and between hidden - output.
+        initializeConnections(network.getWeights_ih(), 0, 1);
+        initializeConnections(network.getWeights_ho(), 1, 2);
 
-        for (int i = 0; i < inputAmount; i++) {
-            Circle inputNode = biases.get(i);
-            for (int j = inputAmount; j < biases.size() - outputAmount; j++) {
-                Circle hiddenNode = biases.get(j);
-                Line connection_ih = new Line(inputNode.getCenterX(), inputNode.getCenterY() - inputNode.getRadius(), hiddenNode.getCenterX(), hiddenNode.getCenterY() + hiddenNode.getRadius());
+    }
+
+    void initializeConnections(double[][] weights, int indexStart, int indexEnd) { // indexStart and indexEnd represent the index of the ArrayList in nodesLists
+        for (int i = 0; i < weights.length; i++) {
+            for (int j = 0; j < weights[0].length; j++) {
+                // Get the nodes of the bottomBorder layer and the topBorder layer.
+                Circle endNode = nodesLists.get(indexEnd).get(i);
+                Circle startNode = nodesLists.get(indexStart).get(j);
+                double weight = weights[i][j];
+
+                // Connections represent the weight.
+                Line connection_ih = new Line(startNode.getCenterX(), startNode.getCenterY() - startNode.getRadius(),
+                        endNode.getCenterX(), endNode.getCenterY() + endNode.getRadius());
+
+                // Negative weight means red and positive weight means green
+                Color color = (weight > 0) ? Color.LIME : Color.CRIMSON;
+
+                // Set the opacity relative to the weight value
+                double percentage = Math.abs(weight) / 3.0f;
+                connection_ih.setStroke(color);
+                connection_ih.setOpacity(percentage);
                 connection_ih.setStrokeWidth(1.5);
-                connections_ih.add(connection_ih);
                 pane.getChildren().add(connection_ih);
-            }
-        }
-
-        for (int i = inputAmount; i < biases.size() - outputAmount; i++) {
-            Circle hiddenNode = biases.get(i);
-            for (int j = inputAmount + hiddenAmount; j < biases.size(); j++) {
-                Circle outputNode = biases.get(j);
-                Line connection_ho = new Line(hiddenNode.getCenterX(), hiddenNode.getCenterY() - hiddenNode.getRadius(), outputNode.getCenterX(), outputNode.getCenterY() + outputNode.getRadius());
-                connection_ho.setStrokeWidth(2);
-                connections_ho.add(connection_ho);
-                pane.getChildren().add(connection_ho);
+                this.weights.add(connection_ih);
             }
         }
     }
 
+    /**
+     * Updates the Node's opacity value in the Visualizer based on the
+     * NeuralNetwork
+     *
+     * @param newNetwork
+     */
     public void updateVisualizer(NeuralNetwork newNetwork) {
         network = newNetwork;
-        updateLayer(network.getInput(), 0, network.getInput().length);
-        updateLayer(network.getHidden(), network.getBias_h(), network.getInput().length, nodes.size() - network.getOutput().length);
-        updateLayer(network.getOutput(), network.getBias_o(), nodes.size() - network.getOutput().length, nodes.size());
-        
-        updateConnections(network.getWeights_ih(), connections_ih);
-        updateConnections(network.getWeights_ho(), connections_ho);
+        updateLayer(network.getInput(), 0);
+        updateLayer(network.getHidden(), 1);
+        updateLayer(network.getOutput(), 2);
+
     }
 
-    void updateLayer(double[] layer, int startIndex, int endIndex) {
-        for (int i = startIndex, j = 0; i < endIndex; j++, i++) {
+    void updateLayer(double[] layer, int index) {
+        ArrayList<Circle> nodesLayer = nodesLists.get(index);
+        for (int j = 0; j < nodesLayer.size(); j++) {
+            // Update the opacity of a node based on the nodeReading
             double nodeReading = layer[j];
-            Circle node = nodes.get(i);
-            node.setFill(Color.LIME);
+            Circle node = nodesLists.get(index).get(j);
             node.setOpacity(nodeReading);
         }
     }
 
-    void updateLayer(double[] layer, double[] bias, int startIndex, int endIndex) {
-        updateLayer(layer, startIndex, endIndex);
-        Color biasColor;
-        for (int i = startIndex, j = 0; i < endIndex; j++, i++) {
-            double nodeBias = bias[j];
-            Circle biasCircle = biases.get(i);
-            if (nodeBias > 0) {
-                biasColor = Color.LIME;
-            } else {
-                biasColor = Color.CRIMSON;
-            }
-            biasCircle.setStroke(biasColor);
-            biasCircle.setOpacity(Math.abs(nodeBias));
+    /**
+     * Resets the visualizer.
+     */
+    public void reset() {
+        pane.getChildren().removeAll(weights);
+        pane.getChildren().removeAll(biases);
+        for (ArrayList nodes : nodesLists) {
+            pane.getChildren().removeAll(nodes);
         }
+        weights.clear();
+        biases.clear();
+        nodesLists.clear();
+        initializeVisualizer();
     }
 
-    void updateConnections(double[][] weights, ArrayList<Line> connections) {
-        int counter = 0;
-        for (int i = 0; i < weights.length; i++) {
-            for (int j = 0; j < weights[i].length; j++, counter++) {
-                double weight = weights[i][j];
-                Line connection = connections.get(counter);
-                Color color;
-                if (weight > 0) {
-                    color = Color.LIME;
-                } else {
-                    color = Color.CRIMSON;
-                }
-                double percentage = Math.abs(weight)/3.0f;
-                connection.setStroke(color);
-                connection.setOpacity(percentage);
-            }
-        }
+    // Getters and Setters
+    /**
+     *
+     * @return Pane where the visualizer lives.
+     */
+    public Pane getPane() {
+        return pane;
+    }
+
+    /**
+     *
+     * @param pane
+     */
+    public void setPane(Pane pane) {
+        this.pane = pane;
+    }
+
+    /**
+     *
+     * @return Network that the visualizer follows.
+     */
+    public NeuralNetwork getNetwork() {
+        return network;
+    }
+
+    /**
+     *
+     * @param network
+     */
+    public void setNetwork(NeuralNetwork network) {
+        this.network = network;
+    }
+
+    /**
+     *
+     * @return The position of the left border of the Pane.
+     */
+    public double getLeftBorder() {
+        return leftBorder;
+    }
+
+    /**
+     *
+     * @param leftBorder
+     */
+    public void setLeftBorder(double leftBorder) {
+        this.leftBorder = leftBorder;
+    }
+
+    /**
+     *
+     * @return Position of the right border of the Pane.
+     */
+    public double getRightBorder() {
+        return rightBorder;
+    }
+
+    /**
+     *
+     * @param rightBorder
+     */
+    public void setRightBorder(double rightBorder) {
+        this.rightBorder = rightBorder;
+    }
+
+    /**
+     *
+     * @return Position of the top border of the Pane.
+     */
+    public double getTopBorder() {
+        return topBorder;
+    }
+
+    /**
+     *
+     * @param topBorder
+     */
+    public void setTopBorder(double topBorder) {
+        this.topBorder = topBorder;
+    }
+
+    /**
+     *
+     * @return Position of the bottom border of the Pane.
+     */
+    public double getBottomBorder() {
+        return bottomBorder;
+    }
+
+    /**
+     *
+     * @param bottomBorder
+     */
+    public void setBottomBorder(double bottomBorder) {
+        this.bottomBorder = bottomBorder;
+    }
+
+    /**
+     *
+     * @return The x offset between the nodes and the left/right borders
+     */
+    public double getxOffset() {
+        return xOffset;
+    }
+
+    /**
+     *
+     * @param xOffset
+     */
+    public void setxOffset(double xOffset) {
+        this.xOffset = xOffset;
+    }
+
+    /**
+     *
+     * @return The y offset between the nodes and the top/bottom borders
+     */
+    public double getyOffset() {
+        return yOffset;
+    }
+
+    /**
+     *
+     * @param yOffset
+     */
+    public void setyOffset(double yOffset) {
+        this.yOffset = yOffset;
+    }
+
+    /**
+     *
+     * @return The list of bias circles.
+     */
+    public ArrayList<Circle> getBiases() {
+        return biases;
+    }
+
+    /**
+     *
+     * @param biases
+     */
+    public void setBiases(ArrayList<Circle> biases) {
+        this.biases = biases;
+    }
+
+    /**
+     *
+     * @return 2D ArrayList of Nodes, each inner list represents a layer.
+     */
+    public ArrayList<ArrayList<Circle>> getNodesLists() {
+        return nodesLists;
+    }
+
+    /**
+     *
+     * @param nodesLists
+     */
+    public void setNodesLists(ArrayList<ArrayList<Circle>> nodesLists) {
+        this.nodesLists = nodesLists;
+    }
+
+    /**
+     *
+     * @return The animation of the visualizer.
+     */
+    public AnimationTimer getAnimation() {
+        return animation;
+    }
+
+    /**
+     *
+     * @param animation
+     */
+    public void setAnimation(AnimationTimer animation) {
+        this.animation = animation;
     }
 }
