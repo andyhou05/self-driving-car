@@ -12,22 +12,11 @@
 
 <Pane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1100.0" style="-fx-background-color: #80848a;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Button fx:id="switchCars" blendMode="DARKEN" layoutX="879.0" layoutY="700.0" mnemonicParsing="false" prefHeight="71.0" prefWidth="222.0">
-         <graphic>
-            <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../UI/Images%20-%20Copy/Screen%20Shot%202024-05-07%20at%209.21.19%20PM.png" />
-               </image>
-            </ImageView>
-         </graphic></Button>
-      <Button fx:id="returnButton" blendMode="DARKEN" layoutX="2.0" layoutY="700.0" mnemonicParsing="false" prefHeight="86.0" prefWidth="181.0">
-         <graphic>
-            <ImageView blendMode="MULTIPLY" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../UI/Images%20-%20Copy/Screen%20Shot%202024-05-07%20at%209.20.37%20PM.png" />
-               </image>
-            </ImageView>
-         </graphic></Button>
+      <ImageView blendMode="OVERLAY" fitHeight="802.0" fitWidth="1959.0" layoutX="-356.0" opacity="0.56" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../UI/Images%20-%20Copy/1414.jpg" />
+         </image>
+      </ImageView>
       <HBox alignment="CENTER" layoutX="197.0" layoutY="273.0" prefHeight="346.0" prefWidth="867.0" spacing="70.0">
          <children>
             <Button fx:id="car1" blendMode="SRC_ATOP" mnemonicParsing="false" prefHeight="303.0" prefWidth="173.0" style="-fx-background-color: GREY;">
@@ -79,10 +68,21 @@
             <DropShadow />
          </effect>
       </Text>
-      <ImageView blendMode="OVERLAY" fitHeight="802.0" fitWidth="1959.0" layoutX="-356.0" opacity="0.56" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../UI/Images%20-%20Copy/1414.jpg" />
-         </image>
-      </ImageView>
+      <Button fx:id="returnButton" blendMode="DARKEN" layoutX="2.0" layoutY="700.0" mnemonicParsing="false" prefHeight="86.0" prefWidth="181.0">
+         <graphic>
+            <ImageView blendMode="MULTIPLY" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../UI/Images%20-%20Copy/Screen%20Shot%202024-05-07%20at%209.20.37%20PM.png" />
+               </image>
+            </ImageView>
+         </graphic></Button>
+      <Button fx:id="switchCars" blendMode="DARKEN" layoutX="879.0" layoutY="700.0" mnemonicParsing="false" prefHeight="71.0" prefWidth="222.0">
+         <graphic>
+            <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../UI/Images%20-%20Copy/Screen%20Shot%202024-05-07%20at%209.21.19%20PM.png" />
+               </image>
+            </ImageView>
+         </graphic></Button>
    </children>
 </Pane>
