@@ -14,7 +14,7 @@ import javafx.scene.shape.Line;
  * @author 2273410
  */
 public class Road {
-
+    //Physical properties of the road
     double width;
     double roadCenter;
     int laneCount = 3;
@@ -28,11 +28,18 @@ public class Road {
     public static ArrayList<Line> borderLines = new ArrayList<>();
     Line leftBorder;
     Line rightBorder;
+    
+    //ArrayList of Lines visualizing the road
     public ArrayList<Line> lines = new ArrayList<>();
 
     public Road() {
     }
-
+    
+    /**
+     *
+     * @param roadCenter 
+     * @param width
+     */
     public Road(double roadCenter, double width) {
         this.roadCenter = roadCenter;
         this.width = width;
@@ -61,7 +68,7 @@ public class Road {
             lines.get(i).setStrokeWidth(5);
         }
     }
-    
+    //Setters & Getters
     public void resetLinePositions(){
         for(Line roadLine:lines){
             roadLine.setTranslateY(0);
