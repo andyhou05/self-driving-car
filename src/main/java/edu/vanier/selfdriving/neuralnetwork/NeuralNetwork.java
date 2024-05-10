@@ -92,7 +92,9 @@ public class NeuralNetwork {
     }
 
     /**
-     * Calculate the weighted sum for a given layer, ie input layer to hidden layer
+     * Calculate the weighted sum for a given layer, ie input layer to hidden
+     * layer
+     *
      * @param weights
      * @param layer
      * @param bias
@@ -136,6 +138,7 @@ public class NeuralNetwork {
     }
 
     /**
+     * The input values of the neural network.
      *
      * @return
      */
@@ -152,6 +155,7 @@ public class NeuralNetwork {
     }
 
     /**
+     * The hidden layer values of the neural network.
      *
      * @return
      */
@@ -168,6 +172,7 @@ public class NeuralNetwork {
     }
 
     /**
+     * the output of the Neural network.
      *
      * @return
      */
@@ -184,6 +189,7 @@ public class NeuralNetwork {
     }
 
     /**
+     * the bias values of the hidden layer.
      *
      * @return
      */
@@ -200,6 +206,7 @@ public class NeuralNetwork {
     }
 
     /**
+     * the bias values of the output layer.
      *
      * @return
      */
@@ -216,6 +223,7 @@ public class NeuralNetwork {
     }
 
     /**
+     * the weights between the input layer and the hidden layer.
      *
      * @return
      */
@@ -232,6 +240,7 @@ public class NeuralNetwork {
     }
 
     /**
+     * the weights between the hidden layer and the output layer.
      *
      * @return
      */
