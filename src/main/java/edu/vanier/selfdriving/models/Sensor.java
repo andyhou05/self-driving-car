@@ -16,9 +16,20 @@ public class Sensor {
     static double sensorLength = 400;
     double reading = 0;
     Line sensorLine;
+
+    /**
+     *
+     */
     public static double sensorStartX;
+
+    /**
+     *
+     */
     public static double sensorStartY;
 
+    /**
+     *
+     */
     public Sensor() {
     }
 
@@ -30,34 +41,66 @@ public class Sensor {
         this.car = car;
     }
     
+    /**
+     *
+     * @return
+     */
     public static double getSensorLength(){
         return sensorLength;
     }
 
+    /**
+     *
+     * @return
+     */
     public Car getCar() {
         return car;
     }
 
+    /**
+     *
+     * @return
+     */
     public static double getSensorStartX() {
         return sensorStartX;
     }
 
+    /**
+     *
+     * @return
+     */
     public static double getSensorStartY() {
         return sensorStartY;
     }
 
+    /**
+     *
+     * @return
+     */
     public double getReading() {
         return reading;
     }
 
+    /**
+     *
+     * @param reading
+     */
     public void setReading(double reading) {
         this.reading = reading;
     }
 
+    /**
+     *
+     * @return
+     */
     public Line getSensorLine() {
         return sensorLine;
     }
 
+    /**
+     *
+     * @param sensorLine
+     */
     public void setSensorLine(Line sensorLine) {
         this.sensorLine = sensorLine;
     }

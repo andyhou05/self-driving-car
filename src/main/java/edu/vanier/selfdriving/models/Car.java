@@ -13,6 +13,7 @@ import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 
 /**
+ * Car object and properties.
  *
  * @author 2273410
  */
@@ -25,8 +26,6 @@ public class Car {
     ImageView carImageView = new ImageView();
 
     //Transition properties
-    double xPosition;
-    double yPosition;
     double speedX = 0.0;
     double speedY = 0.0;
     double speed = 0.0;
@@ -54,6 +53,9 @@ public class Car {
     NeuralNetwork neuralNetwork = new NeuralNetwork(5, 6, 4);
     double[] inputs = new double[sensorCount];
 
+    /**
+     * Creates a basic car object with base properties.
+     */
     public Car() {
         carImageView.setFitHeight(carLength);
         carImageView.setFitWidth(carWidth);
@@ -64,10 +66,17 @@ public class Car {
         carStack.getChildren().addAll(carImageView, hitBox);
     }
 
+    /**
+     * Creates a Car Object with a certain x and y position, an Image, and a
+     * control mechanism (User or AI).
+     *
+     * @param x
+     * @param y
+     * @param carImage
+     * @param userControlled
+     */
     public Car(double x, double y, Image carImage, boolean userControlled) {
         this();
-        this.xPosition = x;
-        this.yPosition = y;
         this.carImage = carImage;
         this.userControlled = userControlled;
         carImageView.setImage(carImage);
@@ -81,8 +90,6 @@ public class Car {
     /**
      * Initialize the position of the Sensors based on the Car.
      *
-     * @param xPosition
-     * @param yPosition
      */
     public void initSensors() {
         for (int i = 0; i < sensorCount; i++) {
@@ -105,81 +112,129 @@ public class Car {
         }
     }
 
+    /**
+     * Accelerates the car in the correct direction.
+     *
+     * @param direction
+     */
     public void acceleration(int direction) {
         carMoving = true;
-        if (Math.abs(speed) < maxSpeed) {
-            speed += accelerationValue * direction;
-        } else {
-            speed = maxSpeed * direction;
-        }
+        boolean atMaxSpeed = Math.abs(speed) < maxSpeed;
+        speed = atMaxSpeed ? speed + accelerationValue * direction : maxSpeed * direction;
         double angle = 90 - carStack.getRotate();
         speedY = speed * Math.sin(angle * (Math.PI / 180));
         speedX = -speed * Math.cos(angle * (Math.PI / 180));
 
     }
 
+    /**
+     * Decelerates the car in the correct direction
+     *
+     * @param direction
+     */
     public void decceleration(int direction) {
         // Make sure to stop car when deccelerating
-        if (carMoving && speed * direction > 0) { // If direction is 1, speed will deccelerate by going down (3 m/s -> 0 m/s), once speed is negative, we know to stop deccelerating, and vice-versa
-            speed -= deccelerationValue * direction;
-        } else {
-            speed = 0;
-            carMoving = false;
-        }
+        // If direction is 1, speed will deccelerate by going down (3 m/s -> 0 m/s), once speed is negative, we know to stop deccelerating, and vice-versa
+        speed = (carMoving && speed * direction > 0) ? speed - (deccelerationValue * direction) : 0;
+        carMoving = speed != 0;
 
         double angle = 90 - carStack.getRotate();
         speedY = speed * Math.sin(angle * (Math.PI / 180));
         speedX = -speed * Math.cos(angle * (Math.PI / 180));
     }
 
+    /**
+     * Rotates the car by one degree either clockwise or counter clockwise.
+     *
+     * @param direction
+     */
     public void rotate(int direction) {
         carStack.setRotate(carStack.getRotate() - 5 * direction);
     }
 
+    /**
+     * Sets the visibility of the sensors.
+     *
+     * @param visible
+     */
     public void setSensorsVisible(boolean visible) {
         for (Line sensorLine : getSensorsLines()) {
             sensorLine.setVisible(visible);
         }
     }
 
+    /**
+     * Sets the visibility of the car.
+     *
+     * @param visible
+     */
     public void setCarVisible(boolean visible) {
         double opacity = 0;
-        if (visible) {
-            opacity = 1.0;
-        } else {
-            opacity = 0.2;
-        }
+        opacity = visible ? 1.0 : 0.2;
         carImageView.setOpacity(opacity);
     }
 
+    /**
+     * Sets the visibility of the car and the sensors based on the control type
+     * of the car (AI or User)
+     *
+     * @param visible
+     */
     public void setVisible(boolean visible) {
         setCarVisible(visible);
         if (!userControlled) {
             setSensorsVisible(visible);
         }
     }
-    
-    //Getters and Setters for Car class physical properties
+
+    //Getters and Setters
+    /**
+     * Image object of the Car.
+     *
+     * @return
+     */
     public Image getCarImage() {
         return carImage;
     }
 
+    /**
+     *
+     * @param carImage
+     */
     public void setCarImage(Image carImage) {
         this.carImage = carImage;
     }
 
+    /**
+     * Width of the car.
+     *
+     * @return
+     */
     public double getCarWidth() {
         return carWidth;
     }
 
+    /**
+     * Speed of the car
+     *
+     * @return
+     */
     public double getSpeed() {
         return speed;
     }
 
+    /**
+     *
+     * @param speed
+     */
     public void setSpeed(double speed) {
         this.speed = speed;
     }
 
+    /**
+     *
+     * @param carWidth
+     */
     public void setCarWidth(double carWidth) {
         carImageView.setFitWidth(carWidth);
         carStack.setPrefWidth(carWidth);
@@ -187,10 +242,19 @@ public class Car {
         this.carWidth = carWidth;
     }
 
+    /**
+     * Length of the car.
+     *
+     * @return
+     */
     public double getCarLength() {
         return carLength;
     }
 
+    /**
+     *
+     * @param carLength
+     */
     public void setCarLength(double carLength) {
         carImageView.setFitHeight(carLength);
         carStack.setPrefHeight(carLength);
@@ -198,68 +262,139 @@ public class Car {
         this.carLength = carLength;
     }
 
+    /**
+     * Acceleration of the car.
+     *
+     * @return
+     */
     public double getAccelerationValue() {
         return accelerationValue;
     }
 
+    /**
+     *
+     * @param accelerationValue
+     */
     public void setAccelerationValue(double accelerationValue) {
         this.accelerationValue = accelerationValue;
     }
 
+    /**
+     * X position of the car.
+     *
+     * @return
+     */
     public double getxPosition() {
         return carStack.getLayoutX();
     }
 
+    /**
+     *
+     * @param xPosition
+     */
     public void setxPosition(double xPosition) {
         carStack.setLayoutX(xPosition);
-        this.xPosition = xPosition;
     }
 
+    /**
+     * Y position of the car.
+     *
+     * @return
+     */
     public double getyPosition() {
         return carStack.getLayoutY();
     }
 
+    /**
+     *
+     * @param yPosition
+     */
     public void setyPosition(double yPosition) {
         carStack.setLayoutY(yPosition);
-        this.yPosition = yPosition;
     }
 
+    /**
+     * X component of the speed of the car.
+     *
+     * @return
+     */
     public double getSpeedX() {
         return speedX;
     }
 
+    /**
+     *
+     * @param speedX
+     */
     public void setSpeedX(double speedX) {
         this.speedX = speedX;
     }
 
+    /**
+     * Y component of the speed of the car.
+     *
+     * @return
+     */
     public double getSpeedY() {
         return speedY;
     }
 
+    /**
+     *
+     * @param speedY
+     */
     public void setSpeedY(double speedY) {
         this.speedY = speedY;
     }
 
+    /**
+     * Max speed of the car.
+     *
+     * @return
+     */
     public double getMaxSpeed() {
         return maxSpeed;
     }
 
+    /**
+     *
+     * @param maxSpeed
+     */
     public void setMaxSpeed(double maxSpeed) {
         this.maxSpeed = maxSpeed;
     }
 
+    /**
+     * Returns true if the car is moving.
+     *
+     * @return
+     */
     public boolean isCarMoving() {
         return carMoving;
     }
 
+    /**
+     *
+     * @param carMoving
+     */
     public void setCarMoving(boolean carMoving) {
         this.carMoving = carMoving;
     }
 
+    /**
+     * Sensor list of the car
+     *
+     * @return
+     */
     public Sensor[] getSensors() {
         return this.sensors;
     }
 
+    /**
+     * Sensor Line Object list
+     *
+     * @return
+     */
     public Line[] getSensorsLines() {
         Line[] sensorLines = new Line[sensorCount];
         for (int i = 0; i < sensorCount; i++) {
@@ -269,138 +404,292 @@ public class Car {
         return sensorLines;
     }
 
+    /**
+     * Deceleration value of the car
+     *
+     * @return
+     */
     public double getDeccelerationValue() {
         return deccelerationValue;
     }
 
+    /**
+     *
+     * @param deccelerationValue
+     */
     public void setDeccelerationValue(double deccelerationValue) {
         this.deccelerationValue = deccelerationValue;
     }
 
+    /**
+     * Road object of the car.
+     *
+     * @return
+     */
     public Road getRoad() {
         return road;
     }
 
+    /**
+     *
+     * @param road
+     */
     public void setRoad(Road road) {
         this.road = road;
     }
 
+    /**
+     * ImageView of the car.
+     *
+     * @return
+     */
     public ImageView getCarImageView() {
         return carImageView;
     }
 
+    /**
+     *
+     * @param carImageView
+     */
     public void setCarImageView(ImageView carImageView) {
         this.carImageView = carImageView;
     }
 
+    /**
+     * StackPane object of the car.
+     *
+     * @return
+     */
     public StackPane getCarStack() {
         return carStack;
     }
 
+    /**
+     *
+     * @param carStack
+     */
     public void setCarStack(StackPane carStack) {
         this.carStack = carStack;
     }
 
+    /**
+     * Hit box Rectangle of the car.
+     *
+     * @return
+     */
     public Rectangle getHitBox() {
         return hitBox;
     }
 
+    /**
+     *
+     * @param hitBox
+     */
     public void setHitBox(Rectangle hitBox) {
         this.hitBox = hitBox;
     }
 
+    /**
+     * Neural Network of the car.
+     *
+     * @return
+     */
     public NeuralNetwork getNeuralNetwork() {
         return neuralNetwork;
     }
 
+    /**
+     *
+     * @param neuralNetwork
+     */
     public void setNeuralNetwork(NeuralNetwork neuralNetwork) {
         this.neuralNetwork = neuralNetwork;
     }
 
+    /**
+     * Offset width of the hit box.
+     *
+     * @return
+     */
     public double getWidthHitboxOffset() {
         return widthHitboxOffset;
     }
 
+    /**
+     *
+     * @param widthHitboxOffset
+     */
     public void setWidthHitboxOffset(double widthHitboxOffset) {
         this.widthHitboxOffset = widthHitboxOffset;
     }
 
+    /**
+     * Offset length of the hit box.
+     *
+     * @return
+     */
     public double getLengthHitboxOffset() {
         return lengthHitboxOffset;
     }
 
+    /**
+     *
+     * @param lengthHitboxOffset
+     */
     public void setLengthHitboxOffset(double lengthHitboxOffset) {
         this.lengthHitboxOffset = lengthHitboxOffset;
     }
 
+    /**
+     * Number of sensors of the car.
+     *
+     * @return
+     */
     public int getSensorCount() {
         return sensorCount;
     }
 
+    /**
+     *
+     * @param sensorCount
+     */
     public void setSensorCount(int sensorCount) {
         this.sensorCount = sensorCount;
     }
 
+    /**
+     * The spread angle of the sensors.
+     *
+     * @return
+     */
     public double getSensorSpread() {
         return sensorSpread;
     }
 
+    /**
+     *
+     * @param sensorSpread
+     */
     public void setSensorSpread(double sensorSpread) {
         this.sensorSpread = sensorSpread;
     }
 
+    /**
+     * Direction of the car.
+     *
+     * @return
+     */
     public int getDirection() {
         return direction;
     }
 
+    /**
+     *
+     * @param direction
+     */
     public void setDirection(int direction) {
         this.direction = direction;
     }
-    //Setters and getters for Car movements properties
+
+    /**
+     * Returns true if the car is accelerating.
+     *
+     * @return
+     */
     public boolean isAccelerating() {
         return accelerating;
     }
 
+    /**
+     *
+     * @param accelerating
+     */
     public void setAccelerating(boolean accelerating) {
         this.accelerating = accelerating;
     }
 
+    /**
+     * Returns true if the car is turning right.
+     *
+     * @return
+     */
     public boolean isTurningRight() {
         return turningRight;
     }
 
+    /**
+     *
+     * @param turningRight
+     */
     public void setTurningRight(boolean turningRight) {
         this.turningRight = turningRight;
     }
 
+    /**
+     * Returns true if the car is turning left.
+     *
+     * @return
+     */
     public boolean isTurningLeft() {
         return turningLeft;
     }
 
+    /**
+     *
+     * @param turningLeft
+     */
     public void setTurningLeft(boolean turningLeft) {
         this.turningLeft = turningLeft;
     }
 
+    /**
+     * Returns true if the direction of the car needs to be flipped when
+     * turning.
+     *
+     * @return
+     */
     public boolean isFlipRotate() {
         return flipRotate;
     }
 
+    /**
+     *
+     * @param flipRotate
+     */
     public void setFlipRotate(boolean flipRotate) {
         this.flipRotate = flipRotate;
     }
 
+    /**
+     * Returns true if the car is dead.
+     *
+     * @return
+     */
     public boolean isDead() {
         return dead;
     }
 
+    /**
+     *
+     * @param dead
+     */
     public void setDead(boolean dead) {
         this.dead = dead;
     }
 
+    /**
+     * The input values of the car sensors.
+     *
+     * @return
+     */
     public double[] getInputs() {
         return inputs;
     }
 
+    /**
+     *
+     * @param inputs
+     */
     public void setInputs(double[] inputs) {
         this.inputs = inputs;
     }

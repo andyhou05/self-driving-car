@@ -5,7 +5,7 @@
 package edu.vanier.selfdriving.utils;
 
 /**
- *
+ * Math Utility functions.
  * @author 2276884
  */
 public class MathUtils {

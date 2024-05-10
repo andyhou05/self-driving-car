@@ -1,8 +1,6 @@
 package edu.vanier.selfdriving.controllers.fxml;
 
-import edu.vanier.selfdriving.controllers.GameController;
 import edu.vanier.selfdriving.controllers.GameControllerAI;
-import edu.vanier.selfdriving.controllers.SpawnerController;
 import edu.vanier.selfdriving.main.Main;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -15,11 +13,11 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.Pane;
 
 /**
- * Controller class of the MainApp's UI.
+ * Controller class of the AI controlled game mode.
  *
  * @author
  */
-public class FXMLGameControllerAI {
+public class FXMLGameControllerAI extends FXMLGameController {
 
     @FXML
     Pane roadPane;
@@ -34,11 +32,13 @@ public class FXMLGameControllerAI {
     @FXML
     Button btnReturn;
 
-    GameControllerAI gameControllerAI;
-    FXMLLoader levelPickerLoader = new FXMLLoader(getClass().getResource("/fxml/levels.fxml"));
-    
-    public static String level;
+    public FXMLGameControllerAI() {
+        levelPickerLoader = levelPickerLoader = new FXMLLoader(getClass().getResource("/fxml/levels.fxml"));
+    }
 
+    /**
+     * Initialize all JavFX Components
+     */
     @FXML
     public void initialize() {
         levelPickerLoader.setController(new FXMLLevelPickerController());
@@ -48,16 +48,20 @@ public class FXMLGameControllerAI {
         btnReturn.setOnAction(returnEvent);
     }
 
+    /**
+     * Loads the AI controlled level.
+     */
+    @Override
     public void loadGame() {
-        gameControllerAI = new GameControllerAI(roadPane, visualizerPane, level);
+        gameController = new GameControllerAI(roadPane, visualizerPane, level);
     }
 
     EventHandler<ActionEvent> returnEvent = new EventHandler<>() {
         @Override
         public void handle(ActionEvent event) {
-            gameControllerAI.removeAllCars();
-            gameControllerAI.camera.stop();
-            gameControllerAI.getCarController().getAnimation().stop();
+            gameController.removeAllCars();
+            gameController.camera.stop();
+            gameController.getCarController().getAnimation().stop();
             try {
                 Main.scene.setRoot(levelPickerLoader.load());
             } catch (IOException ex) {
@@ -69,21 +73,21 @@ public class FXMLGameControllerAI {
     EventHandler<ActionEvent> resetEvent = new EventHandler<>() {
         @Override
         public void handle(ActionEvent event) {
-            gameControllerAI.reset();
+            gameController.reset();
         }
     };
     EventHandler<ActionEvent> saveEvent = new EventHandler<>() {
         @Override
         public void handle(ActionEvent event) {
-            gameControllerAI.saveNetwork();
-            gameControllerAI.reset();
+            ((GameControllerAI) gameController).saveNetwork();
+            gameController.reset();
         }
     };
     EventHandler<ActionEvent> hardResetEvent = new EventHandler<>() {
         @Override
         public void handle(ActionEvent event) {
-            gameControllerAI.hardResetNetwork();
-            gameControllerAI.reset();
+            ((GameControllerAI) gameController).hardResetNetwork();
+            gameController.reset();
         }
     };
 

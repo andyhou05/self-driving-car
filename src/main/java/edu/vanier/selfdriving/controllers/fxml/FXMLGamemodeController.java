@@ -5,7 +5,6 @@
 package edu.vanier.selfdriving.controllers.fxml;
 
 import edu.vanier.selfdriving.controllers.GameController;
-import edu.vanier.selfdriving.controllers.fxml.FXMLCarsPickerController;
 import edu.vanier.selfdriving.main.Main;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -14,22 +13,17 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.media.MediaPlayer;
 
 /**
+ * FXML Controller class for the game mode chooser scene.
  *
  * @author USER
  */
 public class FXMLGamemodeController {
 
-    Scene scene;
-    MediaPlayer mediaPlayer;
     @FXML
     Button btnPlay;
-    @FXML
-    Button btnAiVs;
     @FXML
     Button btnAiPlay;
     @FXML
@@ -39,7 +33,6 @@ public class FXMLGamemodeController {
     FXMLLoader carsPickerLoader = new FXMLLoader(getClass().getResource("/fxml/cars.fxml"));
     FXMLCarsPickerController carsPickerController = new FXMLCarsPickerController();
 
-    
     EventHandler<ActionEvent> carChooserClickEvent = new EventHandler<>() {
         @Override
         public void handle(ActionEvent event) {
@@ -50,7 +43,7 @@ public class FXMLGamemodeController {
             }
         }
     };
-    
+
     EventHandler<ActionEvent> aiEvent = new EventHandler<>() {
         @Override
         public void handle(ActionEvent event) {
@@ -63,35 +56,35 @@ public class FXMLGamemodeController {
             chooseGamemode(true);
         }
     };
-    
-    void chooseGamemode(boolean userControlled){
+
+    void chooseGamemode(boolean userControlled) {
         GameController.userControlled = userControlled;
         try {
-                Main.scene.setRoot(levelPickerLoader.load());
-            } catch (IOException ex) {
-                Logger.getLogger(FXMLGamemodeController.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            Main.scene.setRoot(levelPickerLoader.load());
+        } catch (IOException ex) {
+            Logger.getLogger(FXMLGamemodeController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
-    public FXMLGamemodeController(Scene scene) {
-        this.scene = scene;
+    /**
+     * Creates an FXMLGamemodeController object, sets the controller of the
+     * level picker and the car chooser.
+     */
+    public FXMLGamemodeController() {
         levelPickerLoader.setController(levelPickerController);
         carsPickerLoader.setController(carsPickerController);
     }
-    
-    
-    
+
+    /**
+     * Initializes the JavaFX Components.
+     */
     @FXML
     public void initialize() {
         btnPlay.setOnAction(userEvent);
 
-        btnAiVs.setOnAction(aiEvent);
-
         btnAiPlay.setOnAction(aiEvent);
-        
+
         carChooser.setOnAction(carChooserClickEvent);
     }
-
-    
 
 }

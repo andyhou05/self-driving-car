@@ -28,7 +28,7 @@ public class Main extends Application {
     public static Scene scene;
 
     FXMLLoader gamemodeLoader = new FXMLLoader(getClass().getResource("/fxml/gamemode.fxml"));
-    FXMLGamemodeController gamemodeController = new FXMLGamemodeController(scene);
+    FXMLGamemodeController gamemodeController = new FXMLGamemodeController();
 
     /**
      * Starts the background music.

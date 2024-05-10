@@ -18,10 +18,12 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.Pane;
 
 /**
+ * FXML Controller class for the user controlled game mode.
  *
  * @author USER
  */
-public class FXMLGameControllerUser{
+public class FXMLGameControllerUser extends FXMLGameController {
+
     @FXML
     Pane roadPane;
     @FXML
@@ -29,15 +31,21 @@ public class FXMLGameControllerUser{
     @FXML
     Button btnReturn;
 
-    FXMLLoader levelPickerLoader = new FXMLLoader(getClass().getResource("/fxml/levels.fxml"));
-    GameController gameControllerUser;
-    
-    public static String level;
-
-    public void loadGame() {
-        gameControllerUser = new GameController(new SpawnerController(), roadPane, level);
+    public FXMLGameControllerUser() {
+        levelPickerLoader = new FXMLLoader(getClass().getResource("/fxml/levels.fxml"));
     }
-    
+
+    /**
+     * Loads the AI controlled level.
+     */
+    @Override
+    public void loadGame() {
+        gameController = new GameController(new SpawnerController(), roadPane, level);
+    }
+
+    /**
+     *
+     */
     @FXML
     public void initialize() {
         levelPickerLoader.setController(new FXMLLevelPickerController());
@@ -48,9 +56,9 @@ public class FXMLGameControllerUser{
     EventHandler<ActionEvent> returnEvent = new EventHandler<>() {
         @Override
         public void handle(ActionEvent event) {
-            gameControllerUser.removeAllCars();
-            gameControllerUser.camera.stop();
-            gameControllerUser.getCarController().getAnimation().stop();
+            gameController.removeAllCars();
+            gameController.camera.stop();
+            gameController.getCarController().getAnimation().stop();
             try {
                 Main.scene.setRoot(levelPickerLoader.load());
             } catch (IOException ex) {
@@ -62,7 +70,7 @@ public class FXMLGameControllerUser{
     EventHandler<ActionEvent> resetEvent = new EventHandler<>() {
         @Override
         public void handle(ActionEvent event) {
-            gameControllerUser.reset();
+            gameController.reset();
         }
     };
 }

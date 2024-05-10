@@ -5,10 +5,6 @@
 package edu.vanier.selfdriving.controllers.fxml;
 
 import edu.vanier.selfdriving.controllers.GameController;
-import edu.vanier.selfdriving.controllers.SpawnerController;
-import edu.vanier.selfdriving.controllers.fxml.FXMLGamemodeController;
-import edu.vanier.selfdriving.controllers.fxml.FXMLGameControllerUser;
-import edu.vanier.selfdriving.controllers.fxml.FXMLGameControllerAI;
 import edu.vanier.selfdriving.main.Main;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -20,6 +16,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 
 /**
+ * FXML Controller class for the level picker scene.
  *
  * @author USER
  */
@@ -34,8 +31,8 @@ public class FXMLLevelPickerController {
     @FXML
     Button returnButton;
     /**
-     * Creates an object of both FXML of the AI play and the user play
-     * Creates an object of both Controller of the AI play and the user play
+     * Creates an object of both FXML of the AI play and the user play Creates
+     * an object of both Controller of the AI play and the user play
      */
     FXMLLoader levelLoaderAI = new FXMLLoader(getClass().getResource("/fxml/game.fxml"));
     FXMLGameControllerAI levelControllerAI = new FXMLGameControllerAI();
@@ -60,17 +57,17 @@ public class FXMLLevelPickerController {
             selectLevel("3");
         }
     };
-    
+
     /**
-     * 
-     * @param level 
+     * Selects the level and loads it depending on if its AI or User controlled.
+     *
+     * @param level
      */
     void selectLevel(String level) {
+        FXMLGameController.level = level;
         if (GameController.userControlled) {
-            FXMLGameControllerUser.level = level;
             chooseLevel(levelLoaderUser, levelControllerUser);
         } else {
-            FXMLGameControllerAI.level = level;
             chooseLevel(levelLoaderAI, levelControllerAI);
         }
     }
@@ -79,12 +76,14 @@ public class FXMLLevelPickerController {
         levelLoaderAI.setController(levelControllerAI);
         levelLoaderUser.setController(levelControllerUser);
     }
+
     /**
-     * 
+     * Loads the level based on a loader and controller.
+     *
      * @param loader
-     * @param controller 
+     * @param controller
      */
-    void chooseLevel(FXMLLoader loader, FXMLGameControllerAI controller) {
+    void chooseLevel(FXMLLoader loader, FXMLGameController controller) {
         try {
             Main.scene.setRoot(loader.load());
             controller.loadGame();
@@ -92,31 +91,17 @@ public class FXMLLevelPickerController {
             Logger.getLogger(FXMLLevelPickerController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
     /**
-     * 
-     * @param loader
-     * @param controller 
+     * Initializes the controller This method is called after the FXML file has
+     * been loaded
      */
-    void chooseLevel(FXMLLoader loader, FXMLGameControllerUser controller) {
-        try {
-            Main.scene.setRoot(loader.load());
-            controller.loadGame();
-        } catch (IOException ex) {
-            Logger.getLogger(FXMLLevelPickerController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-    
-    
-    /**
-     * Initializes the controller
-     * This method is called after the FXML file has been loaded
-    */
     @FXML
     public void initialize() {
         //Create an object of both gamemdodeFXML and its associated Controller.
         //Set controller
         FXMLLoader menuLoader = new FXMLLoader(getClass().getResource("/fxml/gamemode.fxml"));
-        FXMLGamemodeController menuController = new FXMLGamemodeController(Main.scene);
+        FXMLGamemodeController menuController = new FXMLGamemodeController();
         menuLoader.setController(menuController);
         btnLevel1.setOnAction(switchLevel1);
 
