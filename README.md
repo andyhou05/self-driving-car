@@ -1,17 +1,52 @@
-# JavaFX Project Template
+# JavaFX Self‑Driving Car Simulator
 
-This is a non-modular, Gradle-based project skeleton for creating JavaFX applications.
+A **2D self‑driving car simulation** built with **JavaFX**, where cars learn to navigate a track and avoid collisions using a **Neural Network** trained via a **Genetic Algorithm**. The application allows users to visually train, observe, and evolve autonomous agents in real time.
 
-It uses `JavaFX 20.0.2`, and includes the [Gradle Wrapper](https://docs.gradle.org/current/userguide/gradle_wrapper.html) (no need to install Gradle locally).
+![Image](https://github.com/user-attachments/assets/d9565307-c27a-4e8b-9961-53aa9d48b941)
+
+---
 
 ## Features
 
-- JavaFX-aware coding assistance (code completion, search, navigation in JavaFX-specific source files)
-- Logging with [Logback](https://logback.qos.ch/).
-- Support for FXML.
-- Access to JavaFX's JavaDoc from within your IDE.
+* **2D Self‑Driving Cars** rendered with JavaFX
+* **Neural Network Controller** for decision‑making
+* **Genetic Algorithm Training** (selection, crossover, mutation)
+* **Real‑time Visualization** of training progress
+* **Collision Detection** with track boundaries and obstacles
+* **Generation‑based Evolution** with fitness scoring
+* **User Controls** to start, pause, reset, and observe training
 
-## Using this Project Template
+---
+
+## How It Works
+
+### Neural Network
+
+Each car is controlled by a feed‑forward neural network that:
+
+* Takes sensor inputs (distance to walls)
+* Produces outputs such as steering direction and acceleration
+
+The neural network weights define the "brain" of each car.
+
+### Genetic Algorithm
+
+Cars improve over generations using a genetic algorithm:
+
+1. **Initialization** – Start with a population of random cars
+2. **Evaluation** – Each car is assigned a fitness score based on:
+
+   * Distance traveled
+   * Time alive
+3. **Selection** – Top‑performing cars are selected
+4. **Crossover** – Neural networks are combined
+6. **Next Generation** – A new population is created and trained
+
+Over time, cars learn to avoid collisions and drive more efficiently.
+
+---
+
+## Setup
 
 1. Clone this repository
 2. Remove the `.git` directory 
